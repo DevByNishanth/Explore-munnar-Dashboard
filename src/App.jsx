@@ -12,6 +12,10 @@ import HotelDetailsPage from "./pages/HotelDetailsPage";
 import BookingPage from "./pages/BookingPage";
 import LiveInformationPage from "./pages/LiveInformationPage";
 import AddNewsPage from "./pages/AddNewsPage";
+import ActivitiesPage from "./ActivitiesPage";
+import ItnearyPage from "./pages/ItnearyPage";
+import ActivitiesDetailsPage from "./pages/ActivitiesDetailsPage";
+import AddActivityFormPage from "./pages/AddActivityFormPage";
 const App = () => {
   return (
     <>
@@ -19,12 +23,15 @@ const App = () => {
         <Route path="/" element={<Homepage />} />
         <Route path="/hotels" element={<HotelsPage />} />
         <Route path="/Bookings" element={<BookingPage />} />
+        <Route path="/activities" element={<ActivitiesPage />} />
+        <Route path="/itnearies" element={<ItnearyPage />} />
         <Route path="/hotels/:id" element={<HotelDetailsPage />} />
+        <Route path="/activites/:id" element={<ActivitiesDetailsPage />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/hotels/addHotels" element={<HotelAddForm />} />
+        <Route path='/activities/addActivity' element={<AddActivityFormPage />} />
         <Route path="/liveInformation/addNews" element={<AddNewsPage />} />
         <Route path="/liveInformation" element={<LiveInformationPage />} />
-        
       </Routes>
     </>
   );
