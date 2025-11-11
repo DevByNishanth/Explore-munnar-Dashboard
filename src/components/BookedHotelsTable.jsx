@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import h1 from "../assets/h1.jpg";
 import h2 from "../assets/h2.jpg";
 import h3 from "../assets/h3.jpg";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import HotelCanvas from "./HotelCanvas";
-
 const tableheader = [
   "Hotel",
   "Name",
@@ -135,9 +134,75 @@ const BookedHotelsTable = () => {
   // states
   const [isCanvas, setIsCanvas] = useState(false);
   const [canvasData, setCanvasData] = useState(null);
+  const [isStautusDropdown, setIsStatusDropdown] = useState(false);
+
+  // ref's
+  const dropdownRef = useRef(null);
+
+  // handle click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsStatusDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
-      <section className="mt-6 border border-gray-300 h-[calc(100vh-170px)] overflow-auto  items-center justify-between">
+      <div className="input-container mt-4 flex gap-3 items-center">
+        <input
+          type="text"
+          placeholder="Search by hotel name or customer name .."
+          className="w-[400px] rounded-lg border border-gray-300 py-2 px-4 outline-none"
+        />
+        <div className="dropdown-container relative z-20">
+          <button
+            onClick={() => {
+              setIsStatusDropdown(!isStautusDropdown);
+            }}
+            className="status-btn border py-2  border-gray-300 w-[120px] rounded-lg flex gap-2 items-center justify-center"
+          >
+            {status ? status : "Status"}{" "}
+            <ChevronDown
+              className={`${
+                isStautusDropdown ? "rotate-180" : "rotate-0"
+              } transition-all duration-300 `}
+            />
+          </button>
+          {isStautusDropdown && (
+            <div
+              ref={dropdownRef}
+              className="dropdown absolute top-full w-[100%] bg-white border border-gray-300 shadow-lg rounded"
+            >
+              <button
+                onClick={() => setStatus("pending")}
+                className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+              >
+                Pending
+              </button>
+              <button
+                onClick={() => setStatus("booked")}
+                className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+              >
+                Booked
+              </button>
+              <button
+                onClick={() => setStatus("canceled")}
+                className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+              >
+                Canceled
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+      <section className="mt-4 border border-gray-300 h-[calc(100vh-220px)] overflow-auto  items-center justify-between">
         <table className="w-[100%] px-4">
           <thead className="w-[100%] bg-[#124523] text-white rounded-xl sticky top-0">
             {tableheader.map((item, index) => {

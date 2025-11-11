@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { ChevronDown } from 'lucide-react';
+import React, { useEffect, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 const tableheader = [
   "Name",
   "From",
@@ -358,26 +358,24 @@ const tableData = [
 const BookedBikeRentalsTable = () => {
   // states
   const [openDropDownIndex, setOpenDropdownIndex] = useState(null);
-  const [status, setStatus] = useState(null)
-  const [isStautusDropdown, setIsStatusDropdown] = useState(false)
+  const [status, setStatus] = useState(null);
+  const [isStautusDropdown, setIsStatusDropdown] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredData, setFilteredData] = useState([])
-  // ref's 
-  const dropdownRef = useRef(null)
+  const [filteredData, setFilteredData] = useState([]);
 
-  // useEffect's 
+  // ref's
+  const dropdownRef = useRef(null);
+
+  // useEffect's
 
   useEffect(() => {
-    handleSearch()
-  }, [searchTerm])
+    handleSearch();
+  }, [searchTerm]);
 
   // handle click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsStatusDropdown(false);
       }
     };
@@ -400,30 +398,71 @@ const BookedBikeRentalsTable = () => {
     setOpenDropdownIndex(null);
   };
 
-  // search by name function 
+  // search by name function
   const handleSearch = () => {
-    console.log("search functionality : ", searchTerm)
+    console.log("search functionality : ", searchTerm);
     if (searchTerm == "") {
-      setFilteredData(tableData)
+      setFilteredData(tableData);
       return;
     }
-    const filteredData = tableData.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
-    setFilteredData(filteredData)
-  }
+    const filteredData = tableData.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filteredData);
+  };
 
   return (
     <>
       <section>
         <div className="header mt-4 flex ">
           <div className="button-container flex items-center gap-4">
-            <input type="text" placeholder='Search by name..' onChange={(e)=>{setSearchTerm(e.target.value)}} className='border outline-none w-[300px] rounded-lg border-gray-300 px-4 py-2' />
+            <input
+              type="text"
+              placeholder="Search by name.."
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+              }}
+              className="border outline-none w-[300px] rounded-lg border-gray-300 px-4 py-2"
+            />
             <div className="dropdown-container relative z-20">
-              <button onClick={() => { setIsStatusDropdown(!isStautusDropdown) }} className="status-btn border py-2  border-gray-300 w-[120px] rounded-lg flex gap-2 items-center justify-center">{status ? status : "Status"} <ChevronDown className={`${isStautusDropdown ? "rotate-180" : "rotate-0"} transition-all duration-300 `} /></button>
-              {isStautusDropdown && <div ref={dropdownRef} className="dropdown absolute top-full w-[100%] bg-white border border-gray-300 shadow-lg rounded">
-                <button onClick={() => setStatus("pending")} className='px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer'>Pending</button>
-                <button onClick={() => setStatus("booked")} className='px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer'>Booked</button>
-                <button onClick={() => setStatus("canceled")} className='px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer'>Canceled</button>
-              </div>}
+              <button
+                onClick={() => {
+                  setIsStatusDropdown(!isStautusDropdown);
+                }}
+                className="status-btn border py-2  border-gray-300 w-[120px] rounded-lg flex gap-2 items-center justify-center"
+              >
+                {status ? status : "Status"}{" "}
+                <ChevronDown
+                  className={`${
+                    isStautusDropdown ? "rotate-180" : "rotate-0"
+                  } transition-all duration-300 `}
+                />
+              </button>
+              {isStautusDropdown && (
+                <div
+                  ref={dropdownRef}
+                  className="dropdown absolute top-full w-[100%] bg-white border border-gray-300 shadow-lg rounded"
+                >
+                  <button
+                    onClick={() => setStatus("pending")}
+                    className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+                  >
+                    Pending
+                  </button>
+                  <button
+                    onClick={() => setStatus("booked")}
+                    className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+                  >
+                    Booked
+                  </button>
+                  <button
+                    onClick={() => setStatus("canceled")}
+                    className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+                  >
+                    Canceled
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -443,9 +482,11 @@ const BookedBikeRentalsTable = () => {
                 return (
                   <tr
                     key={index}
-                    className={` ${tableData.length - 1 == index ? "" : "border-b"
-                      }   border-gray-200 text-md text-[#333333]  ${index % 2 == 0 ? "bg-gray-50" : ""
-                      } `}
+                    className={` ${
+                      tableData.length - 1 == index ? "" : "border-b"
+                    }   border-gray-200 text-md text-[#333333]  ${
+                      index % 2 == 0 ? "bg-gray-50" : ""
+                    } `}
                   >
                     <td className="pl-3 py-2">{item.name}</td>
                     <td className="pl-3">{item.from}</td>
@@ -459,30 +500,36 @@ const BookedBikeRentalsTable = () => {
                       <div className="relative">
                         <button
                           onClick={() => handleStatusClick(index)}
-                          className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${item.status.toLowerCase() == "pending"
-                            ? "px-2 py-1  text-black bg-red-200 "
-                            : item.status.toLowerCase() == "booked"
+                          className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${
+                            item.status.toLowerCase() == "pending"
+                              ? "px-2 py-1  text-black bg-red-200 "
+                              : item.status.toLowerCase() == "booked"
                               ? " bg-green-200 text-black px-2 py-1 "
                               : "bg-gray-200 px-2 py-1  text-black"
-                            }`}
+                          }`}
                         >
                           {item.status}
                           <ChevronDown
-                            className={`cursor-pointer transition-all duration-300 ${openDropDownIndex == index ? "rotate-180" : ""
-                              } `}
+                            className={`cursor-pointer transition-all duration-300 ${
+                              openDropDownIndex == index ? "rotate-180" : ""
+                            } `}
                           />
                         </button>
                         {openDropDownIndex == index && (
                           <div className="absolute top-full shadow-lg shadow-gray-400 rounded left-0 bg-white w-[120px] z-10 ">
                             <button
                               className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
-                              onClick={() => handleStatusChange(index, "Pending")}
+                              onClick={() =>
+                                handleStatusChange(index, "Pending")
+                              }
                             >
                               Pending
                             </button>
                             <button
                               className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
-                              onClick={() => handleStatusChange(index, "Booked")}
+                              onClick={() =>
+                                handleStatusChange(index, "Booked")
+                              }
                             >
                               Booked
                             </button>
@@ -506,7 +553,7 @@ const BookedBikeRentalsTable = () => {
         </section>
       </section>
     </>
-  )
-}
+  );
+};
 
-export default BookedBikeRentalsTable
+export default BookedBikeRentalsTable;

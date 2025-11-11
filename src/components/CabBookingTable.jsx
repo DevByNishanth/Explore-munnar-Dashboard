@@ -1,5 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 const tableheader = [
   "Customer Name",
   "From",
@@ -357,8 +357,29 @@ const tableData = [
 ];
 
 const CabBookingTable = () => {
+  
   // states
   const [openDropDownIndex, setOpenDropdownIndex] = useState(null);
+  const [isStautusDropdown, setIsStatusDropdown] = useState(false);
+  const [status, setStatus] = useState(null);
+
+
+  // ref's
+  const dropdownRef = useRef(null);
+
+  // handle click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsStatusDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // functions
   const handleStatusClick = (index) => {
@@ -374,6 +395,55 @@ const CabBookingTable = () => {
 
   return (
     <>
+      <div className="header mt-4 flex ">
+        <div className="button-container flex items-center gap-4">
+          <input
+            type="text"
+            placeholder="Search by name.."
+            className="border outline-none w-[300px] rounded-lg border-gray-300 px-4 py-2"
+          />
+          <div className="dropdown-container relative z-20">
+            <button
+              onClick={() => {
+                setIsStatusDropdown(!isStautusDropdown);
+              }}
+              className="status-btn border py-2  border-gray-300 w-[120px] rounded-lg flex gap-2 items-center justify-center"
+            >
+              {status ? status : "Status"}{" "}
+              <ChevronDown
+                className={`${
+                  isStautusDropdown ? "rotate-180" : "rotate-0"
+                } transition-all duration-300 `}
+              />
+            </button>
+            {isStautusDropdown && (
+              <div
+                ref={dropdownRef}
+                className="dropdown absolute top-full w-[100%] bg-white border border-gray-300 shadow-lg rounded"
+              >
+                <button
+                  onClick={() => setStatus("pending")}
+                  className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+                >
+                  Pending
+                </button>
+                <button
+                  onClick={() => setStatus("booked")}
+                  className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+                >
+                  Booked
+                </button>
+                <button
+                  onClick={() => setStatus("canceled")}
+                  className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+                >
+                  Canceled
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
       <section className="mt-6 border border-gray-300  max-h-[calc(100vh-170px)] overflow-auto  items-center justify-between">
         <table className="w-[100%] px-4">
           <thead className="w-[100%] bg-[#124523] text-white rounded-xl sticky top-0 z-15">

@@ -9,7 +9,9 @@ const SeasonalActivitesCard = ({ formatedData }) => {
     return (
       <div className="h-[320px] text-center">
         <img src={noData} className="w-[100%]" />
-        <h1 className="font-medium text-gray-600 text-lg mt-2">No data found</h1>
+        <h1 className="font-medium text-gray-600 text-lg mt-2">
+          No data found
+        </h1>
       </div>
     );
   }

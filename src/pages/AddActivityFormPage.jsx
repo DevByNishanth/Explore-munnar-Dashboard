@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 const AddActivityFormPage = () => {
+
   return (
     <>
       <section className="flex items-start">
