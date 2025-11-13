@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import h1 from "../assets/h1.jpg";
 import h2 from "../assets/h2.jpg";
 import h3 from "../assets/h3.jpg";
+import noData from '../assets/noData.svg'
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import HotelCanvas from "./HotelCanvas";
 const tableheader = [
@@ -33,7 +34,7 @@ const tableData = [
       "Beach Road, Near Lighthouse Junction Kovalam, Thiruvananthapuram, Kerala 695527",
   },
   {
-    customer_name: "Nishanth",
+    customer_name: "Surya chandran",
     hotel_name: "Hilton Garden Inn",
     hotelImg: h2,
     phone: 1234567890,
@@ -135,6 +136,11 @@ const BookedHotelsTable = () => {
   const [isCanvas, setIsCanvas] = useState(false);
   const [canvasData, setCanvasData] = useState(null);
   const [isStautusDropdown, setIsStatusDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filteredData, setFilteredData] = useState([])
+  const [selectedStatus, setSelectedStatus] = useState(null)
+  const [status, setStatus] = useState(null)
+
 
   // ref's
   const dropdownRef = useRef(null);
@@ -153,11 +159,51 @@ const BookedHotelsTable = () => {
     };
   }, []);
 
+  useEffect(() => {
+    handleSearch()
+  }, [searchQuery])
+
+
+  useEffect(() => {
+    handlerFilter()
+  }, [status])
+
+
+  // functions 
+
+  // Search handler ----------------->
+  const handleSearch = () => {
+    if (searchQuery == "") {
+      setFilteredData(tableData);
+      return;
+    }
+    const filteredData = tableData.filter((item) => {
+      return (
+        item.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) || item.hotel_name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    });
+    setFilteredData(filteredData);
+  }
+
+  // status filter handler ----------------> 
+
+  const handlerFilter = () => {
+    if (status == null) {
+      return;
+    } else if (status.toLowerCase() == "all") {
+      setFilteredData(tableData);
+       return;
+    }
+    const filteredData = tableData.filter(item => item.status.toLowerCase() == status.toLowerCase())
+    setFilteredData(filteredData)
+  }
+
   return (
     <>
       <div className="input-container mt-4 flex gap-3 items-center">
         <input
           type="text"
+          onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by hotel name or customer name .."
           className="w-[400px] rounded-lg border border-gray-300 py-2 px-4 outline-none"
         />
@@ -170,9 +216,8 @@ const BookedHotelsTable = () => {
           >
             {status ? status : "Status"}{" "}
             <ChevronDown
-              className={`${
-                isStautusDropdown ? "rotate-180" : "rotate-0"
-              } transition-all duration-300 `}
+              className={`${isStautusDropdown ? "rotate-180" : "rotate-0"
+                } transition-all duration-300 `}
             />
           </button>
           {isStautusDropdown && (
@@ -181,19 +226,25 @@ const BookedHotelsTable = () => {
               className="dropdown absolute top-full w-[100%] bg-white border border-gray-300 shadow-lg rounded"
             >
               <button
-                onClick={() => setStatus("pending")}
+                onClick={() => { setStatus("all"); setIsStatusDropdown(false) }}
+                className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+              >
+                All
+              </button>
+              <button
+                onClick={() => { setStatus("pending"); setIsStatusDropdown(false) }}
                 className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
               >
                 Pending
               </button>
               <button
-                onClick={() => setStatus("booked")}
+                onClick={() => { setStatus("booked"); setIsStatusDropdown(false) }}
                 className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
               >
                 Booked
               </button>
               <button
-                onClick={() => setStatus("canceled")}
+                onClick={() => { setStatus("canceled"); setIsStatusDropdown(false) }}
                 className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
               >
                 Canceled
@@ -214,15 +265,13 @@ const BookedHotelsTable = () => {
             })}
           </thead>
           <tbody className="">
-            {tableData.map((item, index) => {
-              return (
-                <tr
+            {filteredData.length !== 0 ? (
+              filteredData.map((item, index) => {
+                return <tr
                   key={index}
-                  className={` ${
-                    tableData.length - 1 == index ? "" : "border-b"
-                  }   border-gray-200 text-md text-[#333333]  ${
-                    index % 2 == 0 ? "bg-gray-50" : ""
-                  } `}
+                  className={` ${tableData.length - 1 == index ? "" : "border-b"
+                    }   border-gray-200 text-md text-[#333333]  ${index % 2 == 0 ? "bg-gray-50" : ""
+                    } `}
                 >
                   <td className="container-1 pl-2 py-3">
                     <div className="flex items-center gap-4">
@@ -243,11 +292,10 @@ const BookedHotelsTable = () => {
                   <td className="pl-3">{item.checkOut}</td>
                   <td className="pl-3">
                     <button
-                      className={`${
-                        item.status.toLowerCase() == "pending"
-                          ? "text-rose-600  "
-                          : "text-green-600 -white"
-                      } text-center py-1 rounded-lg `}
+                      className={`${item.status.toLowerCase() == "pending"
+                        ? "text-rose-600  "
+                        : "text-green-600 -white"
+                        } text-center py-1 rounded-lg `}
                     >
                       {item.status}
                     </button>
@@ -264,8 +312,13 @@ const BookedHotelsTable = () => {
                     </div>
                   </td>
                 </tr>
-              );
-            })}
+              })
+            ) : <tr className="">
+              <div>
+                <img src={noData} className="w-[300px] translate-x-[390px] mt-8" />
+                <h1 className="text-gray-600 translate-x-[480px] mt-4">No data found</h1>
+              </div>
+            </tr>}
           </tbody>
         </table>
       </section>

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import noDataFound from '../assets/noData.svg'
+
 const tableheader = [
   "Name",
   "From",
@@ -433,9 +435,8 @@ const BookedBikeRentalsTable = () => {
               >
                 {status ? status : "Status"}{" "}
                 <ChevronDown
-                  className={`${
-                    isStautusDropdown ? "rotate-180" : "rotate-0"
-                  } transition-all duration-300 `}
+                  className={`${isStautusDropdown ? "rotate-180" : "rotate-0"
+                    } transition-all duration-300 `}
                 />
               </button>
               {isStautusDropdown && (
@@ -478,15 +479,13 @@ const BookedBikeRentalsTable = () => {
               })}
             </thead>
             <tbody className="">
-              {filteredData.map((item, index) => {
+              {filteredData.length !== 0 ? (filteredData.map((item, index) => {
                 return (
                   <tr
                     key={index}
-                    className={` ${
-                      tableData.length - 1 == index ? "" : "border-b"
-                    }   border-gray-200 text-md text-[#333333]  ${
-                      index % 2 == 0 ? "bg-gray-50" : ""
-                    } `}
+                    className={` ${tableData.length - 1 == index ? "" : "border-b"
+                      }   border-gray-200 text-md text-[#333333]  ${index % 2 == 0 ? "bg-gray-50" : ""
+                      } `}
                   >
                     <td className="pl-3 py-2">{item.name}</td>
                     <td className="pl-3">{item.from}</td>
@@ -500,19 +499,17 @@ const BookedBikeRentalsTable = () => {
                       <div className="relative">
                         <button
                           onClick={() => handleStatusClick(index)}
-                          className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${
-                            item.status.toLowerCase() == "pending"
-                              ? "px-2 py-1  text-black bg-red-200 "
-                              : item.status.toLowerCase() == "booked"
+                          className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${item.status.toLowerCase() == "pending"
+                            ? "px-2 py-1  text-black bg-red-200 "
+                            : item.status.toLowerCase() == "booked"
                               ? " bg-green-200 text-black px-2 py-1 "
                               : "bg-gray-200 px-2 py-1  text-black"
-                          }`}
+                            }`}
                         >
                           {item.status}
                           <ChevronDown
-                            className={`cursor-pointer transition-all duration-300 ${
-                              openDropDownIndex == index ? "rotate-180" : ""
-                            } `}
+                            className={`cursor-pointer transition-all duration-300 ${openDropDownIndex == index ? "rotate-180" : ""
+                              } `}
                           />
                         </button>
                         {openDropDownIndex == index && (
@@ -547,7 +544,12 @@ const BookedBikeRentalsTable = () => {
                     </td>
                   </tr>
                 );
-              })}
+              })) : <tr className="">
+                <div className="translate-x-[400px] w-[300px] text-center">
+                  <img src={noDataFound} className="w-[300px] h-[200px] " />
+                  <h1 className="mb-4 text-gray-600 text-lg">No data found..</h1>
+                </div>
+              </tr>}
             </tbody>
           </table>
         </section>
