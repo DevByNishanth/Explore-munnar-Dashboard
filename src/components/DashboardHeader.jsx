@@ -7,9 +7,8 @@ const DashboardHeader = () => {
   return (
     <>
       <header
-        className={`bg-[#282b30] transition-all duration-300 ${
-          isCollapsed ? "w-[100%]" : "w-[80%]"
-        } h-[60px]`}
+        className={`bg-[#282b30] transition-all duration-300 ${isCollapsed ? "w-[100%]" : "w-[80%]"
+          } h-[60px]`}
       >
         <div className="content-container h-[100%] flex items-center px-4">
           <Menu

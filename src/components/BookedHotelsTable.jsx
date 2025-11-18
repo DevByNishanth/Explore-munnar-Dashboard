@@ -192,7 +192,7 @@ const BookedHotelsTable = () => {
       return;
     } else if (status.toLowerCase() == "all") {
       setFilteredData(tableData);
-       return;
+      return;
     }
     const filteredData = tableData.filter(item => item.status.toLowerCase() == status.toLowerCase())
     setFilteredData(filteredData)

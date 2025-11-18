@@ -2,6 +2,7 @@ import { ArrowUpRight, ChevronDown } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import ItnearyCanvas from "./ItnearyCanvas";
 import noData from '../assets/noData.svg'
+
 const tableHeader = [
   "Name",
   "Phone",
@@ -162,7 +163,7 @@ const tableData = [
 const ItnearyTable = () => {
   // states
   const [openDropDownIndex, setOpenDropdownIndex] = useState(null);
-  const [status, setStatus] = useState("pending");
+  const [status, setStatus] = useState("all");
   const [isCanvas, setIsCanvas] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const [isStautusDropdown, setIsStatusDropdown] = useState(false);
@@ -187,10 +188,12 @@ const ItnearyTable = () => {
     };
   }, []);
 
+  // search functionality call
   useEffect(() => {
     handleSearch();
   }, [searchQuery]);
 
+  // filter functions call
   useEffect(() => {
     handlerFilter();
   }, [status]);
@@ -251,9 +254,8 @@ const ItnearyTable = () => {
             >
               {status ? status : "Status"}{" "}
               <ChevronDown
-                className={`${
-                  isStautusDropdown ? "rotate-180" : "rotate-0"
-                } transition-all duration-300 `}
+                className={`${isStautusDropdown ? "rotate-180" : "rotate-0"
+                  } transition-all duration-300 `}
               />
             </button>
             {isStautusDropdown && (
@@ -330,19 +332,17 @@ const ItnearyTable = () => {
                         <div className="relative">
                           <button
                             onClick={() => handleStatusClick(index)}
-                            className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${
-                              item.status.toLowerCase() == "pending"
-                                ? "px-2 py-1  text-black bg-red-200 "
-                                : item.status.toLowerCase() == "booked"
+                            className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${item.status.toLowerCase() == "pending"
+                              ? "px-2 py-1  text-black bg-red-200 "
+                              : item.status.toLowerCase() == "booked"
                                 ? " bg-green-200 text-black px-2 py-1 "
                                 : "bg-gray-200 px-2 py-1  text-black"
-                            }`}
+                              }`}
                           >
                             {item.status}
                             <ChevronDown
-                              className={`cursor-pointer transition-all duration-300 ${
-                                openDropDownIndex == index ? "rotate-180" : ""
-                              } `}
+                              className={`cursor-pointer transition-all duration-300 ${openDropDownIndex == index ? "rotate-180" : ""
+                                } `}
                             />
                           </button>
                           {openDropDownIndex == index && (

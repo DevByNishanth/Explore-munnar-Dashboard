@@ -374,6 +374,11 @@ const BookedBikeRentalsTable = () => {
     handleSearch();
   }, [searchTerm]);
 
+  useEffect(() => {
+    handlerFilter()
+  }, [status])
+
+
   // handle click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -413,6 +418,19 @@ const BookedBikeRentalsTable = () => {
     setFilteredData(filteredData);
   };
 
+  // status filter handler ----------------> 
+
+  const handlerFilter = () => {
+    if (status == null) {
+      return;
+    } else if (status.toLowerCase() == "all") {
+      setFilteredData(tableData);
+      return;
+    }
+    const filteredData = tableData.filter(item => item.status.toLowerCase() == status.toLowerCase())
+    setFilteredData(filteredData)
+  }
+
   return (
     <>
       <section>
@@ -445,19 +463,25 @@ const BookedBikeRentalsTable = () => {
                   className="dropdown absolute top-full w-[100%] bg-white border border-gray-300 shadow-lg rounded"
                 >
                   <button
-                    onClick={() => setStatus("pending")}
+                    onClick={() => { setStatus("all"); setIsStatusDropdown(false) }}
+                    className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
+                  >
+                    All
+                  </button>
+                  <button
+                    onClick={() => { setStatus("pending"); setIsStatusDropdown(false) }}
                     className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
                   >
                     Pending
                   </button>
                   <button
-                    onClick={() => setStatus("booked")}
+                    onClick={() => { setStatus("booked"); setIsStatusDropdown(false) }}
                     className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
                   >
                     Booked
                   </button>
                   <button
-                    onClick={() => setStatus("canceled")}
+                    onClick={() => { setStatus("canceled"); setIsStatusDropdown(false) }}
                     className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
                   >
                     Canceled
