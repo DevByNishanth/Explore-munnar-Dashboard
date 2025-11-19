@@ -50,25 +50,14 @@ const LiveInformationForm = () => {
         </div>
         <div className="form-container w-[380px] mt-4">
           <form className="space-y-4 relative h-[calc(100vh-120px)]">
-            <div className="input-container">
-              <h1 className="text-gray-800 font-medium mb-2">Category</h1>
-              <select className="w-[100%] outline-none border rounded border-gray-400 py-2 px-3">
-                <option value="" disabled>
-                  Select Category
-                </option>
-                <option value="roadsAndtransportConditions">
-                  Roads and Transport conditions
-                </option>
-                <option value="emergencyAlerts">Emergency Alerts</option>
-                <option value="localEventsAndFestivals">
-                  Local Events and festivals
-                </option>
-                <option value="travelRestictionsAndHealthGuidelines">
-                  Travel Restrictions & Health Guidelines
-                </option>
-              </select>
-            </div>
+            <div className="title-container">
+              <h1 className="text-gray-800 font-medium mb-2">Title</h1>
 
+              <input
+                type="text"
+                className="border border-gray-400 rounded px-3 py-2 w-full outline-none"
+              />
+            </div>
             <div className="img-container">
               <h1 className="text-gray-800 font-medium mb-2">Image</h1>
 
@@ -128,18 +117,29 @@ const LiveInformationForm = () => {
                 </div>
               )}
             </div>
-            <div className="title-container">
-              <h1 className="text-gray-800 font-medium mb-2">Title</h1>
 
-              <input
-                type="text"
-                className="border border-gray-400 rounded px-3 py-2 w-full outline-none"
-              />
-            </div>
             <div className="description-container">
               <h1 className="text-gray-800 font-medium mb-2">Description</h1>
 
               <textarea className="border max-h-[140px] border-gray-400 rounded px-3 py-2 w-full outline-none" />
+            </div>
+            <div className="input-container">
+              <h1 className="text-gray-800 font-medium mb-2">Category</h1>
+              <select className="w-[100%] outline-none border rounded border-gray-400 py-2 px-3">
+                <option value="" disabled>
+                  Select Category
+                </option>
+                <option value="roadsAndtransportConditions">
+                  Roads and Transport conditions
+                </option>
+                <option value="emergencyAlerts">Emergency Alerts</option>
+                <option value="localEventsAndFestivals">
+                  Local Events and festivals
+                </option>
+                <option value="travelRestictionsAndHealthGuidelines">
+                  Travel Restrictions & Health Guidelines
+                </option>
+              </select>
             </div>
             <div className="btn-container flex justify-end absolute bottom-4 right-0">
               <button className="text-white btn-green px-4 py-2 rounded cursor-pointer">

@@ -1,11 +1,17 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import itnearyBannerImg from "../assets/itnearyBannerImg.svg";
 import { ChevronRight, ChevronUp } from "lucide-react";
-const ItnearyCanvas = ({ isCanvas, setIsCanvas }) => {
+
+const statusData = ["All", "Pending", "Booked", "Canceled"];
+
+const ItnearyCanvas = ({ setIsCanvas }) => {
   // states
+  const [isStatusDropdown, setIsStatusDropdown] = useState(false);
 
   // ref's
   const canvasRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const btnRef = useRef(null);
 
   // useEffect call's
   useEffect(() => {
@@ -19,6 +25,26 @@ const ItnearyCanvas = ({ isCanvas, setIsCanvas }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // dropdown click outside functionality
+  useEffect(() => {
+    function handleOutsideClick(e) {
+      if (
+        dropdownRef.current &&
+        btnRef.current &&
+        !btnRef.current.contains(e.target) &&
+        !dropdownRef.current.contains(e.target)
+      ) {
+        setIsStatusDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
+  // ---------------------------------------------------------------------Jsx  ------------------------------------------------------
 
   return (
     <>
@@ -73,9 +99,33 @@ const ItnearyCanvas = ({ isCanvas, setIsCanvas }) => {
               <h1 className="text-gray-600">Suv 5 seater</h1>
             </div>
           </div>
-          <button className="mt-8 btn-green px-4 py-2 rounded-lg text-white flex gap-3 items-center">
-            Change status <ChevronUp className="text-white" />{" "}
-          </button>
+          <div className="btn-container mt-8 w-[190px] relative">
+            <button
+              ref={btnRef}
+              onClick={() => setIsStatusDropdown(!isStatusDropdown)}
+              className=" btn-green px-4 py-2 rounded-lg text-white flex gap-3 items-center"
+            >
+              Change status{" "}
+              <ChevronUp
+                className={`text-white ${
+                  isStatusDropdown ? "rotate-180" : "rotate-0"
+                } transition-all duration-300 `}
+              />
+            </button>
+            {/* dropdown-container  */}
+            {isStatusDropdown && (
+              <div
+                ref={dropdownRef}
+                className="dropdown-container absolute bottom-[100%] left-0 rounded  bg-gray-50 shadow-xl  border border-gray-200"
+              >
+                {statusData.map((item) => (
+                  <button className="w-full px-4 py-2 text-left hover:bg-gray-300 cursor-pointer">
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </>

@@ -1,4 +1,4 @@
-import { Car, Hotel } from "lucide-react";
+import { Bike, Car, CarFront, Hotel } from "lucide-react";
 import React from "react";
 
 const DashboardStatCard = () => {
@@ -30,7 +30,7 @@ const DashboardStatCard = () => {
         <div className="card w-full  shadow-lg py-4 rounded-xl flex items-center">
           <div className="header text-black mt-2 px-2 flex items-center gap-3">
             <div className="icon-container bg-[#E4F0FF] w-10 h-10 rounded-full flex items-center justify-center">
-              <Hotel className="text-[#70A6E8]" />
+              <Bike className="text-[#70A6E8]" />
             </div>
             <div>
               <h1 className="font-medium text-gray-500">Bike Rentals</h1>
@@ -41,7 +41,7 @@ const DashboardStatCard = () => {
         <div className="card w-full  shadow-lg py-4 rounded-xl flex items-center">
           <div className="header text-black mt-2 px-2 flex items-center gap-3">
             <div className="icon-container bg-[#bb453049] w-10 h-10 rounded-full flex items-center justify-center">
-              <Hotel className="text-[#BB4430]" />
+              <CarFront className="text-[#BB4430]" />
             </div>
             <div>
               <h1 className="font-medium text-gray-500">Self Car Driving</h1>

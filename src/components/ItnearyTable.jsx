@@ -1,7 +1,7 @@
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import ItnearyCanvas from "./ItnearyCanvas";
-import noData from '../assets/noData.svg'
+import noData from "../assets/noData.svg";
 
 const tableHeader = [
   "Name",
@@ -254,8 +254,9 @@ const ItnearyTable = () => {
             >
               {status ? status : "Status"}{" "}
               <ChevronDown
-                className={`${isStautusDropdown ? "rotate-180" : "rotate-0"
-                  } transition-all duration-300 `}
+                className={`${
+                  isStautusDropdown ? "rotate-180" : "rotate-0"
+                } transition-all duration-300 `}
               />
             </button>
             {isStautusDropdown && (
@@ -332,17 +333,19 @@ const ItnearyTable = () => {
                         <div className="relative">
                           <button
                             onClick={() => handleStatusClick(index)}
-                            className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${item.status.toLowerCase() == "pending"
-                              ? "px-2 py-1  text-black bg-red-200 "
-                              : item.status.toLowerCase() == "booked"
+                            className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${
+                              item.status.toLowerCase() == "pending"
+                                ? "px-2 py-1  text-black bg-red-200 "
+                                : item.status.toLowerCase() == "booked"
                                 ? " bg-green-200 text-black px-2 py-1 "
                                 : "bg-gray-200 px-2 py-1  text-black"
-                              }`}
+                            }`}
                           >
                             {item.status}
                             <ChevronDown
-                              className={`cursor-pointer transition-all duration-300 ${openDropDownIndex == index ? "rotate-180" : ""
-                                } `}
+                              className={`cursor-pointer transition-all duration-300 ${
+                                openDropDownIndex == index ? "rotate-180" : ""
+                              } `}
                             />
                           </button>
                           {openDropDownIndex == index && (
@@ -376,10 +379,12 @@ const ItnearyTable = () => {
                         </div>
                       </td>
                       <td className="pl-4 py-2">
-                        <ArrowUpRight
-                          className="cursor-pointer"
+                        <div
                           onClick={() => setIsCanvas(true)}
-                        />
+                          className="bg-gray-200 cursor-pointer w-8 h-8 flex items-center justify-center rounded-full"
+                        >
+                          <ArrowUpRight className="cursor-pointer w-5 h-5 text-black" />
+                        </div>
                       </td>
                     </tr>
                   );

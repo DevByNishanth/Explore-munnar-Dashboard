@@ -29,7 +29,7 @@ const HotelCanvas = ({ setIsCanvas, canvasData }) => {
     <>
       <section
         ref={canvasRef}
-        className="bg-white w-[55%] z-10 absolute right-0 top-0 h-[100vh] p-4"
+        className="bg-white w-[55%] z-20 absolute right-0 top-0 h-[100vh] p-4"
       >
         <div className="hotel-image-slider ">
           <img

@@ -12,6 +12,7 @@ const description =
 
 const HotelDetailsPage = () => {
   const { id } = useParams();
+
   return (
     <>
       <section className="flex ">
@@ -28,7 +29,7 @@ const HotelDetailsPage = () => {
               {/* <button className="btn-green text-white px-4 py-2 rounded cursor-pointer">
                 Edit
               </button> */}
-            </div>/
+            </div>
           </div>
           <div className="hero-section mt-8 h-[calc(100vh-100px)] overflow-auto pr-4">
             <HotelPrevImgComponent />

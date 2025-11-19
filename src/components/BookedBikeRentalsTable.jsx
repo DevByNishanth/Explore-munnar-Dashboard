@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import noDataFound from '../assets/noData.svg'
+import noDataFound from "../assets/noData.svg";
 
 const tableheader = [
   "Name",
@@ -375,9 +375,8 @@ const BookedBikeRentalsTable = () => {
   }, [searchTerm]);
 
   useEffect(() => {
-    handlerFilter()
-  }, [status])
-
+    handlerFilter();
+  }, [status]);
 
   // handle click outside
   useEffect(() => {
@@ -418,7 +417,7 @@ const BookedBikeRentalsTable = () => {
     setFilteredData(filteredData);
   };
 
-  // status filter handler ----------------> 
+  // status filter handler ---------------->
 
   const handlerFilter = () => {
     if (status == null) {
@@ -427,9 +426,11 @@ const BookedBikeRentalsTable = () => {
       setFilteredData(tableData);
       return;
     }
-    const filteredData = tableData.filter(item => item.status.toLowerCase() == status.toLowerCase())
-    setFilteredData(filteredData)
-  }
+    const filteredData = tableData.filter(
+      (item) => item.status.toLowerCase() == status.toLowerCase()
+    );
+    setFilteredData(filteredData);
+  };
 
   return (
     <>
@@ -453,8 +454,9 @@ const BookedBikeRentalsTable = () => {
               >
                 {status ? status : "Status"}{" "}
                 <ChevronDown
-                  className={`${isStautusDropdown ? "rotate-180" : "rotate-0"
-                    } transition-all duration-300 `}
+                  className={`${
+                    isStautusDropdown ? "rotate-180" : "rotate-0"
+                  } transition-all duration-300 `}
                 />
               </button>
               {isStautusDropdown && (
@@ -463,25 +465,37 @@ const BookedBikeRentalsTable = () => {
                   className="dropdown absolute top-full w-[100%] bg-white border border-gray-300 shadow-lg rounded"
                 >
                   <button
-                    onClick={() => { setStatus("all"); setIsStatusDropdown(false) }}
+                    onClick={() => {
+                      setStatus("all");
+                      setIsStatusDropdown(false);
+                    }}
                     className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
                   >
                     All
                   </button>
                   <button
-                    onClick={() => { setStatus("pending"); setIsStatusDropdown(false) }}
+                    onClick={() => {
+                      setStatus("pending");
+                      setIsStatusDropdown(false);
+                    }}
                     className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
                   >
                     Pending
                   </button>
                   <button
-                    onClick={() => { setStatus("booked"); setIsStatusDropdown(false) }}
+                    onClick={() => {
+                      setStatus("booked");
+                      setIsStatusDropdown(false);
+                    }}
                     className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
                   >
                     Booked
                   </button>
                   <button
-                    onClick={() => { setStatus("canceled"); setIsStatusDropdown(false) }}
+                    onClick={() => {
+                      setStatus("canceled");
+                      setIsStatusDropdown(false);
+                    }}
                     className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
                   >
                     Canceled
@@ -503,77 +517,87 @@ const BookedBikeRentalsTable = () => {
               })}
             </thead>
             <tbody className="">
-              {filteredData.length !== 0 ? (filteredData.map((item, index) => {
-                return (
-                  <tr
-                    key={index}
-                    className={` ${tableData.length - 1 == index ? "" : "border-b"
-                      }   border-gray-200 text-md text-[#333333]  ${index % 2 == 0 ? "bg-gray-50" : ""
+              {filteredData.length !== 0 ? (
+                filteredData.map((item, index) => {
+                  return (
+                    <tr
+                      key={index}
+                      className={` ${
+                        tableData.length - 1 == index ? "" : "border-b"
+                      }   border-gray-200 text-md text-[#333333]  ${
+                        index % 2 == 0 ? "bg-gray-50" : ""
                       } `}
-                  >
-                    <td className="pl-3 py-2">{item.name}</td>
-                    <td className="pl-3">{item.from}</td>
-                    <td className="pl-3">{item.to}</td>
-                    <td className="pl-3">{item.phone}</td>
-                    <td className="pl-3">{item.date}</td>
-                    <td className="pl-3">{item.time}</td>
-                    <td className="pl-3">{item.days}</td>
-                    <td className="pl-3">{item.driverNeeded}</td>
-                    <td className="pl-3 py-2">
-                      <div className="relative">
-                        <button
-                          onClick={() => handleStatusClick(index)}
-                          className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${item.status.toLowerCase() == "pending"
-                            ? "px-2 py-1  text-black bg-red-200 "
-                            : item.status.toLowerCase() == "booked"
-                              ? " bg-green-200 text-black px-2 py-1 "
-                              : "bg-gray-200 px-2 py-1  text-black"
+                    >
+                      <td className="pl-3 py-2">{item.name}</td>
+                      <td className="pl-3">{item.from}</td>
+                      <td className="pl-3">{item.to}</td>
+                      <td className="pl-3">{item.phone}</td>
+                      <td className="pl-3">{item.date}</td>
+                      <td className="pl-3">{item.time}</td>
+                      <td className="pl-3">{item.days}</td>
+                      <td className="pl-3">{item.driverNeeded}</td>
+                      <td className="pl-3 py-2">
+                        <div className="relative">
+                          <button
+                            onClick={() => handleStatusClick(index)}
+                            className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${
+                              item.status.toLowerCase() == "pending"
+                                ? "px-2 py-1  text-black bg-red-200 "
+                                : item.status.toLowerCase() == "booked"
+                                ? " bg-green-200 text-black px-2 py-1 "
+                                : "bg-gray-200 px-2 py-1  text-black"
                             }`}
-                        >
-                          {item.status}
-                          <ChevronDown
-                            className={`cursor-pointer transition-all duration-300 ${openDropDownIndex == index ? "rotate-180" : ""
+                          >
+                            {item.status}
+                            <ChevronDown
+                              className={`cursor-pointer transition-all duration-300 ${
+                                openDropDownIndex == index ? "rotate-180" : ""
                               } `}
-                          />
-                        </button>
-                        {openDropDownIndex == index && (
-                          <div className="absolute top-full shadow-lg shadow-gray-400 rounded left-0 bg-white w-[120px] z-10 ">
-                            <button
-                              className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
-                              onClick={() =>
-                                handleStatusChange(index, "Pending")
-                              }
-                            >
-                              Pending
-                            </button>
-                            <button
-                              className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
-                              onClick={() =>
-                                handleStatusChange(index, "Booked")
-                              }
-                            >
-                              Booked
-                            </button>
-                            <button
-                              className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
-                              onClick={() => {
-                                handleStatusChange(index, "Canceled");
-                              }}
-                            >
-                              Canceled
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })) : <tr className="">
-                <div className="translate-x-[400px] w-[300px] text-center">
-                  <img src={noDataFound} className="w-[300px] h-[200px] " />
-                  <h1 className="mb-4 text-gray-600 text-lg">No data found..</h1>
-                </div>
-              </tr>}
+                            />
+                          </button>
+                          {openDropDownIndex == index && (
+                            <div className="absolute top-full shadow-lg shadow-gray-400 rounded left-0 bg-white w-[120px] z-10 ">
+                              <button
+                                className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
+                                onClick={() =>
+                                  handleStatusChange(index, "Pending")
+                                }
+                              >
+                                Pending
+                              </button>
+                              <button
+                                className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
+                                onClick={() =>
+                                  handleStatusChange(index, "Booked")
+                                }
+                              >
+                                Booked
+                              </button>
+                              <button
+                                className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
+                                onClick={() => {
+                                  handleStatusChange(index, "Canceled");
+                                }}
+                              >
+                                Canceled
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr className="">
+                  <div className="translate-x-[400px] w-[300px] text-center">
+                    <img src={noDataFound} className="w-[300px] h-[200px] " />
+                    <h1 className="mb-4 text-gray-600 text-lg">
+                      No data found..
+                    </h1>
+                  </div>
+                </tr>
+              )}
             </tbody>
           </table>
         </section>
