@@ -26,7 +26,7 @@ const Sidebar = () => {
   return (
     <>
       <section
-        className={`relative sidebar bg-[#ececec8c] transition-all duration-300  ${
+        className={`relative sidebar bg-[#ececec8c] transition-all duration-300 ${
           isCollapsed ? "w-[5%]" : "w-[20%]"
         } h-[100vh] `}
       >
@@ -70,7 +70,7 @@ const Sidebar = () => {
             </h1>
           </Link>
           {/* users tab  */}
-          {/* <Link
+          <Link
             to={"/users"}
             className={`link-container px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
           >
@@ -86,7 +86,7 @@ const Sidebar = () => {
             >
               Users
             </h1>
-          </Link> */}
+          </Link>
           <Link
             to={"/hotels"}
             className={`link-container ${

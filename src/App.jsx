@@ -16,6 +16,7 @@ import ActivitiesPage from "./ActivitiesPage";
 import ItnearyPage from "./pages/ItnearyPage";
 import ActivitiesDetailsPage from "./pages/ActivitiesDetailsPage";
 import AddActivityFormPage from "./pages/AddActivityFormPage";
+import Testingpage from "./pages/Testingpage";
 const App = () => {
   return (
     <>
@@ -29,7 +30,10 @@ const App = () => {
         <Route path="/activites/:id" element={<ActivitiesDetailsPage />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/hotels/addHotels" element={<HotelAddForm />} />
-        <Route path='/activities/addActivity' element={<AddActivityFormPage />} />
+        <Route
+          path="/activities/addActivity"
+          element={<AddActivityFormPage />}
+        />
         <Route path="/liveInformation/addNews" element={<AddNewsPage />} />
         <Route path="/liveInformation" element={<LiveInformationPage />} />
       </Routes>
