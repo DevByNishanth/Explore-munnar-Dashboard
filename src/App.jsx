@@ -17,6 +17,7 @@ import ItnearyPage from "./pages/ItnearyPage";
 import ActivitiesDetailsPage from "./pages/ActivitiesDetailsPage";
 import AddActivityFormPage from "./pages/AddActivityFormPage";
 import Testingpage from "./pages/Testingpage";
+import HomepageModificationPage from "./pages/HomepageModificationPage";
 const App = () => {
   return (
     <>
@@ -36,6 +37,7 @@ const App = () => {
         />
         <Route path="/liveInformation/addNews" element={<AddNewsPage />} />
         <Route path="/liveInformation" element={<LiveInformationPage />} />
+        <Route path="/homepageModification" element={<HomepageModificationPage />} />
       </Routes>
     </>
   );
