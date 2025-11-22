@@ -37,7 +37,10 @@ const App = () => {
         />
         <Route path="/liveInformation/addNews" element={<AddNewsPage />} />
         <Route path="/liveInformation" element={<LiveInformationPage />} />
-        <Route path="/homepageModification" element={<HomepageModificationPage />} />
+        <Route
+          path="/homepageModification"
+          element={<HomepageModificationPage />}
+        />
       </Routes>
     </>
   );

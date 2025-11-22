@@ -176,7 +176,7 @@ const UsersPage = () => {
             <Search className="absolute top-[50%] translate-y-[-50%] right-3 text-gray-400 w-6 h-6" />
           </div>
           {/* --------- user table section -------------  */}
-          <div className="card-container mt-3 sm:grid grid-cols-4  gap-4 max-h-[calc(100vh-150px)] overflow-auto">
+          <div className="card-container mt-3 sm:grid grid-cols-4 gap-4 max-h-[calc(100vh-150px)] overflow-auto">
             {filteredData.map((item) => {
               return (
                 <div className="card w-full border border-gray-300 rounded-lg relative">
