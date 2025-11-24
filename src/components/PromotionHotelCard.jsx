@@ -140,7 +140,7 @@ const PromotionHotelCard = () => {
             <div
               onClick={() => handleCanvas(item)}
               key={index}
-              className="card cursor-pointer border border-gray-300 rounded-md p-2 flex items-start gap-2 relative"
+              className="card h-[130px] cursor-pointer border border-gray-300 rounded-md p-2 flex items-start gap-2 relative"
             >
               <div className="img-container w-[25%]">
                 <img
@@ -164,12 +164,6 @@ const PromotionHotelCard = () => {
                 <p className="text-sm text-gray-600">
                   {item.description.slice(0, 32)}..
                 </p>
-
-                {/* <div className="flex-container mt-2 flex items-center gap-2">
-                  <button className="text-sm bg-gray-50 shadow shadow-gray/10 border border-gray-100 px-3 py-1 rounded-xl">
-                    {item.category}
-                  </button>
-                </div> */}
               </div>
               <div className="icon-container w-[20%] flex items-center justify-end gap-2">
                 {item.ratings !== null && (
@@ -182,13 +176,16 @@ const PromotionHotelCard = () => {
               {/* ------- icon container ------  */}
               <div className="icon-container absolute bottom-3 right-2 flex gap-2">
                 {item.isPromotion && (
-                  <div className="w-[28px] rounded-full bg-green-100 h-[28px] flex items-center justify-center ">
+                  <div className="w-[28px] group relative rounded-full bg-green-100 h-[28px] flex items-center justify-center ">
                     <Megaphone className="w-[70%] text-green-700" />
+                    <span className="bg-gray-900 absolute top-[-100%] transition-all duration-300 right-0 border opacity-0 group-hover:opacity-100 text-gray-300 px-2 py-1 text-[10px]">Promotion</span>
                   </div>
                 )}
                 {item.isCardView && (
-                  <div className="w-[28px] rounded-full bg-amber-100 h-[28px] flex items-center justify-center ">
+                  <div className="w-[28px] rounded-full relative group bg-amber-100 h-[28px] flex items-center justify-center ">
                     <ClipboardList className="w-[70%] text-amber-400" />
+                    <span className="bg-gray-900 absolute top-[-100%] left-0 z-10 transition-all duration-200 border opacity-0 group-hover:opacity-100 text-gray-300 py-1 text-[10px] w-[70px] text-center">Card view</span>
+
                   </div>
                 )}
               </div>

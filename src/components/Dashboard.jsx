@@ -7,6 +7,7 @@ import PieChart1 from "./PieChart1";
 import DashboardHotelTable from "./DashboardHotelTable";
 import { Link } from "react-router-dom";
 import { buttonBaseClasses } from "@mui/material";
+import ItnearyBarChart from "./ItnearyBarChart";
 
 const months = [
   "Jan",
@@ -51,7 +52,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <section className="px-6 mt-4 w-[100%]">
+      <section className="px-6 mt-4 w-[100%] max-h-[calc(100vh-20px)] overflow-auto ">
         {/* header  */}
         <div className="header flex items-center justify-between w-[100%] ">
           <h1 className="font-medium text-lg text-[#333333]">Dashboard</h1>
@@ -84,9 +85,8 @@ const Dashboard = () => {
                   Nov{" "}
                   <span className="h-5 w-5 ">
                     <ChevronDown
-                      className={`text-gray-600 ${
-                        isMonthFilterDropdown ? "rotate-180" : "rotate-0"
-                      } transition-all duration-300`}
+                      className={`text-gray-600 ${isMonthFilterDropdown ? "rotate-180" : "rotate-0"
+                        } transition-all duration-300`}
                     />
                   </span>
                 </button>
@@ -133,6 +133,8 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        <ItnearyBarChart />
+
       </section>
     </>
   );

@@ -26,7 +26,7 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
       <div className="fixed inset-0 bg-black/30"></div>
       <div
         ref={canvasRef}
-        className="main-container w-[40%] bg-white p-2 h-[100vh] absolute top-0 right-0"
+        className="main-container w-[40%] z-30 bg-white p-2 h-[100vh] absolute top-0 right-0"
       >
         <div className="img-container w-[100%] h-[270px]">
           <img
