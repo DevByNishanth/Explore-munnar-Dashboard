@@ -99,7 +99,15 @@ const ItnearyCanvas = ({ setIsCanvas }) => {
               <h1 className="text-gray-600">Suv 5 seater</h1>
             </div>
           </div>
-          <div className="btn-container mt-8 w-[190px] relative">
+          <div className="personalInfo-container mt-4">
+            <h1 className="font-medium text-lg">Routes</h1>
+            <div className="sub-content-container mt-2 flex items-center gap-6">
+              <h1 className="text-gray-600">Munnar rose garden</h1>
+              <h1 className="text-gray-600">Munnar rose garden</h1>
+              <h1 className="text-gray-600">Munnar rose garden</h1>
+            </div>
+          </div>
+          <div className="btn-container mt-4 w-[190px] relative">
             <button
               ref={btnRef}
               onClick={() => setIsStatusDropdown(!isStatusDropdown)}

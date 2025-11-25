@@ -85,8 +85,9 @@ const Dashboard = () => {
                   Nov{" "}
                   <span className="h-5 w-5 ">
                     <ChevronDown
-                      className={`text-gray-600 ${isMonthFilterDropdown ? "rotate-180" : "rotate-0"
-                        } transition-all duration-300`}
+                      className={`text-gray-600 ${
+                        isMonthFilterDropdown ? "rotate-180" : "rotate-0"
+                      } transition-all duration-300`}
                     />
                   </span>
                 </button>
@@ -133,8 +134,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <ItnearyBarChart />
-
+        {/* <ItnearyBarChart /> */}
       </section>
     </>
   );
