@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Plus, UploadCloud, X } from "lucide-react";
 import HotelAddModal from "./hotelAddModal";
+import AmenityFormModal from "./AmenityFormModal";
 
 const categoryData = [
   "Tents & Camping Grounds",
@@ -16,6 +17,7 @@ const HotelInformationForm = () => {
   const [previewUrls, setpreviewUrls] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(""); // "activities" or "amenities"
+  const [isAmenityModal, setIsAmenityModal] = useState(false)
 
   // store selected data
   const [popularActivities, setPopularActivities] = useState([]);
@@ -160,11 +162,10 @@ const HotelInformationForm = () => {
                     key={index}
                     onClick={() => handleCategoryClick(item)}
                     className={`px-6 py-2 rounded-full cursor-pointer transition-all duration-200 
-              ${
-                selectedCategory === item
-                  ? " text-gray-9009 font-medium bg-gray-200 "
-                  : "border border-dashed border-gray-300 text-gray-700 hover:bg-gray-0"
-              }`}
+              ${selectedCategory === item
+                        ? " text-gray-9009 font-medium bg-gray-200 "
+                        : "border border-dashed border-gray-300 text-gray-700 hover:bg-gray-0"
+                      }`}
                   >
                     {item}
                   </div>
@@ -211,7 +212,7 @@ const HotelInformationForm = () => {
             <div className="amenities-container">
               <div className="header flex items-center gap-3">
                 <h1 className="text-gray-800 font-medium">Amenities</h1>
-                <button className="bg-gray-800 rounded-lg w-[40px] h-[40px] flex items-center justify-center cursor-pointer">
+                <button onClick={() => setIsAmenityModal(true)} className="bg-gray-800 rounded-lg w-[40px] h-[40px] flex items-center justify-center cursor-pointer">
                   <Plus className="text-gray-50" />
                 </button>
               </div>
@@ -241,6 +242,10 @@ const HotelInformationForm = () => {
           </div>
         </div>
       </section>
+
+
+      {isAmenityModal && <AmenityFormModal />}
+
       {showModal && (
         <HotelAddModal
           type={modalType}
@@ -248,6 +253,7 @@ const HotelInformationForm = () => {
           onSave={handleSave}
         />
       )}
+
     </>
   );
 };
