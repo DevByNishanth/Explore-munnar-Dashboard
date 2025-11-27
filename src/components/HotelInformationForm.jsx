@@ -244,7 +244,7 @@ const HotelInformationForm = () => {
       </section>
 
 
-      {isAmenityModal && <AmenityFormModal />}
+      {isAmenityModal && <AmenityFormModal setIsAmenityModal={setIsAmenityModal}/>}
 
       {showModal && (
         <HotelAddModal

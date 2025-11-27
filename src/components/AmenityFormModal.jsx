@@ -69,7 +69,7 @@ const amenitiesData = [
 ];
 
 
-const AmenityFormModal = () => {
+const AmenityFormModal = ({setIsAmenityModal}) => {
   // states 
   const [selectedTab, setSelectedTab] = useState("Room")
   const [formData, setFormData] = useState([])
@@ -90,7 +90,7 @@ const AmenityFormModal = () => {
       <section className="bg-white w-[45%] p-3 rounded-lg absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
         <header className='border-ddb border-gray-400 pb- px-4  flex items-center justify-between'>
           <h1 className='font-medium text-xl'>Add Amenities</h1>
-          <div className="icon-container bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center">
+          <div onClick={()=>setIsAmenityModal(false)} className="icon-container cursor-pointer bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center">
             <X className='text-gray-800 ' />
           </div>
         </header>
@@ -102,7 +102,7 @@ const AmenityFormModal = () => {
           <button
             onClick={() => setSelectedTab("Room")}
             className={`flex items-center gap-2 font-medium 
-      ${selectedTab === "Room" ? "bg-amber-700 rounded-full text-white" : "text-gray-700"} 
+      ${selectedTab === "Room" ? "bg-active rounded-full text-white" : "text-gray-700"} 
       py-2 px-3 rounded`}
           >
             <Bed className={`${selectedTab === "Room" ? "text-white" : "text-gray-600"}`} />
@@ -113,7 +113,7 @@ const AmenityFormModal = () => {
           <button
             onClick={() => setSelectedTab("Travel")}
             className={`flex items-center gap-2 font-medium 
-      ${selectedTab === "Travel" ? "bg-amber-700 rounded-full text-white" : "text-gray-700"} 
+      ${selectedTab === "Travel" ? "bg-active rounded-full text-white" : "text-gray-700"} 
       py-2 px-3 rounded`}
           >
             <Bus className={`${selectedTab === "Travel" ? "text-white" : "text-gray-600"}`} />
@@ -124,7 +124,7 @@ const AmenityFormModal = () => {
           <button
             onClick={() => setSelectedTab("Food")}
             className={`flex items-center gap-2 font-medium 
-      ${selectedTab === "Food" ? "bg-amber-700 rounded-full text-white" : "text-gray-700"} 
+      ${selectedTab === "Food" ? "bg-active rounded-full text-white" : "text-gray-700"} 
       py-2 px-3 rounded`}
           >
             <Utensils className={`${selectedTab === "Food" ? "text-white" : "text-gray-600"}`} />
@@ -135,7 +135,7 @@ const AmenityFormModal = () => {
           <button
             onClick={() => setSelectedTab("View")}
             className={`flex items-center gap-2 font-medium 
-      ${selectedTab === "View" ? "bg-amber-700 rounded-full text-white" : "text-gray-700"} 
+      ${selectedTab === "View" ? "bg-active rounded-full text-white" : "text-gray-700"} 
       py-2 px-3 rounded`}
           >
             <Mountain className={`${selectedTab === "View" ? "text-white" : "text-gray-600"}`} />
@@ -146,7 +146,7 @@ const AmenityFormModal = () => {
           <button
             onClick={() => setSelectedTab("Connectivity")}
             className={`flex items-center gap-2 font-medium 
-      ${selectedTab === "Connectivity" ? "bg-amber-700 rounded-full text-white" : "text-gray-700"} 
+      ${selectedTab === "Connectivity" ? "bg-active bg-active rounded-full text-white" : "text-gray-700"} 
       py-2 px-3 rounded`}
           >
             <Wifi className={`${selectedTab === "Connectivity" ? "text-white" : "text-gray-600"}`} />
@@ -157,7 +157,7 @@ const AmenityFormModal = () => {
           <button
             onClick={() => setSelectedTab("Family")}
             className={`flex items-center gap-2 font-medium 
-      ${selectedTab === "Family" ? "bg-amber-700 rounded-full text-white" : "text-gray-700"} 
+      ${selectedTab === "Family" ? "bg-active rounded-full text-white" : "text-gray-700"} 
       py-2 px-3 rounded`}
           >
             <Users className={`${selectedTab === "Family" ? "text-white" : "text-gray-600"}`} />
@@ -174,11 +174,10 @@ const AmenityFormModal = () => {
             </div>
           })}
         </div>
-        <div className="btn-container mx-4 flex justify-end">
-          {selectedTab !== "Room" && <button>Previous</button>}
-          <button className='bg-gray-300 px-6 py-2 rounded-lg'>Next</button>
+        <div className="btn-container mx-4 flex gap-4 justify-end">
+          {selectedTab !== "Room" && <button className='bg-gray-300 px-6 py-2 rounded-lg' >Previous</button>}
+          <button className='bg-amber-700 text-white px-6 py-2 rounded-lg'>Next</button>
         </div>
-
       </section>
     </>
   )

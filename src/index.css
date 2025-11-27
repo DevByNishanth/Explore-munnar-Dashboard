@@ -73,6 +73,9 @@ body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
-.tab-bg{
+.tab-bg {
   background-color: rgba(243, 240, 238, 0.991);
+}
+.bg-active {
+  background-color: rgb(165, 101, 42);
 }

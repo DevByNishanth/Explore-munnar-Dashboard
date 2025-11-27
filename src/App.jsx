@@ -18,6 +18,7 @@ import ActivitiesDetailsPage from "./pages/ActivitiesDetailsPage";
 import AddActivityFormPage from "./pages/AddActivityFormPage";
 import Testingpage from "./pages/Testingpage";
 import HomepageModificationPage from "./pages/HomepageModificationPage";
+import ReportsPage from "./pages/ReportsPage";
 const App = () => {
   return (
     <>
@@ -41,6 +42,7 @@ const App = () => {
           path="/homepageModification"
           element={<HomepageModificationPage />}
         />
+        <Route path="/reports" element={<ReportsPage />} />
       </Routes>
     </>
   );

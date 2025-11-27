@@ -3,6 +3,7 @@ import logo from "../assets/logo.svg";
 import man from "../assets/man.jpg";
 import {
   BusFront,
+  ChartSpline,
   ChevronLeft,
   ChevronRight,
   Compass,
@@ -27,8 +28,9 @@ const Sidebar = () => {
   const { setIsCollapsed, isCollapsed } = useGeneralData();
   return (
     <>
+      {/* bg-[#ecececbd] */}
       <section
-        className={`relative sidebar bg-[#ececec8c] transition-all duration-300 ${isCollapsed ? "w-[5%]" : "w-[20%]"
+        className={`relative sidebar bg-[#eaeaea] transition-all duration-300 ${isCollapsed ? "w-[5%]" : "w-[20%]"
           } h-[100vh] `}
       >
         <div className="logo-container px-5 m-auto mt-3">
@@ -71,8 +73,8 @@ const Sidebar = () => {
           <Link
             to={"/users"}
             className={`link-container ${location.pathname.toLowerCase().includes("users")
-                ? "bg-white"
-                : ""
+              ? "bg-white"
+              : ""
               } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
           >
             <User
@@ -89,8 +91,8 @@ const Sidebar = () => {
           <Link
             to={"/hotels"}
             className={`link-container ${location.pathname.toLowerCase().includes("hotels")
-                ? "bg-white"
-                : ""
+              ? "bg-white"
+              : ""
               } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
           >
             <Hotel
@@ -107,8 +109,8 @@ const Sidebar = () => {
           <Link
             to={"/Bookings"}
             className={`link-container ${location.pathname.toLowerCase().includes("bookings")
-                ? "bg-white"
-                : ""
+              ? "bg-white"
+              : ""
               } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
           >
             <ListOrdered
@@ -125,8 +127,8 @@ const Sidebar = () => {
           <Link
             to={"/liveInformation"}
             className={`link-container ${location.pathname.toLowerCase().includes("liveinformation")
-                ? "bg-white"
-                : ""
+              ? "bg-white"
+              : ""
               } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
           >
             <Rss
@@ -143,8 +145,8 @@ const Sidebar = () => {
           <Link
             to={"/activities"}
             className={`link-container ${location.pathname.toLowerCase().includes("activities")
-                ? "bg-white"
-                : ""
+              ? "bg-white"
+              : ""
               } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
           >
             <Compass
@@ -161,8 +163,8 @@ const Sidebar = () => {
           <Link
             to={"/itnearies"}
             className={`link-container ${location.pathname.toLowerCase().includes("itnearies")
-                ? "bg-white"
-                : ""
+              ? "bg-white"
+              : ""
               } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
           >
             <Route
@@ -179,8 +181,8 @@ const Sidebar = () => {
           <Link
             to={"/homepageModification"}
             className={`link-container ${location.pathname.toLowerCase().includes("homepage")
-                ? "bg-white"
-                : ""
+              ? "bg-white"
+              : ""
               } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
           >
             <Sparkle
@@ -192,6 +194,24 @@ const Sidebar = () => {
                 } `}
             >
               Highlights
+            </h1>
+          </Link>
+          <Link
+            to={"/reports"}
+            className={`link-container ${location.pathname.toLowerCase().includes("reports")
+              ? "bg-white"
+              : ""
+              } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
+          >
+            <ChartSpline
+              className={`text-gray-600 w-5 h-5 transition-all duration-300 ${isCollapsed ? "m-auto" : ""
+                } `}
+            />
+            <h1
+              className={`text-gray-900 transition-all duration-300 ${isCollapsed ? "hidden" : ""
+                } `}
+            >
+              Reports
             </h1>
           </Link>
         </div>
