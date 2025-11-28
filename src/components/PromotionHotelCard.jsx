@@ -11,6 +11,7 @@ import {
   MapPin,
   Megaphone,
   Pin,
+  Plus,
   Star,
 } from "lucide-react";
 import star from "../assets/fiveStar.svg";

@@ -53,7 +53,7 @@ const ReportsPage = () => {
                             </div>
                         </div>
                         <div className='col-span-6'>
-                            <Calendar/>
+                            <Calendar />
                         </div>
                     </div>
                 </div>
