@@ -1,10 +1,14 @@
-import { ChevronUp, ClipboardList, Codepen, Megaphone, Upload } from "lucide-react";
+import { ChevronDown, ChevronUp, ClipboardList, Codepen, Megaphone, Upload, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-
 const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
   const [promotion, setPromotion] = useState(false);
   const [cardView, setCardView] = useState(false);
   const [previewImg, setPreviewImg] = useState(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedPromotionDays, setSelectedPromotionDays] = useState("");
+  const [fileName, setFileName] = useState(null)
+  const days = Array.from({ length: 30 }, (_, i) => i + 1);
+
   // ref's
   const canvasRef = useRef(null);
 
@@ -25,7 +29,7 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
   const handleFileChange = (e) => {
     // console.log("file : ", e.target.files);
     const file = e.target.files[0];
-    // console.log(file);
+    setFileName(file.name)
     const previewUrl = URL.createObjectURL(file);
     setPreviewImg(previewUrl)
   }
@@ -98,17 +102,47 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
               </h1>{" "}
             </div>
             {promotion && <div className="form-container mx-4 mt-2 mb-8 grid gap-2 grid-cols-2">
-              <div className="input relative  border border-dashed rounded bg-gray-100 border-green-800 flex items-center justify-center">
-                <input type="file" onChange={(e) => handleFileChange(e)} className="absolute top-0 right-0 left-0 bottom-0 opacity-0 cursor-pointer" />
-                <h1 className="flex items-center gap-2"><span className="text-gray-600"><Upload /></span>Upload Image</h1>
-                <img src={previewImg} alt="" />
-              </div>
-              
-              <div className="input ">
-                <div className="select-containaer border border-gray-400 py-2 px-3 flex items-center justify-between">
-                  <h1>Select Days</h1>
-                  <ChevronUp />
+              {previewImg == null ? <div className="input relative  border border-dashed rounded bg-gray-100 border-green-800 flex items-center justify-center">
+                <div>
+                  <input type="file" onChange={(e) => handleFileChange(e)} className="absolute top-0 right-0 left-0 bottom-0 opacity-0 cursor-pointer" />
+                  <h1 className="flex items-center gap-2"><span className="text-gray-600"><Upload /></span>Upload Image</h1>
                 </div>
+              </div> : <div className="flex gap-4 items-center justify-between border rounded border-gray-400 p-1">
+                <div className="flex gap-2 items-center text-gray-700">
+                  <img src={previewImg} className="h-[90%] w-14 " />
+                  <h1>{fileName.slice(0, 12)}</h1>
+                </div>
+                <button className="text-red-400 cursor-pointer"><X /></button>
+              </div>}
+
+
+              <div className="relative w-64">
+                {/* Dropdown Header */}
+                <div
+                  className="select-containaer rounded border border-gray-400 py-2 px-3 flex items-center justify-between cursor-pointer"
+                  onClick={() => setIsOpen(!isOpen)}
+                >
+                  <h1>{selectedPromotionDays || "Select Days"}</h1>
+                  {isOpen ? <ChevronUp /> : <ChevronDown />}
+                </div>
+
+                {/* Dropdown Menu */}
+                {isOpen && (
+                  <div className="absolute bottom-[100%] w-full mt-1 bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-y-auto z-10">
+                    {days.map((day) => (
+                      <div
+                        key={day}
+                        className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          setSelectedPromotionDays(day);
+                          setIsOpen(false);
+                        }}
+                      >
+                        {day} {day === 1 ? "day" : "days"}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>}
             <div className="flex items-center gap-3 mt-2">

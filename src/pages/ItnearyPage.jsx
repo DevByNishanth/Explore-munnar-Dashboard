@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Link } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Plus } from "lucide-react";
 import ItnearyTable from "../components/ItnearyTable";
+import ItnearyAttractionModal from "../components/ItnearyAttractionModal";
 const ItnearyPage = () => {
+  // states 
+  const [isModal, setIsModal] = useState(false)
   return (
     <>
       <section className="flex items-start">
@@ -16,6 +19,7 @@ const ItnearyPage = () => {
               <Link to="/">Dashboard</Link> <ChevronRight />
               <span className="font-medium text-black">Itneary</span>
             </h1>
+            <button onClick={() => setIsModal(true)} className="btn-green text-white cursor-pointer px-3 py-2 rounded-md flex items-center gap-2"><Plus />Add Attractions</button>
           </div>
 
           {/* table-section --------------  */}
@@ -26,6 +30,7 @@ const ItnearyPage = () => {
         </div>
 
       </section>
+      {isModal && <ItnearyAttractionModal setIsModal={setIsModal}/>}
     </>
   );
 };

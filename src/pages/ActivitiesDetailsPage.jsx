@@ -26,6 +26,7 @@ const ActivitiesDetailsPage = () => {
                             <Link to="/activities">Activities</Link> <ChevronRight />
                             <span className="font-medium text-black">Activity</span>
                         </h1>
+                        <button className='bg-[#AF4300] text-white cursor-pointer px-3 py-2 rounded-md'>Delete</button>
                     </div>
 
                     <div className="main-container max-h-[calc(100vh-70px)] overflow-auto">
