@@ -1,16 +1,29 @@
 import React, { useState } from "react";
 import { UploadCloud, X, Plus } from "lucide-react";
+import axios from "axios";
 
 const LiveInformationForm = () => {
   const [previewUrls, setpreviewUrls] = useState([]);
   const [imgFiles, setImgFiles] = useState([]);
+  const [images, setImages] = useState([]); // each item = { file, url }
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    category: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+
   // functions
   //   function to upload a new file or list of files
-  function handleFilechange(e) {
-    if (imgFiles.length + e.target.files.length > 4) {
-      alert("Only 4 images are allowed ");
-      return;
-    }
+  const handleFileChange = (e) => {
     const allowedTypes = [
       "image/jpeg",
       "image/jpg",
@@ -18,29 +31,67 @@ const LiveInformationForm = () => {
       "image/webp",
       "image/avif",
     ];
-    const files = Array.from(e.target.files);
 
-    // Filter only allowed file types
-    const validFiles = files.filter((file) => allowedTypes.includes(file.type));
+    const selectedFiles = Array.from(e.target.files);
 
-    if (validFiles.length === 0) {
-      alert("Only JPEG, JPG, PNG, WEBP, or AVIF images are allowed.");
+    if (images.length + selectedFiles.length > 4) {
+      alert("Only 4 images allowed");
       return;
     }
 
-    const newUrls = validFiles.map((item) => URL.createObjectURL(item));
-    setpreviewUrls((prev) => [...prev, ...newUrls]); // ✅ flatten
-    setImgFiles((prev) => [...prev, ...validFiles]); // ✅ flatten
-  }
+    const validFiles = selectedFiles.filter((file) =>
+      allowedTypes.includes(file.type)
+    );
+
+    if (validFiles.length === 0) {
+      alert("Only image formats allowed (JPEG, JPG, PNG, WEBP, AVIF)");
+      return;
+    }
+
+    const mapped = validFiles.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+    }));
+
+    setImages((prev) => [...prev, ...mapped]);
+  };
+
+
 
   //   function to remeve a file
-  const handleFileRemove = (file) => {
-    const removeFile = file.name;
-    setImgFiles((prev) => prev.filter((item) => item.name !== removeFile));
-    setpreviewUrls((prev) =>
-      prev.filter((url, index) => imgFiles[index].name !== removeFile)
+  function handleFileRemove(fileToRemove) {
+    setImages((prev) =>
+      prev.filter((item) => item.file.name !== fileToRemove.file.name)
     );
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+    form.append("heading", formData.title);
+    form.append("detail", formData.description);
+    form.append("category", formData.category);
+
+    images.forEach((img) => {
+      form.append("image", img.file);
+    });
+
+    try {
+      const res = await axios.post(
+        "https://munnar-backend.onrender.com/api/news",
+        form,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      alert("Uploaded Successfully!");
+      console.log(res.data);
+    } catch (error) {
+      console.error(error);
+      alert("Upload failed");
+    }
   };
+
 
   return (
     <>
@@ -48,104 +99,124 @@ const LiveInformationForm = () => {
         <div className="header">
           <h1 className="font-medium text-lg">Live Information</h1>
         </div>
+
         <div className="form-container w-[380px] mt-4">
-          <form className="space-y-4 relative h-[calc(100vh-120px)]">
+          <form className="space-y-4 relative h-[calc(100vh-120px)]" onSubmit={handleSubmit}>
+
+            {/* TITLE */}
             <div className="title-container">
               <h1 className="text-gray-800 font-medium mb-2">Title</h1>
-
               <input
                 type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
                 className="border border-gray-400 rounded px-3 py-2 w-full outline-none"
               />
             </div>
+
+            {/* IMAGE UPLOAD */}
             <div className="img-container">
               <h1 className="text-gray-800 font-medium mb-2">Image</h1>
 
-              {imgFiles.length !== 0 ? (
-                <div className="img-upload-container w-[100%] border border-gray-300 h-[70px] flex items-center gap-3  px-3 rounded mt-2">
-                  {imgFiles.map((item) => {
-                    const url = URL.createObjectURL(item);
-                    return (
-                      <div className="relative transition-all duration-300 group w-[80px] h-[60%]">
-                        <img
-                          src={url}
-                          alt="hotel"
-                          className="w-full h-full object-cover rounded-md"
-                        />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-md"></div>
-                        <X
-                          onClick={() => handleFileRemove(item)}
-                          className="text-white absolute cursor-pointer  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
-                          size={20}
-                        />
-                      </div>
-                    );
-                  })}
-                  <div className="button-container relative">
-                    <button className="bg-gray-100 cursor-pointer hover:bg-gray-200 w-[80px] h-[60%] rounded-lg flex items-center justify-center">
+              {images.length > 0 ? (
+                <div className="img-upload-container w-full border border-gray-300 h-[70px] flex items-center gap-3 px-3 rounded mt-2">
+                  {images.map((item) => (
+                    <div
+                      key={item.file.name}
+                      className="relative group w-[80px] h-[60%]"
+                    >
+                      <img
+                        src={item.url}
+                        alt="preview"
+                        className="w-full h-full object-cover rounded-md"
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition"></div>
+
+                      <X
+                        onClick={() => handleFileRemove(item)}
+                        className="absolute text-white cursor-pointer top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100"
+                        size={20}
+                      />
+                    </div>
+                  ))}
+
+                  {/* ADD MORE BUTTON */}
+                  {/* <div className="relative">
+                    <button
+                      type="button"
+                      className="bg-gray-100 hover:bg-gray-200 w-[80px] h-[60%] rounded-lg flex justify-center items-center"
+                    >
                       <Plus />
                     </button>
                     <input
                       type="file"
                       multiple
-                      onChange={(e) => {
-                        handleFilechange(e);
-                      }}
-                      className="absolute top-0 right-0 left-0 bottom-0 opacity-0 "
+                      onChange={handleFileChange}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
                     />
-                  </div>
+                  </div> */}
                 </div>
               ) : (
-                <div className="img-input-container  relative mt-2 bg-gray-50 border border-gray-200 rounded-lg text-sm px-4 w-[100%]">
-                  <UploadCloud className="text-gray-400 w-9 h-9 m-auto" />
-                  <h1 className="text-gray-700 text-center">
-                    <span className="text-blue-500">Click to upload</span> or
-                    drag and drop.
-                  </h1>
-                  <h1 className="text-gray-400 text-center">
-                    JPEG, JPG, PNG less than 5MB
-                  </h1>
+                <div className="img-input-container relative mt-2 bg-gray-50 border border-gray-200 rounded-lg text-sm px-4 w-full text-center py-4">
+                  <UploadCloud className="text-gray-400 w-9 h-9 mx-auto" />
+                  <p>
+                    <span className="text-blue-500">Click to upload</span> or drag & drop
+                  </p>
+                  <p className="text-gray-400">JPEG, PNG, WEBP, AVIF</p>
+
                   <input
                     type="file"
-                    accept=".jpeg, .jpg, .avif, .png"
                     multiple
-                    onChange={(e) => {
-                      handleFilechange(e);
-                    }}
-                    className="absolute top-0 right-0 left-0 bottom-0 opacity-0 "
+                    onChange={handleFileChange}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
                   />
                 </div>
               )}
             </div>
 
+            {/* DESCRIPTION */}
             <div className="description-container">
               <h1 className="text-gray-800 font-medium mb-2">Description</h1>
-
-              <textarea className="border max-h-[140px] border-gray-400 rounded px-3 py-2 w-full outline-none" />
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="border max-h-[140px] border-gray-400 rounded px-3 py-2 w-full outline-none"
+              />
             </div>
+
+            {/* CATEGORY */}
             <div className="input-container">
               <h1 className="text-gray-800 font-medium mb-2">Category</h1>
-              <select className="w-[100%] outline-none border rounded border-gray-400 py-2 px-3">
-                <option value="" disabled>
-                  Select Category
-                </option>
+
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                className="w-full outline-none border rounded border-gray-400 py-2 px-3"
+              >
+                <option value="" disabled>Select Category</option>
                 <option value="roadsAndtransportConditions">
                   Roads and Transport conditions
                 </option>
                 <option value="emergencyAlerts">Emergency Alerts</option>
                 <option value="localEventsAndFestivals">
-                  Local Events and festivals
+                  Local Events and Festivals
                 </option>
                 <option value="travelRestictionsAndHealthGuidelines">
                   Travel Restrictions & Health Guidelines
                 </option>
               </select>
             </div>
+
+            {/* SUBMIT */}
             <div className="btn-container flex justify-end absolute bottom-4 right-0">
-              <button className="text-white btn-green px-4 py-2 rounded cursor-pointer">
+              <button className="text-white b px-4 py-2 btn-green rounded cursor-pointer">
                 Update
               </button>
             </div>
+
           </form>
         </div>
       </section>
