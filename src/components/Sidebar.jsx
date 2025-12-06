@@ -2,10 +2,12 @@ import React from "react";
 import logo from "../assets/logo.svg";
 import man from "../assets/man.jpg";
 import {
+  Bus,
   BusFront,
   ChartSpline,
   ChevronLeft,
   ChevronRight,
+  Clock,
   Compass,
   Home,
   Hotel,
@@ -176,6 +178,24 @@ const Sidebar = () => {
                 } `}
             >
               Itnearies
+            </h1>
+          </Link>
+          <Link
+            to={"/BusTimings"}
+            className={`link-container ${location.pathname.toLowerCase().includes("timings")
+              ? "bg-white"
+              : ""
+              } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
+          >
+            <Clock
+              className={`text-gray-600 w-5 h-5 transition-all duration-300 ${isCollapsed ? "m-auto" : ""
+                } `}
+            />
+            <h1
+              className={`text-gray-900 transition-all duration-300 ${isCollapsed ? "hidden" : ""
+                } `}
+            >
+              Bus timings
             </h1>
           </Link>
           <Link

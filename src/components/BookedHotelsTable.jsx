@@ -216,9 +216,8 @@ const BookedHotelsTable = () => {
           >
             {status ? status : "Status"}{" "}
             <ChevronDown
-              className={`${
-                isStautusDropdown ? "rotate-180" : "rotate-0"
-              } transition-all duration-300 `}
+              className={`${isStautusDropdown ? "rotate-180" : "rotate-0"
+                } transition-all duration-300 `}
             />
           </button>
           {isStautusDropdown && (
@@ -283,11 +282,9 @@ const BookedHotelsTable = () => {
                 return (
                   <tr
                     key={index}
-                    className={` ${
-                      tableData.length - 1 == index ? "" : "border-b"
-                    }   border-gray-200 text-md text-[#333333]  ${
-                      index % 2 == 0 ? "bg-gray-50" : ""
-                    } `}
+                    className={` ${tableData.length - 1 == index ? "" : "border-b"
+                      }   border-gray-200 text-md text-[#333333]  ${index % 2 == 0 ? "bg-gray-50" : ""
+                      } `}
                   >
                     <td className="container-1 pl-2 py-3">
                       <div className="flex items-center gap-4">
@@ -308,11 +305,10 @@ const BookedHotelsTable = () => {
                     <td className="pl-3">{item.checkOut}</td>
                     <td className="pl-3">
                       <button
-                        className={`${
-                          item.status.toLowerCase() == "pending"
+                        className={`${item.status.toLowerCase() == "pending"
                             ? "text-rose-600  "
                             : "text-green-600 -white"
-                        } text-center py-1 rounded-lg `}
+                          } text-center py-1 rounded-lg `}
                       >
                         {item.status}
                       </button>

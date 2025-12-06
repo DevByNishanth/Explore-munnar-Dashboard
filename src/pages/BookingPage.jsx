@@ -7,6 +7,7 @@ import BookedHotelsTable from "../components/BookedHotelsTable";
 import CabBookingTable from "../components/CabBookingTable";
 import BookedBikeRentalsTable from "../components/BookedBikeRentalsTable";
 import SelfCarDrivingtable from "../components/SelfCarDrivingtable";
+import EnquiriesTable from "./EnquiriesTable";
 const BookingPage = () => {
   // context Data
   const { bookingSelectedTab, setSelectedTab } = useGeneralData();
@@ -75,6 +76,18 @@ const BookingPage = () => {
             >
               Self Car Driving
             </button>
+            <button
+              onClick={() => {
+                setSelectedTab("enquiries");
+              }}
+              className={`w-fit px-4 py-2 cursor-pointer ${
+                bookingSelectedTab.toLowerCase() == "enquiries"
+                  ? "font-medium bg-white shadow text-black rounded-full"
+                  : ""
+              }`}
+            >
+              Enquiries
+            </button>
           </div>
           {/* table-container  */}
           {console.log("selected tab : ", bookingSelectedTab)}
@@ -86,6 +99,9 @@ const BookingPage = () => {
             )}
             {bookingSelectedTab.toLowerCase() == "selfcardriving" && (
               <SelfCarDrivingtable />
+            )}
+            {bookingSelectedTab.toLowerCase() == "enquiries" && (
+              <EnquiriesTable/>
             )}
           </div>
         </div>
