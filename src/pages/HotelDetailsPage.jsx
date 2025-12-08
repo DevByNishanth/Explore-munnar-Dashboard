@@ -1,7 +1,7 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { Pencil, Trash, Trash2 } from "lucide-react";
+import { Edit, Pencil, Trash, Trash2 } from "lucide-react";
 import HotelPrevImgComponent from "./HotelPrevImgComponent";
 import HotelOverviewComponent from "./HotelOverviewComponent";
 import HotelPopularActivities from "../components/HotelPopularActivities";
@@ -23,9 +23,9 @@ const HotelDetailsPage = () => {
               Misty Hill Eco Retreat
             </h1>
             <div className="button-container flex gap-2 items-center">
-              <button className="btn-green text-white px-4 py-2 rounded cursor-pointer">
-                Edit
-              </button>
+              <Link to={`/hotels/addHotels/?editMode=${true}&hotelId=${id}`} className="btn-green flex items-center gap-2 text-white px-4 py-2 rounded cursor-pointer">
+                <Edit className="w-5 h-5" /> Edit
+              </Link>
               <button className="btn-brown flex items-center gap-2 text-white px-4 py-2 rounded cursor-pointer">
                 <Trash2 className="w-5 h-5" /> Delete
               </button>

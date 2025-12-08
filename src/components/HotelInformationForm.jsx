@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Plus, UploadCloud, X } from "lucide-react";
 import HotelAddModal from "./hotelAddModal";
 import AmenityFormModal from "./AmenityFormModal";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 const categoryData = [
   "Tents & Camping Grounds",
@@ -12,6 +13,11 @@ const categoryData = [
 ];
 
 const HotelInformationForm = () => {
+
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+
+
   // states
   const [imgFiles, setImgFiles] = useState([]);
   const [previewUrls, setpreviewUrls] = useState([]);
@@ -83,10 +89,10 @@ const HotelInformationForm = () => {
 
   return (
     <>
-      <section className="mt-4 px-6">
+      <section className="mt-4 px-6 ">
         <h1 className="font-medium text-lg ">Hotel Information</h1>
         <div className="form-main-container w-[100%] h-[calc(100vh-160px)] overflow-y-auto">
-          <div className="form-container mt-4 space-y-4 w-[80%]  pr-6">
+          <div className="form-container mt-4 space-y-4 w-[60%]  pr-6">
             <div className="img-container">
               <h1 className="text-gray-800 font-medium">Image</h1>
 
@@ -239,12 +245,45 @@ const HotelInformationForm = () => {
                 )}
               </div>
             </div>
+            <div className="price-container">
+              <h1 className="text-gray-800 font-medium">Price per night</h1>
+              <input type="number" className="hotelAddInput" />
+            </div>
+            <div className="price-container">
+              <h1 className="text-gray-800 font-medium">Rating</h1>
+              <input type="number" className="hotelAddInput" />
+            </div>
+            <div className="price-container">
+              <h1 className="text-gray-800 font-medium">Distance from center</h1>
+              <input type="text" className="hotelAddInput" />
+            </div>
+            <div className="price-container">
+              <h1 className="text-gray-800 font-medium">Location map link <span className="text-gray-400 font-light">(Iframe)</span></h1>
+              <input type="text" className="hotelAddInput" />
+            </div>
+            <div className="price-container">
+              <h1 className="text-gray-800 font-medium">Featured</h1>
+
+              <div className="input-container ml-4 mt-2 flex items-center gap-5">
+                <div className="flex gap-2 items-center">
+                  <input type="radio" className="scale-120 accent-amber-700" />
+                  <label className="text-gray-600">Yes</label>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <input type="radio" className="scale-120 accent-amber-700" />
+                  <label className="text-gray-600">No</label>
+                </div>
+              </div>
+            </div>
+
           </div>
+
         </div>
+
       </section>
 
 
-      {isAmenityModal && <AmenityFormModal setIsAmenityModal={setIsAmenityModal}/>}
+      {isAmenityModal && <AmenityFormModal setIsAmenityModal={setIsAmenityModal} />}
 
       {showModal && (
         <HotelAddModal
