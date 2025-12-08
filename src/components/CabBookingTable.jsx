@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import noData from '../assets/noData.svg'
+import axios from "axios";
 
 const tableheader = [
   "Customer Name",
@@ -359,6 +360,8 @@ const tableData = [
 ];
 
 const CabBookingTable = () => {
+  // Auth 
+  const apiUrl = import.meta.env.VITE_API_URL
 
   // states
   const [openDropDownIndex, setOpenDropdownIndex] = useState(null);
@@ -367,6 +370,8 @@ const CabBookingTable = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredData, setFilteredData] = useState([])
   const [selectedStatus, setSelectedStatus] = useState(null)
+  const [data, setData] = useState([]);
+  const [paginationData, setPaginationData] = useState({})
 
   // ref's
   const dropdownRef = useRef(null);
@@ -386,6 +391,10 @@ const CabBookingTable = () => {
   }, []);
 
   useEffect(() => {
+    fetchBookingData()
+  }, [])
+
+  useEffect(() => {
     handleSearch()
   }, [searchQuery])
 
@@ -399,23 +408,37 @@ const CabBookingTable = () => {
     setOpenDropdownIndex(openDropDownIndex == index ? null : index);
   };
 
-  const handleStatusChange = (index, newStatus) => {
-    const updatedData = [...tableData];
-    updatedData[index].status = newStatus;
-    // setTableData(updatedData);
-    setOpenDropdownIndex(null);
+  const handleStatusChange = async (item, newStatus,) => {
+
+    // const updatedData = [...tableData];
+    // updatedData[index].status = newStatus;
+    // // setTableData(updatedData);
+
+
+    try {
+      const response = await axios.put(`${apiUrl}/api/cab-booking/${item.id}`, {
+        status: newStatus
+      });
+      console.log("Response for status : ", response);
+      setOpenDropdownIndex(null);
+      fetchBookingData()
+    } catch (err) {
+      console.error("Error occured while changing status : ", err.message)
+    }
+
   };
+
 
 
   // Search handler ----------------->
   const handleSearch = () => {
     if (searchQuery == "") {
-      setFilteredData(tableData);
+      setFilteredData(data);
       return;
     }
-    const filteredData = tableData.filter((item) => {
+    const filteredData = data.filter((item) => {
       return (
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+        item.user_name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     });
     setFilteredData(filteredData);
@@ -427,12 +450,41 @@ const CabBookingTable = () => {
     if (status == null) {
       return;
     } else if (status.toLowerCase() == "all") {
-      setFilteredData(tableData);
+      setFilteredData(data);
       return;
     }
-    const filteredData = tableData.filter(item => item.status.toLowerCase() == status.toLowerCase())
+    const filteredData = data.filter(item => item.status.toLowerCase() == status.toLowerCase())
     setFilteredData(filteredData)
   }
+
+  async function fetchBookingData() {
+    try {
+      const res = await axios.post(`${apiUrl}/api/cab-booking-list`, {
+        "limit": 10,
+        "page": 1,
+        "userName": "test user",
+        "status": status
+      })
+      console.log("response for cab booking table : ", res.data.data.data)
+
+      setData(res.data.data.data);
+      setFilteredData(res.data.data.data);
+      setPaginationData(res.data.data.pagination)
+    } catch (err) {
+      console.error("error occured while fetching bike rentals booking data : ", err.message)
+    }
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
+  }
+
 
   return (
     <>
@@ -512,14 +564,14 @@ const CabBookingTable = () => {
                       }   border-gray-200 text-md text-[#333333]  ${index % 2 == 0 ? "bg-gray-50" : ""
                       } `}
                   >
-                    <td className="pl-3 py-2">{item.name}</td>
-                    <td className="pl-3">{item.from}</td>
-                    <td className="pl-3">{item.to}</td>
-                    <td className="pl-3">{item.phone}</td>
-                    <td className="pl-3">{item.date}</td>
+                    <td className="pl-3 py-2">{item.user_name}</td>
+                    <td className="pl-3">{item.pickup_point}</td>
+                    <td className="pl-3">{item.drop_point}</td>
+                    <td className="pl-3">{item.mobile_number}</td>
+                    <td className="pl-3">{formatDate(item.date)}</td>
                     <td className="pl-3">{item.time}</td>
-                    <td className="pl-3">{item.passengerCount}</td>
-                    <td className="pl-3">{item.vehicleType}</td>
+                    <td className="pl-3">{item.no_of_passengers}</td>
+                    <td className="pl-3">{item.vehicle_type}</td>
                     <td className="pl-3 py-2">
                       <div className="relative">
                         <button
@@ -541,20 +593,20 @@ const CabBookingTable = () => {
                           <div className="absolute top-full shadow-lg shadow-gray-400 rounded left-0 bg-white w-[120px] z-10 ">
                             <button
                               className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
-                              onClick={() => handleStatusChange(index, "Pending")}
+                              onClick={() => handleStatusChange(item, "Pending")}
                             >
                               Pending
                             </button>
                             <button
                               className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
-                              onClick={() => handleStatusChange(index, "Booked")}
+                              onClick={() => handleStatusChange(item, "Booked")}
                             >
                               Booked
                             </button>
                             <button
                               className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
                               onClick={() => {
-                                handleStatusChange(index, "Canceled");
+                                handleStatusChange(item, "Canceled");
                               }}
                             >
                               Canceled

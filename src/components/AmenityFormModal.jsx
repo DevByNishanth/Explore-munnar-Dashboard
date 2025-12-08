@@ -69,10 +69,12 @@ const amenitiesData = [
 ];
 
 
-const AmenityFormModal = ({setIsAmenityModal}) => {
+const AmenityFormModal = ({ setIsAmenityModal, setForm }) => {
+
   // states 
   const [selectedTab, setSelectedTab] = useState("Room")
   const [formData, setFormData] = useState([])
+  const [data, setData] = useState([]);
 
   // useEffect call's 
 
@@ -83,14 +85,42 @@ const AmenityFormModal = ({setIsAmenityModal}) => {
     setFormData(filteredData[0].title)
   }, [selectedTab])
 
+  // functions 
+  const handleCheck = (item) => {
+    setData(prev => {
+      const existingData = prev[selectedTab]?.data || []; // get the array inside the object
+
+      let updatedArray;
+
+      // If already selected → remove it
+      if (existingData.includes(item)) {
+        updatedArray = existingData.filter(i => i !== item);
+      }
+      // If not selected → add it
+      else {
+        updatedArray = [...existingData, item];
+      }
+
+      return {
+        ...prev,
+        [selectedTab]: {
+          title: selectedTab,
+          data: updatedArray
+        }
+      };
+    });
+  };
+
+
+  console.log("Data : ", data)
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/30"></div>
-      <section className="bg-white w-[45%] p-3 rounded-lg absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+      <div className="fixed inset-0 bg-black/40 z-30"></div>
+      <section className="bg-white w-[45%] p-3 rounded-lg absolute top-[50%] z-40 left-[50%] translate-x-[-50%] translate-y-[-50%]">
         <header className='border-ddb border-gray-400 pb- px-4  flex items-center justify-between'>
           <h1 className='font-medium text-xl'>Add Amenities</h1>
-          <div onClick={()=>setIsAmenityModal(false)} className="icon-container cursor-pointer bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center">
+          <div onClick={() => setIsAmenityModal(false)} className="icon-container cursor-pointer bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center">
             <X className='text-gray-800 ' />
           </div>
         </header>
@@ -169,7 +199,7 @@ const AmenityFormModal = ({setIsAmenityModal}) => {
         <div className="input-conatiner mt-6 min-h-[180px] mx-4">
           {formData.map((item, index) => {
             return <div className="input flex items-center gap-2 mb-2">
-              <input type="checkbox" className='scale-120 accent-amber-700' />
+              <input type="checkbox" className='scale-120 accent-amber-700' onChange={() => handleCheck(item)} />
               <h1>{item}</h1>
             </div>
           })}

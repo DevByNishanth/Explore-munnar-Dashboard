@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import noDataFound from "../assets/noData.svg";
+import axios from "axios";
 
 const tableheader = [
   "Name",
@@ -358,12 +359,17 @@ const tableData = [
   },
 ];
 const BookedBikeRentalsTable = () => {
+  // Auth 
+  const apiUrl = import.meta.env.VITE_API_URL
+
   // states
   const [openDropDownIndex, setOpenDropdownIndex] = useState(null);
   const [status, setStatus] = useState(null);
   const [isStautusDropdown, setIsStatusDropdown] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [data, setData] = useState([]);
+  const [paginationData, setPaginationData] = useState({})
 
   // ref's
   const dropdownRef = useRef(null);
@@ -371,8 +377,15 @@ const BookedBikeRentalsTable = () => {
   // useEffect's
 
   useEffect(() => {
+    fetchBookingData()
+  }, [])
+
+
+  useEffect(() => {
     handleSearch();
   }, [searchTerm]);
+
+
 
   useEffect(() => {
     handlerFilter();
@@ -397,21 +410,51 @@ const BookedBikeRentalsTable = () => {
     setOpenDropdownIndex(openDropDownIndex == index ? null : index);
   };
 
-  const handleStatusChange = (index, newStatus) => {
-    const updatedData = [...tableData];
-    updatedData[index].status = newStatus;
-    // setTableData(updatedData);
-    setOpenDropdownIndex(null);
+  async function fetchBookingData() {
+    try {
+      const res = await axios.post(`${apiUrl}/api/bike-rentals-list`, {
+        "limit": 10,
+        "page": 1,
+        "userName": "test user",
+        "status": status
+      })
+      // console.log("response : ", res.data.data.data)
+      setData(res.data.data.data);
+      setFilteredData(res.data.data.data);
+      setPaginationData(res.data.data.pagination)
+    } catch (err) {
+      console.error("error occured while fetching bike rentals booking data : ", err.message)
+    }
+  }
+
+  const handleStatusChange = async (item, newStatus,) => {
+
+    // const updatedData = [...tableData];
+    // updatedData[index].status = newStatus;
+    // // setTableData(updatedData);
+
+
+    try {
+      const response = await axios.put(`${apiUrl}/api/bike-rentals/${item.id}`, {
+        status: newStatus
+      });
+      console.log("Response for status : ", response);
+      setOpenDropdownIndex(null);
+      fetchBookingData()
+    } catch (err) {
+      console.error("Error occured while changing status : ", err.message)
+    }
+
   };
 
   // search by name function
   const handleSearch = () => {
     console.log("search functionality : ", searchTerm);
     if (searchTerm == "") {
-      setFilteredData(tableData);
+      setFilteredData(data);
       return;
     }
-    const filteredData = tableData.filter((item) =>
+    const filteredData = data.filter((item) =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredData(filteredData);
@@ -423,14 +466,15 @@ const BookedBikeRentalsTable = () => {
     if (status == null) {
       return;
     } else if (status.toLowerCase() == "all") {
-      setFilteredData(tableData);
+      setFilteredData(data);
       return;
     }
-    const filteredData = tableData.filter(
+    const filteredData = data.filter(
       (item) => item.status.toLowerCase() == status.toLowerCase()
     );
     setFilteredData(filteredData);
   };
+
 
   return (
     <>
@@ -454,9 +498,8 @@ const BookedBikeRentalsTable = () => {
               >
                 {status ? status : "Status"}{" "}
                 <ChevronDown
-                  className={`${
-                    isStautusDropdown ? "rotate-180" : "rotate-0"
-                  } transition-all duration-300 `}
+                  className={`${isStautusDropdown ? "rotate-180" : "rotate-0"
+                    } transition-all duration-300 `}
                 />
               </button>
               {isStautusDropdown && (
@@ -522,11 +565,9 @@ const BookedBikeRentalsTable = () => {
                   return (
                     <tr
                       key={index}
-                      className={` ${
-                        tableData.length - 1 == index ? "" : "border-b"
-                      }   border-gray-200 text-md text-[#333333]  ${
-                        index % 2 == 0 ? "bg-gray-50" : ""
-                      } `}
+                      className={` ${tableData.length - 1 == index ? "" : "border-b"
+                        }   border-gray-200 text-md text-[#333333]  ${index % 2 == 0 ? "bg-gray-50" : ""
+                        } `}
                     >
                       <td className="pl-3 py-2">{item.name}</td>
                       <td className="pl-3">{item.from}</td>
@@ -540,19 +581,17 @@ const BookedBikeRentalsTable = () => {
                         <div className="relative">
                           <button
                             onClick={() => handleStatusClick(index)}
-                            className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${
-                              item.status.toLowerCase() == "pending"
-                                ? "px-2 py-1  text-black bg-red-200 "
-                                : item.status.toLowerCase() == "booked"
+                            className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${item.status.toLowerCase() == "pending"
+                              ? "px-2 py-1  text-black bg-red-200 "
+                              : item.status.toLowerCase() == "booked"
                                 ? " bg-green-200 text-black px-2 py-1 "
                                 : "bg-gray-200 px-2 py-1  text-black"
-                            }`}
+                              }`}
                           >
                             {item.status}
                             <ChevronDown
-                              className={`cursor-pointer transition-all duration-300 ${
-                                openDropDownIndex == index ? "rotate-180" : ""
-                              } `}
+                              className={`cursor-pointer transition-all duration-300 ${openDropDownIndex == index ? "rotate-180" : ""
+                                } `}
                             />
                           </button>
                           {openDropDownIndex == index && (
@@ -560,7 +599,7 @@ const BookedBikeRentalsTable = () => {
                               <button
                                 className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
                                 onClick={() =>
-                                  handleStatusChange(index, "Pending")
+                                  handleStatusChange(item, "Pending")
                                 }
                               >
                                 Pending
@@ -568,7 +607,7 @@ const BookedBikeRentalsTable = () => {
                               <button
                                 className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
                                 onClick={() =>
-                                  handleStatusChange(index, "Booked")
+                                  handleStatusChange(item, "Booked")
                                 }
                               >
                                 Booked
@@ -576,7 +615,7 @@ const BookedBikeRentalsTable = () => {
                               <button
                                 className="hover:bg-gray-100 text-left cursor-pointer w-[100%] px-2 py-2"
                                 onClick={() => {
-                                  handleStatusChange(index, "Canceled");
+                                  handleStatusChange(item, "Canceled");
                                 }}
                               >
                                 Canceled
