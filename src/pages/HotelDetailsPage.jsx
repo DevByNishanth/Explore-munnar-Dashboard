@@ -23,12 +23,13 @@ const HotelDetailsPage = () => {
               Misty Hill Eco Retreat
             </h1>
             <div className="button-container flex gap-2 items-center">
-              <button className="btn-brown text-white px-4 py-2 rounded cursor-pointer">
-                Delete Hotel
-              </button>
-              {/* <button className="btn-green text-white px-4 py-2 rounded cursor-pointer">
+              <button className="btn-green text-white px-4 py-2 rounded cursor-pointer">
                 Edit
-              </button> */}
+              </button>
+              <button className="btn-brown flex items-center gap-2 text-white px-4 py-2 rounded cursor-pointer">
+                <Trash2 className="w-5 h-5" /> Delete
+              </button>
+
             </div>
           </div>
           <div className="hero-section mt-8 h-[calc(100vh-100px)] overflow-auto pr-4">

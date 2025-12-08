@@ -91,6 +91,7 @@ export default function ActivityForm() {
 
     // Send request
     try {
+      console.log("posting")
       const res = await fetch("https://munnar-backend.onrender.com/api/activity", {
         method: "POST",
         body: fd,
@@ -99,7 +100,7 @@ export default function ActivityForm() {
       const data = await res.json();
       console.log("Success:", data);
     } catch (err) {
-      console.error(err);
+      console.error(err.message);
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Link } from "react-router-dom";
 import { ChevronRight, Plus } from "lucide-react";
@@ -6,6 +6,7 @@ import newsImg from "../assets/newsImg.jpeg";
 import newsImg2 from "../assets/newsImg2.jpeg";
 import newsImg3 from "../assets/newsImg3.jpeg";
 import NewsPreview from "../components/NewsPreview";
+import axios from "axios";
 const liveInformationData = [
   {
     img: newsImg,
@@ -39,9 +40,32 @@ const liveInformationData = [
   },
 ];
 const LiveInformationPage = () => {
+  // Auth 
+  const apiUrl = import.meta.env.VITE_API_URL
+
+
   // states
   const [news, setNews] = useState(null);
   const [isPreviewModal, setIsPreviewModal] = useState(false);
+  const [data, setData] = useState([])
+
+  // handling sideEffects 
+  useEffect(() => {
+    fetchLiveInfo()
+  }, [])
+
+  // functions 
+  const fetchLiveInfo = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/news`);
+      console.log("Live information fetched successfully : ", response.data.data)
+      setData(response.data.data)
+    } catch (error) {
+      console.error("Error occured while fetching live information : ", error.message)
+    }
+  }
+
+
   return (
     <>
       <section className="flex items-start">
@@ -60,23 +84,24 @@ const LiveInformationPage = () => {
             </Link>
           </div>
           <div className="news-container mt-6 grid grid-cols-3 gap-4 max-h-[calc(100vh-120px)] overflow-auto">
-            {liveInformationData.map((item, index) => {
+            {data.map((item, index) => {
               return (
                 <div
                   onClick={() => {
                     setNews(item);
                     setIsPreviewModal(true);
                   }}
-                  className="news-card w-full p-2 hover:shadow cursor-pointer rounded-lg shadow-gray-400"
+                  className="news-card border border-gray-300 h-[340px] w-full p-2 hover:shadow cursor-pointer rounded-lg shadow-gray-400"
                 >
                   <img
-                    src={item.img}
+                    src={item.imageUrl}
+                    alt="News Image"
                     className="w-[100%] object-cover rounded-lg h-[180px]"
                   />
                   <div className="content-container mt-2">
-                    <h1 className="font-medium text-xl">{item.title}</h1>
+                    <h1 className="font-medium text-xl">{item.heading}</h1>
                     <p className="description mt-2 text-gray-600 text-justify text-[16px]">
-                      {item.description.slice(0, 100)}...
+                      {item.detail.slice(0, 100)}...
                     </p>
                   </div>
                 </div>

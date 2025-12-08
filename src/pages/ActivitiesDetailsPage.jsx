@@ -1,32 +1,69 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import { Link, useParams } from 'react-router-dom'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Edit, Trash2 } from 'lucide-react'
 import ac1 from '../assets/a1.svg'
 import ac2 from '../assets/a2.svg'
 import ac3 from '../assets/a3.svg'
 import locationImg from '../assets/locationImg.svg'
+import BusTimingsActionPopup from '../components/BusTimingsActionPopup'
+import axios from 'axios'
+
 const data = {
     img: { img1: ac1, img2: ac2, img3: ac3 },
     category: "Regular activity",
     type: "Boating & Lake Tours",
 };
 const ActivitiesDetailsPage = () => {
+    // Auth 
+    const apiUrl = import.meta.env.VITE_API_URL
 
     // params 
     const { id } = useParams()
+
+    // states 
+    const [isDeleteModal, setIsDeleteModal] = useState(false)
+    const [selectedActivityId, setSelectedActivityId] = useState(null)
+
+
+    // functions 
+    function onclose() {
+        setIsDeleteModal(false)
+    }
+
+    async function handleDelete() {
+        try {
+            const response = await axios.delete(`${apiUrl}/api/activity/${id}`);
+            console.log("Activity Deleted Successfully..", response);
+            setIsDeleteModal(false);
+            setSelectedActivityId(null)
+        } catch (err) {
+            console.error("Error while deleting Activity : ", err.message);
+            setIsDeleteModal(false)
+            setSelectedActivityId(null)
+        }
+    }
     return (
         <>
             <section className="flex items-start">
                 <Sidebar />
                 <div className="main-container px-6 mt-4 w-[100%] " >
                     {/* Breadcrumb  ------------------------------------------  */}
-                    <div className="breadcrumbs-section flex justify-between">
+                    <div className="breadcrumbs-section flex items-center pb-2 justify-between">
                         <h1 className="flex items-center text-gray-600">
                             <Link to="/activities">Activities</Link> <ChevronRight />
                             <span className="font-medium text-black">Activity</span>
                         </h1>
-                        <button className='bg-[#AF4300] text-white cursor-pointer px-3 py-2 rounded-md'>Delete</button>
+                        <div className="btn-container flex gap-3 items-center ">
+
+                            <button className='btn-green text-white flex items-center gap-2 cursor-pointer px-4 py-2 rounded-md'>
+                                <Edit className='w-4 h-4 text-white' />
+                                Edit</button>
+                            <button onClick={() => setIsDeleteModal(true)} className='bg-[#AF4300] text-white cursor-pointer px-3 py-2 flex items-center gap-2 rounded-md'>
+                                <Trash2 className='w-4 h-4 text-white' />
+                                Delete</button>
+                        </div>
+
                     </div>
 
                     <div className="main-container max-h-[calc(100vh-70px)] overflow-auto">
@@ -76,6 +113,7 @@ const ActivitiesDetailsPage = () => {
 
                 </div>
             </section>
+            {isDeleteModal && <BusTimingsActionPopup onclose={onclose} handleDelete={handleDelete} />}
         </>
     )
 }

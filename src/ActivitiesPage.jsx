@@ -6,6 +6,7 @@ import SeasonalActivitesCard from "./components/SeasonalActivitesCard";
 import activityImg1 from "./assets/activityImg1.jpg";
 import activityImg2 from "./assets/activityImg2.jpg";
 import activityImg3 from "./assets/activityImg3.jpeg";
+import axios from "axios";
 
 const allData = [
   {
@@ -107,11 +108,31 @@ const allData = [
 ];
 
 const ActivitiesPage = () => {
+  // Auth 
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   // states
   const [bookingSelectedTab, setSelectedTab] = useState("seasonalactivities");
   const [formatedData, setFormatedData] = useState(null);
 
   // useEffect call's
+
+  useEffect(() => {
+    async function fetchActivities() {
+      try {
+        const response = await axios.post(`${apiUrl}/api/activities-list`, {
+          search: "",
+          pageNumber: 1,
+          category: "all",
+          type: ""
+        });
+        console.log("activity list : ", response)
+      } catch (err) {
+        console.error("Error occured while fetching acitvities list : ", err.message || err)
+      }
+    }
+    fetchActivities()
+  }, [])
 
   useEffect(() => {
     handleCardRendering();
@@ -141,6 +162,8 @@ const ActivitiesPage = () => {
     2. Trigger the Card and just pass the formated(filtered) data to the card component 
         
     */
+
+
   return (
     <>
       <section className="flex items-start">
@@ -162,11 +185,10 @@ const ActivitiesPage = () => {
           {/* tabs */}
           <div className="tab-container  w-fit px-2 py-2 border-b-gray-200 bg-gray-100 rounded-full mt-6 flex gap-2 text-gray-400">
             <button
-              className={`w-fit px-4 py-2 cursor-pointer ${
-                bookingSelectedTab.toLowerCase() == "all"
-                  ? "font-medium bg-white shadow text-black rounded-full"
-                  : ""
-              }`}
+              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab.toLowerCase() == "all"
+                ? "font-medium bg-white shadow text-black rounded-full"
+                : ""
+                }`}
               onClick={() => {
                 setSelectedTab("all");
               }}
@@ -174,11 +196,10 @@ const ActivitiesPage = () => {
               All
             </button>
             <button
-              className={`w-fit px-4 py-2 cursor-pointer ${
-                bookingSelectedTab.toLowerCase() == "seasonalactivities"
-                  ? "font-medium bg-white shadow text-black rounded-full"
-                  : ""
-              }`}
+              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab.toLowerCase() == "seasonalactivities"
+                ? "font-medium bg-white shadow text-black rounded-full"
+                : ""
+                }`}
               onClick={() => {
                 setSelectedTab("seasonalactivities");
               }}
@@ -189,11 +210,10 @@ const ActivitiesPage = () => {
               onClick={() => {
                 setSelectedTab("regularActivities");
               }}
-              className={`w-fit px-4 py-2 cursor-pointer  ${
-                bookingSelectedTab.toLowerCase() == "regularactivities"
-                  ? "font-medium bg-white shadow text-black rounded-full"
-                  : ""
-              }`}
+              className={`w-fit px-4 py-2 cursor-pointer  ${bookingSelectedTab.toLowerCase() == "regularactivities"
+                ? "font-medium bg-white shadow text-black rounded-full"
+                : ""
+                }`}
             >
               Regular Activities
             </button>
