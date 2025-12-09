@@ -12,26 +12,26 @@ const categoryData = [
   "Boutique Resorts & Hotels",
 ];
 
-const HotelInformationForm = () => {
+const HotelInformationForm = ({ setFormData, formData }) => {
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
 
 
   // states
-  const [formData, setFormData] = useState({
-    name: "",
-    images: [],
-    description: "",
-    pricePerNight: "",
-    rating: "",
-    distanceFromCenter: "",
-    stayType: "",
-    location: "",
-    isFeatured: "",
-    amenities: [],
-    experiences: [] // popular faciliteis 
-  })
+  // const [formData, setFormData] = useState({
+  //   name: "",
+  //   images: [],
+  //   description: "",
+  //   pricePerNight: "",
+  //   rating: "",
+  //   distanceFromCenter: "",
+  //   stayType: "",
+  //   location: "",
+  //   isFeatured: "",
+  //   amenities: [],
+  //   experiences: [] // popular faciliteis 
+  // })
   const [imgFiles, setImgFiles] = useState([]);
   const [previewUrls, setpreviewUrls] = useState([]);
   const [showModal, setShowModal] = useState(false);
