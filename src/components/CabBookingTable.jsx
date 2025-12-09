@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import noData from '../assets/noData.svg'
 import axios from "axios";
+import LoadingPage from "../pages/LoadingPage";
 
 const tableheader = [
   "Customer Name",
@@ -363,7 +364,7 @@ const CabBookingTable = () => {
   // Auth 
   const apiUrl = import.meta.env.VITE_API_URL
 
-  // states
+  // states 
   const [openDropDownIndex, setOpenDropdownIndex] = useState(null);
   const [isStautusDropdown, setIsStatusDropdown] = useState(false);
   const [status, setStatus] = useState(null);
@@ -372,6 +373,7 @@ const CabBookingTable = () => {
   const [selectedStatus, setSelectedStatus] = useState(null)
   const [data, setData] = useState([]);
   const [paginationData, setPaginationData] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
 
   // ref's
   const dropdownRef = useRef(null);
@@ -459,6 +461,7 @@ const CabBookingTable = () => {
 
   async function fetchBookingData() {
     try {
+      setIsLoading(true)
       const res = await axios.post(`${apiUrl}/api/cab-booking-list`, {
         "limit": 10,
         "page": 1,
@@ -470,7 +473,9 @@ const CabBookingTable = () => {
       setData(res.data.data.data);
       setFilteredData(res.data.data.data);
       setPaginationData(res.data.data.pagination)
+      setIsLoading(false)
     } catch (err) {
+      setIsLoading(false)
       console.error("error occured while fetching bike rentals booking data : ", err.message)
     }
   }
@@ -627,6 +632,8 @@ const CabBookingTable = () => {
           </tbody>
         </table>
       </section>
+      {isLoading && <LoadingPage />}
+
     </>
   );
 };

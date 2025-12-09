@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import noDataFound from "../assets/noData.svg";
 import axios from "axios";
+import LoadingPage from "../pages/LoadingPage";
 
 const tableheader = [
   "Name",
@@ -370,6 +371,7 @@ const BookedBikeRentalsTable = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [data, setData] = useState([]);
   const [paginationData, setPaginationData] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
 
   // ref's
   const dropdownRef = useRef(null);
@@ -411,6 +413,8 @@ const BookedBikeRentalsTable = () => {
   };
 
   async function fetchBookingData() {
+    setIsLoading(true)
+
     try {
       const res = await axios.post(`${apiUrl}/api/bike-rentals-list`, {
         "limit": 10,
@@ -422,7 +426,10 @@ const BookedBikeRentalsTable = () => {
       setData(res.data.data.data);
       setFilteredData(res.data.data.data);
       setPaginationData(res.data.data.pagination)
+      setIsLoading(false)
+
     } catch (err) {
+      setIsLoading(false)
       console.error("error occured while fetching bike rentals booking data : ", err.message)
     }
   }
@@ -641,6 +648,8 @@ const BookedBikeRentalsTable = () => {
           </table>
         </section>
       </section>
+      {isLoading && <LoadingPage />}
+
     </>
   );
 };

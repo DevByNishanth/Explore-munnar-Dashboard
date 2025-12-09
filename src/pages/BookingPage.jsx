@@ -8,6 +8,7 @@ import CabBookingTable from "../components/CabBookingTable";
 import BookedBikeRentalsTable from "../components/BookedBikeRentalsTable";
 import SelfCarDrivingtable from "../components/SelfCarDrivingtable";
 import EnquiriesTable from "./EnquiriesTable";
+
 const BookingPage = () => {
   // context Data
   const { bookingSelectedTab, setSelectedTab } = useGeneralData();

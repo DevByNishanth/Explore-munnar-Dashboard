@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import noDataFound from "../assets/noData.svg";
 import axios from "axios";
+import LoadingPage from "../pages/LoadingPage";
 
 const tableheader = [
   "Name",
@@ -70,6 +71,7 @@ const SelfCarDrivingtable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]);
   const [paginationData, setPaginationData] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
 
 
   // ref's
@@ -158,6 +160,8 @@ const SelfCarDrivingtable = () => {
   };
 
   async function fetchBookingData() {
+    setIsLoading(true)
+
     try {
       const res = await axios.post(`${apiUrl}/api/self-drive-list`, {
         "limit": 10,
@@ -170,7 +174,10 @@ const SelfCarDrivingtable = () => {
       setData(res.data.data.data);
       setFilteredData(res.data.data.data);
       setPaginationData(res.data.data.pagination)
+      setIsLoading(false)
+
     } catch (err) {
+      setIsLoading(false)
       console.error("error occured while fetching bike rentals booking data : ", err.message)
     }
   }
@@ -346,6 +353,8 @@ const SelfCarDrivingtable = () => {
           </tbody>
         </table>
       </section>
+      {isLoading && <LoadingPage />}
+
     </section>
   );
 };
