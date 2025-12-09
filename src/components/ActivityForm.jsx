@@ -23,7 +23,7 @@ export default function ActivityForm() {
   const [mapImage, setMapImage] = useState(null);            // map image
 
 
-  const activityTypes = ["Seasonal Activity", "Regular Activity"];
+  const activityTypes = ["Seasonal Activities", "Regular Activities"];
 
   const categories = [
     "Boating & Lake Tours",
@@ -219,9 +219,9 @@ export default function ActivityForm() {
       <div className="space-y-1">
         <label className="font-medium">Category</label>
         <select
-          name="category"
+          name="type"
           className="w-full border px-3 py-2 rounded-md focus:outline-none"
-          value={formData.category}
+          value={formData.type}
           onChange={handleChange}
         >
           <option value="">Select category</option>
@@ -235,9 +235,9 @@ export default function ActivityForm() {
       <div className="space-y-1">
         <label className="font-medium">Activity Type</label>
         <select
-          name="type"
+          name="category"
           className="w-full border px-3 py-2 rounded-md focus:outline-none"
-          value={formData.type}
+          value={formData.category}
           onChange={handleChange}
         >
           <option value="">Select type</option>
