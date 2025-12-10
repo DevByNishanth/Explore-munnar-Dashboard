@@ -24,11 +24,11 @@ const ActivitiesDetailsPage = () => {
     // states 
     const [isDeleteModal, setIsDeleteModal] = useState(false)
     const [selectedActivityId, setSelectedActivityId] = useState(null)
-
+    const [isLoading, setIsLoading] = useState(false)
 
     // functions 
-    function onclose() {
-        setIsDeleteModal(false)
+    async function onclose() {
+        setIsDeleteModal(false);
     }
 
     async function handleDelete() {

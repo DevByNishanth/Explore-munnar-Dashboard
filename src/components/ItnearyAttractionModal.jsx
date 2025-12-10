@@ -4,8 +4,8 @@ import addspot from '../assets/addSpot.svg'
 const ItnearyAttractionModal = ({ setIsModal }) => {
     // states 
     const [spots, setSpots] = useState([{ value: "" }]);
-    
-    
+
+
     // functions 
     const handleAddInput = () => {
         setSpots(prev => [...prev, { value: "" }])
@@ -28,9 +28,10 @@ const ItnearyAttractionModal = ({ setIsModal }) => {
 
 
     return (
+        
         <>
             <div className="fixed inset-0 bg-black/40 z-40"></div>
-            <section className='bg-white w-[40%] max-h-[calc(100vh-70px)] overflow-auto z-50 pb-2 absolute rounded-lg top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
+            <section className='bg-white w-[50%] max-h-[calc(100vh-70px)] overflow-auto z-50 pb-2 absolute rounded-lg top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
                 {/* header  */}
                 <div className="header sticky top-0 bg-white z-10 flex items-start justify-between gap-4 px-6 py-4 border-b border-gray-200">
                     <div className='flex items-center gap-4'>

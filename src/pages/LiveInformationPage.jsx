@@ -7,6 +7,8 @@ import newsImg2 from "../assets/newsImg2.jpeg";
 import newsImg3 from "../assets/newsImg3.jpeg";
 import NewsPreview from "../components/NewsPreview";
 import axios from "axios";
+import LoadingPage from '../pages/LoadingPage'
+
 const liveInformationData = [
   {
     img: newsImg,
@@ -48,6 +50,7 @@ const LiveInformationPage = () => {
   const [news, setNews] = useState(null);
   const [isPreviewModal, setIsPreviewModal] = useState(false);
   const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false)
 
   // handling sideEffects 
   useEffect(() => {
@@ -56,11 +59,14 @@ const LiveInformationPage = () => {
 
   // functions 
   const fetchLiveInfo = async () => {
+    setLoading(true)
     try {
       const response = await axios.get(`${apiUrl}/api/news`);
       console.log("Live information fetched successfully : ", response.data.data)
-      setData(response.data.data)
+      setData(response.data.data);
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       console.error("Error occured while fetching live information : ", error.message)
     }
   }
@@ -113,6 +119,7 @@ const LiveInformationPage = () => {
       {isPreviewModal && (
         <NewsPreview news={news} setIsPreviewModal={setIsPreviewModal} />
       )}
+      {loading && <LoadingPage />}
     </>
   );
 };

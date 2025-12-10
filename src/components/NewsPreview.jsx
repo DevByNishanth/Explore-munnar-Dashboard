@@ -1,7 +1,13 @@
-import { Trash2 } from "lucide-react";
-import React from "react";
+import { Trash2, UserStar } from "lucide-react";
+import React, { useState } from "react";
+import BusTimingsActionPopup from "./BusTimingsActionPopup";
 
 const NewsPreview = ({ news, setIsPreviewModal }) => {
+  const [isDelete, setIsDelete] = useState(false);
+
+  function onclose() {
+    setIsDelete(false)
+  }
   return (
     <>
       <div
@@ -24,12 +30,14 @@ const NewsPreview = ({ news, setIsPreviewModal }) => {
           })}
         </div>
         <div className="btn-container flex justify-end">
-          <button className="bg-amber-700 flex items-center gap-2 text-white px-4 py-2 rounded-md cursor-pointer">
-              <Trash2 className="text-white w-5 h-5"/>
+          <button onClick={() => setIsDelete(true)} className="bg-amber-700 flex items-center gap-2 text-white px-4 py-2 rounded-md cursor-pointer">
+            <Trash2 className="text-white w-5 h-5" />
             Delete
           </button>
         </div>
       </section>
+      {isDelete && <BusTimingsActionPopup onclose={onclose} />}
+
     </>
   );
 };
