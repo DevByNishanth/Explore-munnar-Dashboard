@@ -144,7 +144,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
     }));
   };
 
-  console.log("form data : ", formData)
+  // console.log("form data : ", formData)
 
 
   const handleInputChange = (e) => {

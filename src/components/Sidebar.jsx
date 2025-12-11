@@ -24,7 +24,7 @@ import { Link, useLocation } from "react-router-dom";
 const Sidebar = () => {
   // router dom hooks
   const location = useLocation();
-  console.log("location : ", location.pathname);
+  // console.log("location : ", location.pathname);
 
   // context
   const { setIsCollapsed, isCollapsed } = useGeneralData();

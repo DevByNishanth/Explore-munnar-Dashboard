@@ -81,7 +81,7 @@ body {
 }
 .tint-blur {
   background-color: rgba(255, 255, 255, 0.329);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(4px);
 }
 
 

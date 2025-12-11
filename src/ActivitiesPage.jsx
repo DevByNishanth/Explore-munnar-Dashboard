@@ -112,8 +112,10 @@ const ActivitiesPage = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
 
   // states
-  const [bookingSelectedTab, setSelectedTab] = useState("seasonalactivities");
+  const [data, setData] = useState([])
+  const [bookingSelectedTab, setSelectedTab] = useState("Seasonal Activities");
   const [formatedData, setFormatedData] = useState(null);
+
 
   // useEffect call's
 
@@ -123,46 +125,39 @@ const ActivitiesPage = () => {
         const response = await axios.post(`${apiUrl}/api/activities-list`, {
           search: "",
           pageNumber: 1,
-          category: "all",
+          category: bookingSelectedTab,
           type: ""
         });
-        console.log("activity list : ", response)
+        // console.log("activity list : ", response);
+        setData(response.data.data.activities)
       } catch (err) {
         console.error("Error occured while fetching acitvities list : ", err.message || err)
       }
     }
     fetchActivities()
-  }, [])
+  }, [bookingSelectedTab])
 
   useEffect(() => {
     handleCardRendering();
-  }, [bookingSelectedTab]);
+  }, [bookingSelectedTab, data]);
 
   // functions
   const handleCardRendering = () => {
     if (bookingSelectedTab.toLowerCase() == "all") {
-      setFormatedData(allData);
+      setFormatedData(data);
       return;
     }
     const selectedBtn = bookingSelectedTab.toLowerCase();
-    const filteredData = allData.filter(
+    const filteredData = data.filter(
       (item) => item.category.toLowerCase() == selectedBtn
     );
+    // console.log("filtered : , ", filteredData)
     setFormatedData(filteredData);
   };
 
-  // load the whole activities data
 
-  /*
-    
-    1. if selectedTab == ("SeasonalActivities"){
-        filter the seasonal Activities Data and store it in a State => Array of object
-    }
-
-    2. Trigger the Card and just pass the formated(filtered) data to the card component 
-        
-    */
-
+  console.log("filtered data: ", formatedData)
+  console.log("data: ", data)
 
   return (
     <>
@@ -185,32 +180,32 @@ const ActivitiesPage = () => {
           {/* tabs */}
           <div className="tab-container  w-fit px-2 py-2 border-b-gray-200 bg-gray-100 rounded-full mt-6 flex gap-2 text-gray-400">
             <button
-              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab.toLowerCase() == "all"
+              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab == "All"
                 ? "font-medium bg-white shadow text-black rounded-full"
                 : ""
                 }`}
               onClick={() => {
-                setSelectedTab("all");
+                setSelectedTab("All");
               }}
             >
               All
             </button>
             <button
-              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab.toLowerCase() == "seasonalactivities"
+              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab == "Seasonal Activities"
                 ? "font-medium bg-white shadow text-black rounded-full"
                 : ""
                 }`}
               onClick={() => {
-                setSelectedTab("seasonalactivities");
+                setSelectedTab("Seasonal Activities");
               }}
             >
               Seasonal Activities
             </button>
             <button
               onClick={() => {
-                setSelectedTab("regularActivities");
+                setSelectedTab("Regular Activities");
               }}
-              className={`w-fit px-4 py-2 cursor-pointer  ${bookingSelectedTab.toLowerCase() == "regularactivities"
+              className={`w-fit px-4 py-2 cursor-pointer  ${bookingSelectedTab == "Regular Activities"
                 ? "font-medium bg-white shadow text-black rounded-full"
                 : ""
                 }`}

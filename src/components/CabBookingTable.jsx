@@ -421,7 +421,7 @@ const CabBookingTable = () => {
       const response = await axios.put(`${apiUrl}/api/cab-booking/${item.id}`, {
         status: newStatus
       });
-      console.log("Response for status : ", response);
+      // console.log("Response for status : ", response);
       setOpenDropdownIndex(null);
       fetchBookingData()
     } catch (err) {
@@ -468,7 +468,7 @@ const CabBookingTable = () => {
         "userName": "test user",
         "status": status
       })
-      console.log("response for cab booking table : ", res.data.data.data)
+      // console.log("response for cab booking table : ", res.data.data.data)
 
       setData(res.data.data.data);
       setFilteredData(res.data.data.data);

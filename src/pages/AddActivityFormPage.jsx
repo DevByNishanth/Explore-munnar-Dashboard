@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import ActivityForm from "../components/ActivityForm";
 const AddActivityFormPage = () => {
+
+  // De-structuring url 
+
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id')
+  const editMode = searchParams.get("editMode")
+
+  // states 
+  // const [formData, setFormData] = useState([])
   return (
     <>
       <section className="flex items-start">
@@ -16,9 +25,9 @@ const AddActivityFormPage = () => {
               <span className="font-medium text-black">Add Activity</span>
             </h1>
           </div>
-           <ActivityForm />
+          <ActivityForm />
         </div>
-       
+
       </section>
     </>
   );
