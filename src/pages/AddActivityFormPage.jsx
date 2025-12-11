@@ -18,7 +18,7 @@ const AddActivityFormPage = () => {
   // states 
 
   const [data, setData] = useState({})
-
+  const [oldImages, setOldImages] = useState([])
   const [formData, setFormData] = useState({
     name: "",
     short_description: "",
@@ -28,12 +28,13 @@ const AddActivityFormPage = () => {
     type: "",
     address: "",
     locationURL: "",
-    // longitude: "",
     is_featured: false,
   });
 
 
   // functions 
+
+
 
   async function fetchData() {
     if (editMode !== "true") return
@@ -64,7 +65,14 @@ const AddActivityFormPage = () => {
         address: data.address || "",
         locationURL: data.location_url || "",
         is_featured: data.is_featured || false
-      })
+      });
+
+      const backendImages = data.images || [];
+      setOldImages([
+        backendImages[0] || null,
+        backendImages[1] || null,
+        backendImages[2] || null,
+      ]);
     }
   }, [data, editMode])
 
@@ -81,11 +89,11 @@ const AddActivityFormPage = () => {
               <span className="font-medium text-black">Add Activity</span>
             </h1>
           </div>
-          <ActivityForm formData={formData} setFormData={setFormData} editMode={editMode} id={id}/>
+          <ActivityForm formData={formData} setFormData={setFormData} editMode={editMode} id={id} oldImages={oldImages} setOldImages={setOldImages} />
         </div>
 
       </section>
-      
+
     </>
   );
 };

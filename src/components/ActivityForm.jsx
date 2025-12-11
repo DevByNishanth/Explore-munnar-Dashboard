@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import { UploadCloud } from "lucide-react";
 import ErrorPopup from "./ErrorPopup";
 
-export default function ActivityForm({ formData, setFormData, editMode, id }) {
+export default function ActivityForm({ formData, setFormData, editMode, id, oldImages, setOldImages }) {
 
-  // const [images, setImages] = useState([null, null, null]);
-  // const [mapImage, setMapImage] = useState(null);
-
+  console.log("old images : ", oldImages)
   // Auth 
   const apiUrl = import.meta.env.VITE_API_URL
 
@@ -17,7 +15,7 @@ export default function ActivityForm({ formData, setFormData, editMode, id }) {
   const [mapImage, setMapImage] = useState(null);            // map image
   const [isError, setIsError] = useState(false)
   const [errMessage, setErrMessage] = useState("")
-
+  const [editedImages, setEditedImages] = useState([])
 
   const activityTypes = ["Seasonal Activities", "Regular Activities"];
 
@@ -32,12 +30,6 @@ export default function ActivityForm({ formData, setFormData, editMode, id }) {
     "Spas & Ayurvedic Centres",
     "Local Cultural Events",
   ];
-
-  // const handleImageChange = (file, index) => {
-  //   const copy = [...images];
-  //   copy[index] = file;
-  //   setImages(copy);
-  // };
 
   // functions 
 
@@ -85,9 +77,7 @@ export default function ActivityForm({ formData, setFormData, editMode, id }) {
     })
   };
 
-  const handleMapChange = (e) => {
-    setMapImage(e.target.files[0]);
-  };
+
 
   // POST method 
   const handlePost = async () => {
@@ -175,6 +165,23 @@ export default function ActivityForm({ formData, setFormData, editMode, id }) {
 
   };
 
+  const handleOldImageReplace = (file, index) => {
+  if (!file) return;
+
+  const newImageUrl = URL.createObjectURL(file);
+
+  // Update the specific index
+  setOldImages(prev => {
+    const updated = [...prev];
+    updated[index] = {
+      ...updated[index],
+      file: file,        // store actual file for backend use
+      url: newImageUrl,  // preview URL
+    };
+    return updated;
+  });
+};
+
 
   return (
     <>
@@ -245,21 +252,6 @@ export default function ActivityForm({ formData, setFormData, editMode, id }) {
             onChange={handleChange}
           />
         </div>
-
-        {/* Longitude */}
-        {/* <div className="space-y-1">
-        <label className="font-medium">Longitude</label>
-        <input
-          type="number"
-          name="longitude"
-          className="w-full border rounded-md px-3 py-2 focus:outline-none"
-          placeholder="Enter longitude"
-          value={formData.longitude}
-          onChange={handleChange}
-        />
-      </div> */}
-
-        {/* Location URL (Map) */}
         {/* Location URL */}
         <div className="space-y-1">
           <label className="font-medium">Location URL (Google Maps Embed URL)</label>
@@ -284,8 +276,6 @@ export default function ActivityForm({ formData, setFormData, editMode, id }) {
             ></iframe>
           )}
         </div>
-
-
 
         {/* Category */}
         <div className="space-y-1">
@@ -338,7 +328,43 @@ export default function ActivityForm({ formData, setFormData, editMode, id }) {
         </div>
 
         {/* 3 Images */}
-        <div className="space-y-1">
+        {editMode == "true" ? <div className="">
+          <label className="font-medium ">Edit Images</label>
+          <div className="img-container mt-4 grid grid-cols-3 gap-4">
+            {oldImages.map((item, index) => {
+              return (
+                <div key={index} className="group relative">
+
+                  {/* Hidden File Input */}
+                  <input
+                    type="file"
+                    id={`old-img-${index}`}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleOldImageReplace(e.target.files[0], index)}
+                  />
+
+                  {/* Image Block */}
+                  <div className="img-container relative">
+                    <img src={item.url} className="rounded-xl h-[200px] border border-gray-300  w-full" />
+
+                    <div className="tint absolute rounded-xl opacity-0 group-hover:opacity-100 top-0 right-0 left-0 bottom-0"></div>
+                  </div>
+
+                  {/* Edit Button */}
+                  <label
+                    htmlFor={`old-img-${index}`}
+                    className="edit-btn text-white opacity-0 group-hover:opacity-100 font-medium text-lg cursor-pointer underline absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]"
+                  >
+                    Edit
+                  </label>
+
+                </div>
+              );
+            })}
+
+          </div>
+        </div> : <div className="space-y-1">
           <label className="font-medium ">Images (3 Required)</label>
 
           <div className="grid grid-cols-1 mt-2 gap-4">
@@ -359,10 +385,10 @@ export default function ActivityForm({ formData, setFormData, editMode, id }) {
                   htmlFor={`img-${index}`}
                   className="cursor-pointer text-center w-full h-full flex flex-col items-center justify-center"
                 >
-                  {previewImages[index] ? (
+                  {previewImages?.[index] ? (
                     <div className="w-[95%] mx-2 ">
                       <img
-                        src={previewImages[index]}
+                        src={previewImages?.[index]}
                         className="w-full h-[200px]  object-cover rounded-md"
                       />
                     </div>
@@ -377,7 +403,7 @@ export default function ActivityForm({ formData, setFormData, editMode, id }) {
             ))}
           </div>
 
-        </div>
+        </div>}
 
         {/* Submit */}
         <div className="flex justify-end">
