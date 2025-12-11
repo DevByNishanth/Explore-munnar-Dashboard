@@ -26,7 +26,7 @@ const SeasonalActivitesCard = ({ formatedData }) => {
           >
             <div className="img-container w-full h-[55%]">
               <img
-                src={item.images[0].url}
+                src={item?.images?.[0]?.url}
                 className="w-[100%] object-cover rounded h-[100%]"
               />
             </div>
