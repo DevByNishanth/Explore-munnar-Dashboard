@@ -7,7 +7,7 @@ import activityImg1 from "./assets/activityImg1.jpg";
 import activityImg2 from "./assets/activityImg2.jpg";
 import activityImg3 from "./assets/activityImg3.jpeg";
 import axios from "axios";
-
+import LoadingPage from '../src/pages/LoadingPage'
 const allData = [
   {
     img: activityImg1,
@@ -115,13 +115,14 @@ const ActivitiesPage = () => {
   const [data, setData] = useState([])
   const [bookingSelectedTab, setSelectedTab] = useState("");
   const [formatedData, setFormatedData] = useState(null);
-
+  const [loading, setLoading] = useState(false)
 
   // useEffect call's
 
   useEffect(() => {
     async function fetchActivities() {
       try {
+        setLoading(true)
         const response = await axios.post(`${apiUrl}/api/activities-list`, {
           search: "",
           pageNumber: 1,
@@ -130,7 +131,9 @@ const ActivitiesPage = () => {
         });
         // console.log("activity list : ", response);
         setData(response.data.data.activities)
+        setLoading(false)
       } catch (err) {
+        setLoading(false)
         console.error("Error occured while fetching acitvities list : ", err.message || err)
       }
     }
@@ -218,6 +221,7 @@ const ActivitiesPage = () => {
           </div>
         </div>
       </section>
+      {loading && <LoadingPage />}
     </>
   );
 };

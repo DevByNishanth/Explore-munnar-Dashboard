@@ -54,7 +54,7 @@ const BusTimingsTable = () => {
                         </tr>
                         <tbody className='border border-gray-400'>
                             {tableData.map((item, index) => {
-                                return <tr className={`text-[#333333] ${index % 2 == 0} text-md `}>
+                                return <tr className={`text-[#333333] ${index % 2 == 0 ? "bg-gray-100 border-b border-gray-200" : ""} text-md `}>
                                     <td className='pl-3 py-2'>{item.router}</td>
                                     <td className='pl-3 py-2'>{item.depature}</td>
                                     <td className='pl-3 py-2'>{item.arraivalTime}</td>
@@ -73,7 +73,7 @@ const BusTimingsTable = () => {
                     </table>
                 </section>
             </div>
-            {isModal && <BusTimingsActionPopup toggleState={toggleState} onclose={onclose}/>}
+            {isModal && <BusTimingsActionPopup toggleState={toggleState} onclose={onclose} />}
 
         </>
     )
