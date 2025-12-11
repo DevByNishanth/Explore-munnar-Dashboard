@@ -113,7 +113,7 @@ const ActivitiesPage = () => {
 
   // states
   const [data, setData] = useState([])
-  const [bookingSelectedTab, setSelectedTab] = useState("Seasonal Activities");
+  const [bookingSelectedTab, setSelectedTab] = useState("");
   const [formatedData, setFormatedData] = useState(null);
 
 
@@ -143,7 +143,7 @@ const ActivitiesPage = () => {
 
   // functions
   const handleCardRendering = () => {
-    if (bookingSelectedTab.toLowerCase() == "all") {
+    if (bookingSelectedTab == "") {
       setFormatedData(data);
       return;
     }
@@ -156,7 +156,7 @@ const ActivitiesPage = () => {
   };
 
 
-  console.log("filtered data: ", formatedData)
+  // console.log("filtered data: ", formatedData)
   console.log("data: ", data)
 
   return (
@@ -180,12 +180,12 @@ const ActivitiesPage = () => {
           {/* tabs */}
           <div className="tab-container  w-fit px-2 py-2 border-b-gray-200 bg-gray-100 rounded-full mt-6 flex gap-2 text-gray-400">
             <button
-              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab == "All"
+              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab == ""
                 ? "font-medium bg-white shadow text-black rounded-full"
                 : ""
                 }`}
               onClick={() => {
-                setSelectedTab("All");
+                setSelectedTab("");
               }}
             >
               All
