@@ -5,6 +5,8 @@ import AddedHotels from "../components/AddedHotels";
 import { Link } from "react-router-dom";
 
 const HotelsPage = () => {
+  // Auth 
+  // const []
   return (
     <>
       <section className="flex w-[100%]">
