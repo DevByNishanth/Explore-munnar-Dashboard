@@ -5,6 +5,14 @@ import HotelInformationForm from "../components/HotelInformationForm";
 import HotelAddButtonFooter from "../components/HotelAddButtonFooter";
 import HotelAddForm2 from "../components/HotelAddForm2";
 
+// let data = [
+//   { "title": "Room comfort", "data": ["Comfortable beds (Double/Queen/King)", "Clean linens and blankets", "Attached private bathrooms", "Hot water supply (solar/geyser)"] },
+//   { "title": "Travel convenience", "data": [] }, { "title": "Food & beverage", "data": [] },
+//   { "title": "View and nature", "data": ["Balcony with valley/mountain/lake views", "Garden or plantation view", "Tea estate surroundings"] },
+//   { "title": "Connectivity", "data": [] }, { "title": "Family & safety", "data": ["Family-friendly environment", "CCTV surveillance"] }
+// ]
+
+
 const HotelAddForm = () => {
   // Auth 
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -43,7 +51,7 @@ const HotelAddForm = () => {
       fd.append("distanceFromCenter", formData.distanceFromCenter);
       fd.append("stayType", formData.stayType);
       fd.append("location", formData.location);
-      fd.append("isFeatured", formData.isFeatured);
+      fd.append("isFeatured", formData.isFeatured == "Yes" ? true : false);
 
       // ---- Convert arrays to JSON strings ----
       fd.append("amenities", JSON.stringify(formData.amenities));
@@ -57,14 +65,14 @@ const HotelAddForm = () => {
 
       const data = await res.json();
       console.log("Upload success:", data);
-      alert("Hotel added successfully!");
-
     } catch (error) {
-      console.error("Error uploading:", error.message);
+      console.error("Error uploading:", error);
       alert("Something went wrong");
     }
   }
 
+
+  console.log("amenities : ", formData)
 
   // jsx ---------------------------------
   return (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Handshake, Plus, UploadCloud, X } from "lucide-react";
+import { Handshake, Heading2, Plus, UploadCloud, X } from "lucide-react";
 import HotelAddModal from "./hotelAddModal";
 import AmenityFormModal from "./AmenityFormModal";
 import { useLocation, useSearchParams } from "react-router-dom";
@@ -38,11 +38,25 @@ const HotelInformationForm = ({ setFormData, formData }) => {
   const [modalType, setModalType] = useState(""); // "activities" or "amenities"
   const [isAmenityModal, setIsAmenityModal] = useState(false)
   const [locationUrl, setLocationUrl] = useState(null)
-
+  const [cleanedAmeneties, setCleanedAmeneties] = useState([])
   // store selected data
   const [popularActivities, setPopularActivities] = useState([]);
-  const [amenities, setAmenities] = useState([]);
+  const [amenities, setAmenities] = useState([1]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+
+  //  handling side effect
+  useEffect(() => {
+    if (formData?.amenities?.length > 0) {
+      const amenitiesData = formData.amenities
+      const cleanedArr = amenitiesData.filter((item) => {
+        return item.data.length > 0
+      })
+      setCleanedAmeneties(cleanedArr)
+      console.log("cleaned array : ", cleanedArr)
+    }
+  }, [formData])
+
+
   // functions
 
   const handleOpenModal = (type) => {
@@ -74,7 +88,6 @@ const HotelInformationForm = ({ setFormData, formData }) => {
     setShowModal(false);
   };
 
-
   const handleCategoryClick = (item) => {
     if (selectedCategory === item) {
       // Unselect
@@ -94,7 +107,6 @@ const HotelInformationForm = ({ setFormData, formData }) => {
       }));
     }
   };
-
 
   //   function to upload a new file or list of files
   function handleFilechange(e) {
@@ -144,9 +156,6 @@ const HotelInformationForm = ({ setFormData, formData }) => {
     }));
   };
 
-  // console.log("form data : ", formData)
-
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -175,10 +184,10 @@ const HotelInformationForm = ({ setFormData, formData }) => {
 
   return (
     <>
-      <section className="mt-4 px-6 ">
+      <section className="mt-4 px-6  ">
         <h1 className="font-medium text-lg ">Hotel Information</h1>
-        <div className="form-main-container w-[100%] h-[calc(100vh-160px)] overflow-y-auto">
-          <div className="form-container mt-4 space-y-4 w-[60%]  pr-6">
+        <div className="form-main-container  w-[100%] h-[calc(100vh-160px)] overflow-y-auto">
+          <div className="form-container mt-4 space-y-4 w-[100%] md:w-[90%]  pr-6">
             <div className="img-container">
               <h1 className="text-gray-800 font-medium">Image</h1>
 
@@ -319,26 +328,29 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                 </button>
               </div>
               <div className="data-container mt-4 flex flex-wrap gap-2">
-                {amenities.length > 0 ? (
-                  amenities.map((item, index) => (
-                    <div
-                      key={index}
-                      className="relative group border border-dashed border-gray-400  px-2 py-2 rounded-full text-sm font-medium flex items-center"
-                    >
-                      {item}
-                      <button
-                        onClick={() =>
-                          setAmenities((prev) => prev.filter((i) => i !== item))
-                        }
-                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ml-2 text-gray-600 hover:text-red-600"
-                      >
-                        ✕
-                      </button>
+                {formData.amenities.length > 0 ? <div className="main-container grid grid-cols-3 gap-8">
+                  {cleanedAmeneties?.map((item) => {
+                    return <div className="card">
+                      <div className="header border-b border-gray-500 w-fit px-4 pb-2">
+                        <h1 className="title text-gray-800 font-medium">
+                          {item.title}
+                        </h1>
+                      </div>
+                      <div className="contnet-main-container mt-4 space-y-2 text-gray-400">
+
+                        {item.data.map((i) => {
+                          return <div className="content-contaier ">
+                            <div className="flex items-center gap-2">
+                              <input type="checkbox" checked className="accent-amber-700" />
+                              <h1>{i}</h1>
+                            </div>
+                          </div>
+                        })}
+                      </div>
+
                     </div>
-                  ))
-                ) : (
-                  <p className="mt-[-16px]  text-gray-500 text-lg">None</p>
-                )}
+                  })}
+                </div> : <h1 className="mt-[-10px] text-lg text-gray-500 border border-dashed border-gray-300 px-4 py-1 rounded-full">None</h1>}
               </div>
             </div>
             <div className="price-container">
@@ -399,7 +411,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
       </section>
 
 
-      {isAmenityModal && <AmenityFormModal setIsAmenityModal={setIsAmenityModal} setForm={setFormData} />}
+      {isAmenityModal && <AmenityFormModal setIsAmenityModal={setIsAmenityModal} setForm={setFormData} formData={formData} />}
 
       {showModal && (
         <HotelAddModal

@@ -56,12 +56,27 @@ const amenitiesData = [
   }
 ];
 
-export default function AmenitiesModal({ setIsAmenityModal, setForm }) {
+export default function AmenitiesModal({ setIsAmenityModal, setForm, formData }) {
   const [pageNumber, setPageNumber] = useState(1);
   const [selectedTab, setSelectedTab] = useState(amenitiesData[0].category);
   const [selectedAmenities, setSelectedAmenities] = useState({});
 
   const currentCategory = amenitiesData[pageNumber - 1];
+
+  // side effects 
+
+  useEffect(() => {
+    if (!formData?.amenities) return;
+
+    const prefilled = {};
+
+    formData.amenities.forEach(item => {
+      prefilled[item.title] = item.data; // title = category, data = selected items
+    });
+
+    setSelectedAmenities(prefilled);
+  }, [formData]);
+
 
   useEffect(() => {
     setSelectedTab(currentCategory.category);
@@ -144,7 +159,8 @@ export default function AmenitiesModal({ setIsAmenityModal, setForm }) {
               <input
                 type="checkbox"
                 className="scale-120 accent-amber-700"
-                checked={(selectedAmenities[selectedTab] || []).includes(item)}
+               checked={(selectedAmenities[selectedTab] || []).includes(item)}
+
                 onChange={() => handleCheck(item)}
               />
               <h1>{item}</h1>
