@@ -1,20 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import hotelImg from "../assets/hotelImg.jpg";
 import hotelImg2 from "../assets/hotelImg2.jpg";
 import hotelImg3 from "../assets/hotelImg3.jpg";
 import hotelImg4 from "../assets/hotelImg4.jpg";
 
 const images = [hotelImg, hotelImg2, hotelImg3, hotelImg4]
-const HotelPrevImgComponent = () => {
-  const [selectedImg, setSelectedImg] = useState(images[0]);
+const HotelPrevImgComponent = ({ data }) => {
+  const [selectedImg, setSelectedImg] = useState(null);
+
+  useEffect(() => {
+    if(data?.images?.length>0){
+      setSelectedImg(data.images[0].url)
+    }
+  }, [data])
+
 
   return (
     <>
       <div className="main-container flex gap-2 w-[100%] h-[370px]">
         <div className="first-container h-[370px] overflow-auto hide-scrollbar w-[20%] flex flex-col gap-2 ">
-          {images.map((item, index) => {
-            return <img src={item} onClick={() => {
-              setSelectedImg(item);
+          {data?.images?.map((item, index) => {
+            return <img src={item.url} onClick={() => {
+              setSelectedImg(item.url);
             }} className="h-[25%] w-[100%] object-cover rounded-lg" />
           })}
         </div>

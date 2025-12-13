@@ -4,47 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-const hotelData = [
-  {
-    id: 1,
-    name: "Misty Hill Eco Retreat",
-    rating: 4.99,
-    reviews: 479,
-    description: "Lorem ipsum dolor sit amet consectetur...",
-    location: "Devikulam",
-    price: 3200,
-    priceUnit: "night",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
-  },
-];
-// const data = [1];
-const AddedHotels = () => {
-  // Auth 
-  const apiUrl = import.meta.env.VITE_API_URL
-  const navigate = useNavigate();
-
-  // states 
-  const [data, setData] = useState([])
-  const [pageNumber, setPageNumber] = useState(1)
-
-  // side effects 
-  useEffect(() => {
-    getHotels()
-  }, [])
-
-  // functions
-
-  async function getHotels() {
-    try {
-      const response = await axios.post(`${apiUrl}/api/hotels-list`, {
-        "pageNumber": pageNumber
-      });
-      // console.log("hotels : ", response.data.data.hotels)
-      setData(response.data.data.hotels)
-    } catch (err) {
-      console.error("Error occured while fetching hotel list : ", err.message)
-    }
-  }
+const AddedHotels = ({ data }) => {
 
   return (
     <>
@@ -55,7 +15,7 @@ const AddedHotels = () => {
               {/* Image */}
               <div className="overflow-hidden rounded-xl h-[40%]">
                 <img
-                  src={item?.images?.[0]}
+                  src={item?.images?.[0]?.url}
                   alt="Misty Hill Eco Retreat"
                   className="w-full h-[100%] object-cover"
                 />
@@ -78,7 +38,7 @@ const AddedHotels = () => {
                   <span>{item?.location}</span>
                 </div>
                 <p className="text-sm text-gray-600 mt-2">
-                  {item?.description}
+                  {item?.description.slice(0,55)}...
                 </p>
                 <p className="text-green-800 font-medium mt-2">
                   From <span className="font-semibold text-lg">₹ {item?.pricePerNight}</span> /

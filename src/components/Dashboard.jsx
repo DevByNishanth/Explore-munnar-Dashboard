@@ -85,9 +85,8 @@ const Dashboard = () => {
                   Nov{" "}
                   <span className="h-5 w-5 ">
                     <ChevronDown
-                      className={`text-gray-600 ${
-                        isMonthFilterDropdown ? "rotate-180" : "rotate-0"
-                      } transition-all duration-300`}
+                      className={`text-gray-600 ${isMonthFilterDropdown ? "rotate-180" : "rotate-0"
+                        } transition-all duration-300`}
                     />
                   </span>
                 </button>
@@ -125,9 +124,9 @@ const Dashboard = () => {
               <div className="table-container mx-6 ">
                 <div className="header flex justify-between items-center bg-white py-2 sticky top-0">
                   <h1 className="font-medium">Hotel Bookings</h1>
-                  <button className="cursor-pointer border border-gray-400 text-gray-600 rounded px-3 py-1 text-[12px]">
+                  <Link to={`/Bookings`} className="cursor-pointer border border-gray-400 text-gray-600 rounded px-3 py-1 text-[12px]">
                     View
-                  </button>
+                  </Link>
                 </div>
                 <DashboardHotelTable />
               </div>

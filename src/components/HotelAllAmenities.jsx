@@ -1,6 +1,6 @@
 import React from "react";
 
-const data = [
+const data1 = [
   {
     title: "Room comfort",
     list: [
@@ -32,7 +32,14 @@ const data = [
   },
 ];
 
-const HotelAllAmenities = () => {
+const HotelAllAmenities = ({ data }) => {
+  console.log("amenities data : ", data?.amenities);
+
+  // const mapped_ameniteis = data?.amenities?.map((item) => {
+  //   return item;
+  // })
+  // console.log("mapped ameniteis : ", mapped_ameniteis)
+
   return (
     <>
       <section className="mt-6 ">
@@ -40,28 +47,33 @@ const HotelAllAmenities = () => {
           <h1 className="text-[#333333] font-medium text-xl">All Amenities</h1>
         </header>
         <div className="content-container mt-3 grid grid-cols-3 gap-8">
-          {data.map((item, index) => {
+          {data?.amenities?.map((item, index) => {
+            const list = item.data.split(","); // 👈 convert string to array
+
             return (
-              <div key={index} className="card ">
-                <h1 className="font-medium text-[#333333]">{item.title}</h1>
-                {item.list.map((listItem, i) => {
-                  return (
-                    <div
-                      key={i}
-                      className="list-container mt-3 w-[100% flex items-center gap-4"
-                    >
-                      <input
-                        type="checkbox"
-                        checked
-                        className="accent-amber-700"
-                      />
-                      <h1 className="w-[100%] text-gray-500">{listItem}</h1>
-                    </div>
-                  );
-                })}
+              <div key={index} className="card">
+                <h1 className="font-medium text-[#333333]">{item.name}</h1>
+
+                {list.map((listItem, i) => (
+                  <div
+                    key={i}
+                    className="list-container mt-3 w-full flex items-center gap-4"
+                  >
+                    <input
+                      type="checkbox"
+                      checked
+                      readOnly
+                      className="accent-amber-700"
+                    />
+                    <h1 className="text-gray-500">
+                      {listItem.trim()}
+                    </h1>
+                  </div>
+                ))}
               </div>
             );
           })}
+
         </div>
       </section>
     </>
