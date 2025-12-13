@@ -6,7 +6,7 @@ const tabsData = [
   "Private bath",
   "breakfast",
 ];
-const HotelPopularActivities = () => {
+const HotelPopularActivities = ({ data }) => {
   return (
     <>
       <section className="mt-6">
@@ -15,13 +15,13 @@ const HotelPopularActivities = () => {
             Popular Facilities available{" "}
           </h1>
           <div className="tab-container mt-3 flex items-center gap-3">
-            {tabsData.map((item, index) => {
+            {data?.experiences?.map((item, index) => {
               return (
                 <div
                   key={index}
                   className="tab bg-gray-200 px-6 py-2 rounded-full"
                 >
-                  {item}
+                  {item.name}
                 </div>
               );
             })}
