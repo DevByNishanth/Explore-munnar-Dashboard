@@ -159,11 +159,11 @@ export default function AmenitiesModal({ setIsAmenityModal, setForm, formData })
               <input
                 type="checkbox"
                 className="scale-120 accent-amber-700"
-               checked={(selectedAmenities[selectedTab] || []).includes(item)}
+                checked={(selectedAmenities[selectedTab] || []).includes(item)}
 
                 onChange={() => handleCheck(item)}
               />
-              <h1>{item}</h1>
+              <h1 className="cursor-pointer" onClick={() => handleCheck(item)}>{item}</h1>
             </div>
           ))}
         </div>

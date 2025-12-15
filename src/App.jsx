@@ -20,6 +20,7 @@ import Testingpage from "./pages/Testingpage";
 import HomepageModificationPage from "./pages/HomepageModificationPage";
 import ReportsPage from "./pages/ReportsPage";
 import BusTimingsPage from "./pages/BusTimingsPage";
+import EditHotelPage from "./pages/EditHotelPage";
 const App = () => {
   return (
     <>
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/activites/:id" element={<ActivitiesDetailsPage />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/hotels/addHotels" element={<HotelAddForm />} />
+        <Route path="/hotels/editHotel/:id" element={<EditHotelPage />} />
         <Route
           path="/activities/addActivity"
           element={<AddActivityFormPage />}

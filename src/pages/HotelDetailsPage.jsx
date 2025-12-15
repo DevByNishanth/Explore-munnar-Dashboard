@@ -52,6 +52,7 @@ const HotelDetailsPage = () => {
     try {
       const response = await axios.delete(`${apiUrl}/api/hotel/${id}`);
       navigate("/hotels");
+      window.location.reload()
     } catch (err) {
       console.error("Error occured while deleting hotel : ", err.message);
     }
@@ -71,7 +72,7 @@ const HotelDetailsPage = () => {
             <h1 className="font-medium text-[#333333] text-xl">{data?.name}</h1>
             <div className="button-container flex gap-2 items-center">
               <Link
-                to={`/hotels/addHotels/?editMode=${true}&hotelId=${id}`}
+                to={`/hotels/editHotel/${id}`}
                 className="btn-green flex items-center gap-2 text-white px-4 py-2 rounded cursor-pointer"
               >
                 <Edit className="w-5 h-5" /> Edit

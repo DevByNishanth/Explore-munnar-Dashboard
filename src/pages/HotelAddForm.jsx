@@ -27,26 +27,28 @@ const HotelAddForm = () => {
   // states
   const [selectedTab, setSelectedTab] = useState("infoPage");
 
-  const [formData, setFormData] = useState({
-    name: "",
-    images: [],
-    description: "",
-    pricePerNight: "",
-    rating: "",
-    distanceFromCenter: "",
-    stayType: "",
-    location: "",
-    isFeatured: "",
-    amenities: [],
-    experiences: [], // popular faciliteis
-  });
+    const [formData, setFormData] = useState({
+      name: "",
+      images: [],
+      description: "",
+      pricePerNight: "",
+      rating: "",
+      distanceFromCenter: "",
+      stayType: "",
+      locationName: "",
+      locationUrl: "",
+      isFeatured: "",
+      amenities: [],
+      experiences: [], // popular faciliteis
+    });
 
   // functions
   async function onSave() {
-    // const filteredAmeniteis = formData.amenities.filter((item) => {
-    //   return item.data.length > 0;
-    // });
+
     try {
+      const filteredAmeniteis = formData.amenities.filter((item) => {
+        return item.data.length > 0;
+      });
       const fd = new FormData();
 
       // ---- Append images ----
@@ -61,12 +63,13 @@ const HotelAddForm = () => {
       fd.append("rating", formData.rating);
       fd.append("distanceFromCenter", formData.distanceFromCenter);
       fd.append("stayType", formData.stayType);
-      fd.append("location", formData.location);
+      fd.append("location", formData.locationName);
+      fd.append("locationUrl", formData.locationUrl);
       fd.append("isFeatured", formData.isFeatured == "Yes" ? true : false);
 
       // ---- Convert arrays to JSON strings ----
-      fd.append("amenities", JSON.stringify(formData.amenities));
-      // fd.append("amenities", JSON.stringify(formData.filteredAmeniteis));
+      // fd.append("amenities", JSON.stringify(formData.amenities));
+      fd.append("amenities", JSON.stringify(filteredAmeniteis));
       fd.append("experiences", JSON.stringify(formData.experiences));
 
       // ---- POST request ----
@@ -96,7 +99,8 @@ const HotelAddForm = () => {
         rating: hotel.rating || "",
         distanceFromCenter: hotel.distanceFromCenter || "", // not in response
         stayType: hotel.stayType || "",
-        location: hotel.location || "",
+        locationName: hotel.location || "",
+        locationUrl: hotel.locationUrl,
         isFeatured: hotel.isFeatured ? "Yes" : "No",
         amenities: hotel.amenities || [],
         experiences: hotel.experiences || [],

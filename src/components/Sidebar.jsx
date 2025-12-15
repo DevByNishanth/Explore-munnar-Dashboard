@@ -32,7 +32,7 @@ const Sidebar = () => {
     <>
       {/* bg-[#ecececbd] */}
       <section
-        className={`relative sidebar bg-[#ecececbd] transition-all duration-300 ${isCollapsed ? "w-[5%]" : "w-[20%]"
+        className={`relative sidebar bg-[#ecececbd] hidden md:block transition-all duration-300 ${isCollapsed ? "w-[5%]" : "w-[20%]"
           } h-[100vh] `}
       >
         <div className="logo-container px-5 m-auto mt-3">

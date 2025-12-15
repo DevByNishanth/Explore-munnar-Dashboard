@@ -8,7 +8,7 @@ const AddedHotels = ({ data }) => {
 
   return (
     <>
-      <section className="mt-4 grid gap-4 grid-cols-3 h-[calc(100vh-140px)] overflow-auto">
+      <section className="mt-4 grid gap-4 md:grid-cols-3 h-[calc(100vh-140px)] overflow-auto">
         {data.map((item, index) => {
           return (
             <div className="w-full h-fit bg-gray-50 px-3 py-3 rounded-2xl shadow-md">
@@ -23,7 +23,7 @@ const AddedHotels = ({ data }) => {
               <div className="mt-2">
                 <div className="flex items-center justify-between">
                   <h2 className="text-green-900 font-medium text-lg">
-                    {item?.name}
+                    {item?.name.slice(0,24)}..
                   </h2>
                   <div className="flex items-center text-sm text-gray-700">
                     <span className="mr-1">⭐</span>

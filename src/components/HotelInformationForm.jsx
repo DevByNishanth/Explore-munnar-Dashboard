@@ -13,7 +13,7 @@ const categoryData = [
 ];
 
 const HotelInformationForm = ({ setFormData, formData }) => {
-  // console.log("arraived form data : ", formData);
+
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -51,7 +51,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
     if (formData?.amenities?.length > 0) {
       const amenitiesData = formData.amenities;
       const cleanedArr = amenitiesData.filter((item) => {
-        return item.data.length > 0;
+        return item?.data?.length > 0;
       });
       setCleanedAmeneties(cleanedArr);
       // console.log("cleaned array : ", cleanedArr);
@@ -174,7 +174,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
 
     setFormData((prev) => ({
       ...prev,
-      location: extractedUrl,
+      locationUrl: extractedUrl,
     }));
 
     setLocationUrl(extractedUrl);
@@ -300,11 +300,10 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                     key={index}
                     onClick={() => handleCategoryClick(item)}
                     className={`px-6 py-2 rounded-full cursor-pointer transition-all duration-200 
-                    ${
-                      selectedCategory === item
+                    ${selectedCategory === item
                         ? " text-gray-9009 font-medium bg-gray-200 "
                         : "border border-dashed border-gray-300 text-gray-700 hover:bg-gray-0"
-                    }`}
+                      }`}
                   >
                     {item}
                   </div>
@@ -348,7 +347,8 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                 )}
               </div>
             </div>
-            {/* <div className="amenities-container">
+            {/* Amenities  */}
+            <div className="amenities-container">
               <div className="header flex items-center gap-3">
                 <h1 className="text-gray-800 font-medium">Amenities</h1>
                 <button
@@ -370,7 +370,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                             </h1>
                           </div>
                           <div className="contnet-main-container mt-4 space-y-2 text-gray-400">
-                            {item.data.map((i) => {
+                            {item?.data?.map((i) => {
                               return (
                                 <div className="content-contaier ">
                                   <div className="flex items-center gap-2">
@@ -395,7 +395,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                   </h1>
                 )}
               </div>
-            </div> */}
+            </div>
             <div className="price-container">
               <h1 className="text-gray-800 font-medium">Price per night</h1>
               <input
@@ -432,14 +432,26 @@ const HotelInformationForm = ({ setFormData, formData }) => {
             </div>
             <div className="price-container">
               <h1 className="text-gray-800 font-medium">
+                Location name{" "}
+              </h1>
+              <input
+                type="text"
+                className="hotelAddInput"
+                name="locationName"
+                value={formData.locationName}
+                onChange={(e) => handleInputChange(e)}
+              />
+            </div>
+            <div className="price-container">
+              <h1 className="text-gray-800 font-medium">
                 Location map link{" "}
                 <span className="text-gray-400 font-light">(Iframe)</span>
               </h1>
               <input
                 type="text"
                 className="hotelAddInput"
-                name="location"
-                value={formData.location}
+                name="locationUrl"
+                value={formData.locationUrl}
                 onChange={(e) => handleLocationUrl(e)}
               />
             </div>
