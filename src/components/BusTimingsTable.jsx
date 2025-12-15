@@ -28,7 +28,7 @@ const tableData = [
     { router: "Munnar - Coimbatore", depature: "7.30 Am", arraivalTime: "7.30Pm", busType: "Kerla RTC", duration: "5.30 Hrs", price: "280" },
 ]
 
-const BusTimingsTable = () => {
+const BusTimingsTable = ({handleEdit}) => {
     // states 
     const [isModal, setIsModal] = useState(false)
     const [toggleState, setToggleState] = useState(null)
@@ -63,7 +63,7 @@ const BusTimingsTable = () => {
                                     <td className='pl-3 py-2'>{item.price}</td>
                                     <td className='pl-3 py-2'>
                                         <div className="btn-container flex gap-3 items-center ml-2">
-                                            <button><Edit className='text-green-800 w-5 h-5 cursor-pointer' /></button>
+                                            <button onClick={handleEdit}><Edit className='text-green-800 w-5 h-5 cursor-pointer' /></button>
                                             <button onClick={() => { handleModal("delete") }}><Trash2 className='text-amber-800 w-5 h-5 cursor-pointer' /></button>
                                         </div>
                                     </td>

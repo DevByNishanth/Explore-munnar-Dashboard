@@ -20,7 +20,7 @@ const HotelsPage = () => {
     getHotels()
   }, [])
 
-  console.log("filtered data : ", filteredData)
+  // console.log("filtered data : ", filteredData)
 
   useEffect(() => {
     if (searchQuery !== "") {

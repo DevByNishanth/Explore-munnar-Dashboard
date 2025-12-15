@@ -85,7 +85,7 @@ const LiveInformationForm = () => {
       );
 
       alert("Uploaded Successfully!");
-      console.log(res.data);
+      // console.log(res.data);
     } catch (error) {
       console.error(error);
       alert("Upload failed");

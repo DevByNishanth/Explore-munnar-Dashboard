@@ -13,10 +13,10 @@ const categoryData = [
 ];
 
 const HotelInformationForm = ({ setFormData, formData }) => {
+  // console.log("arraived form data : ", formData);
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-
 
   // states
   // const [formData, setFormData] = useState({
@@ -30,32 +30,33 @@ const HotelInformationForm = ({ setFormData, formData }) => {
   //   location: "",
   //   isFeatured: "",
   //   amenities: [],
-  //   experiences: [] // popular faciliteis 
+  //   experiences: [] // popular faciliteis
   // })
   const [imgFiles, setImgFiles] = useState([]);
   const [previewUrls, setpreviewUrls] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(""); // "activities" or "amenities"
-  const [isAmenityModal, setIsAmenityModal] = useState(false)
-  const [locationUrl, setLocationUrl] = useState(null)
-  const [cleanedAmeneties, setCleanedAmeneties] = useState([])
+  const [isAmenityModal, setIsAmenityModal] = useState(false);
+  const [locationUrl, setLocationUrl] = useState(null);
+  const [cleanedAmeneties, setCleanedAmeneties] = useState([]);
   // store selected data
-  const [popularActivities, setPopularActivities] = useState([]);
+  const [popularActivities, setPopularActivities] = useState(
+    formData.experiences || []
+  );
   const [amenities, setAmenities] = useState([1]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(formData.stayType);
 
   //  handling side effect
   useEffect(() => {
     if (formData?.amenities?.length > 0) {
-      const amenitiesData = formData.amenities
+      const amenitiesData = formData.amenities;
       const cleanedArr = amenitiesData.filter((item) => {
-        return item.data.length > 0
-      })
-      setCleanedAmeneties(cleanedArr)
-      console.log("cleaned array : ", cleanedArr)
+        return item.data.length > 0;
+      });
+      setCleanedAmeneties(cleanedArr);
+      // console.log("cleaned array : ", cleanedArr);
     }
-  }, [formData])
-
+  }, [formData]);
 
   // functions
 
@@ -69,9 +70,9 @@ const HotelInformationForm = ({ setFormData, formData }) => {
       setPopularActivities(selectedItems);
 
       // ✅ update formData.experiences
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        experiences: selectedItems
+        experiences: selectedItems,
       }));
     }
 
@@ -79,9 +80,9 @@ const HotelInformationForm = ({ setFormData, formData }) => {
       setAmenities(selectedItems);
 
       // If you want to store amenities in formData (optional)
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        amenities: selectedItems
+        amenities: selectedItems,
       }));
     }
 
@@ -93,17 +94,17 @@ const HotelInformationForm = ({ setFormData, formData }) => {
       // Unselect
       setSelectedCategory(null);
 
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        stayType: ""
+        stayType: "",
       }));
     } else {
       // Select new stay type
       setSelectedCategory(item);
 
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        stayType: item
+        stayType: item,
       }));
     }
   };
@@ -139,7 +140,6 @@ const HotelInformationForm = ({ setFormData, formData }) => {
       ...prev,
       images: [...prev.images, ...validFiles],
     }));
-
   }
 
   const handleFileRemove = (index) => {
@@ -158,11 +158,11 @@ const HotelInformationForm = ({ setFormData, formData }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleLocationUrl = (e) => {
     const iframeCode = e.target.value;
@@ -172,15 +172,30 @@ const HotelInformationForm = ({ setFormData, formData }) => {
 
     const extractedUrl = match ? match[1] : ""; // if no match, empty string
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      location: extractedUrl
+      location: extractedUrl,
     }));
 
-    setLocationUrl(extractedUrl)
+    setLocationUrl(extractedUrl);
   };
 
+  const isAmenityChecked = (title, value) => {
+    return formData.amenities.some(
+      (group) => group.title === title && group.data.includes(value)
+    );
+  };
 
+  useEffect(() => {
+    if (!formData.experiences?.length) return;
+
+    // convert [{ name: 'Free WiFi' }] → ['Free WiFi']
+    const normalized = formData.experiences.map((exp) =>
+      typeof exp === "string" ? exp : exp.name
+    );
+
+    setPopularActivities(normalized);
+  }, [formData.experiences]);
 
   return (
     <>
@@ -193,7 +208,6 @@ const HotelInformationForm = ({ setFormData, formData }) => {
 
               {imgFiles.length !== 0 ? (
                 <div className="img-upload-container w-[100%] border border-gray-300 h-[100px] flex items-center gap-3 px-3 rounded mt-2">
-
                   {/* Preview Images */}
                   {imgFiles.map((item, index) => {
                     const url = URL.createObjectURL(item);
@@ -241,9 +255,12 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                 <div className="img-input-container relative mt-2 bg-gray-50 border border-gray-200 rounded-lg p-4 w-[100%]">
                   <UploadCloud className="text-gray-400 w-9 h-9 m-auto" />
                   <h1 className="text-center text-gray-700">
-                    <span className="text-blue-500">Click to upload</span> or drag and drop.
+                    <span className="text-blue-500">Click to upload</span> or
+                    drag and drop.
                   </h1>
-                  <h1 className="text-center text-gray-400">JPEG, JPG, PNG, WEBP, AVIF</h1>
+                  <h1 className="text-center text-gray-400">
+                    JPEG, JPG, PNG, WEBP, AVIF
+                  </h1>
 
                   {/* ✅ First time upload input field */}
                   <input
@@ -255,15 +272,25 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                   />
                 </div>
               )}
-
             </div>
             <div className="name-container">
               <h1 className="text-gray-800 font-medium">Hotel Name</h1>
-              <input type="text" className="hotelAddInput" name="name" value={formData.name} onChange={(e) => handleInputChange(e)} />
+              <input
+                type="text"
+                className="hotelAddInput"
+                name="name"
+                value={formData.name}
+                onChange={(e) => handleInputChange(e)}
+              />
             </div>
             <div className="overview-container">
               <h1 className="text-gray-800 font-medium">Overview</h1>
-              <textarea className="hotelAddInput min-h-[180px] max-h-[220px]" name="description" value={formData.description} onChange={(e) => handleInputChange(e)} ></textarea>
+              <textarea
+                className="hotelAddInput min-h-[180px] max-h-[220px]"
+                name="description"
+                value={formData.description}
+                onChange={(e) => handleInputChange(e)}
+              ></textarea>
             </div>
             <div className="category-container">
               <h1 className="text-gray-800 font-medium">Category</h1>
@@ -273,10 +300,11 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                     key={index}
                     onClick={() => handleCategoryClick(item)}
                     className={`px-6 py-2 rounded-full cursor-pointer transition-all duration-200 
-                    ${selectedCategory === item
+                    ${
+                      selectedCategory === item
                         ? " text-gray-9009 font-medium bg-gray-200 "
                         : "border border-dashed border-gray-300 text-gray-700 hover:bg-gray-0"
-                      }`}
+                    }`}
                   >
                     {item}
                   </div>
@@ -320,63 +348,117 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                 )}
               </div>
             </div>
-            <div className="amenities-container">
+            {/* <div className="amenities-container">
               <div className="header flex items-center gap-3">
                 <h1 className="text-gray-800 font-medium">Amenities</h1>
-                <button onClick={() => setIsAmenityModal(true)} className="bg-gray-800 rounded-lg w-[40px] h-[40px] flex items-center justify-center cursor-pointer">
+                <button
+                  onClick={() => setIsAmenityModal(true)}
+                  className="bg-gray-800 rounded-lg w-[40px] h-[40px] flex items-center justify-center cursor-pointer"
+                >
                   <Plus className="text-gray-50" />
                 </button>
               </div>
               <div className="data-container mt-4 flex flex-wrap gap-2">
-                {formData.amenities.length > 0 ? <div className="main-container grid grid-cols-3 gap-8">
-                  {cleanedAmeneties?.map((item) => {
-                    return <div className="card">
-                      <div className="header border-b border-gray-500 w-fit px-4 pb-2">
-                        <h1 className="title text-gray-800 font-medium">
-                          {item.title}
-                        </h1>
-                      </div>
-                      <div className="contnet-main-container mt-4 space-y-2 text-gray-400">
-
-                        {item.data.map((i) => {
-                          return <div className="content-contaier ">
-                            <div className="flex items-center gap-2">
-                              <input type="checkbox" checked className="accent-amber-700" />
-                              <h1>{i}</h1>
-                            </div>
+                {formData.amenities.length > 0 ? (
+                  <div className="main-container grid grid-cols-3 gap-8">
+                    {cleanedAmeneties?.map((item) => {
+                      return (
+                        <div className="card">
+                          <div className="header border-b border-gray-500 w-fit px-4 pb-2">
+                            <h1 className="title text-gray-800 font-medium">
+                              {item.title}
+                            </h1>
                           </div>
-                        })}
-                      </div>
-
-                    </div>
-                  })}
-                </div> : <h1 className="mt-[-10px] text-lg text-gray-500 border border-dashed border-gray-300 px-4 py-1 rounded-full">None</h1>}
+                          <div className="contnet-main-container mt-4 space-y-2 text-gray-400">
+                            {item.data.map((i) => {
+                              return (
+                                <div className="content-contaier ">
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="checkbox"
+                                      checked
+                                      className="accent-amber-700"
+                                    />
+                                    <h1>{i}</h1>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <h1 className="mt-[-10px] text-lg text-gray-500 border border-dashed border-gray-300 px-4 py-1 rounded-full">
+                    None
+                  </h1>
+                )}
               </div>
-            </div>
+            </div> */}
             <div className="price-container">
               <h1 className="text-gray-800 font-medium">Price per night</h1>
-              <input type="number" className="hotelAddInput" name="pricePerNight" value={formData.pricePerNight} onChange={(e) => handleInputChange(e)} />
+              <input
+                type="number"
+                className="hotelAddInput"
+                name="pricePerNight"
+                value={formData.pricePerNight}
+                onChange={(e) => handleInputChange(e)}
+              />
             </div>
             <div className="price-container">
               <h1 className="text-gray-800 font-medium">Rating</h1>
-              <input type="number" className="hotelAddInput" placeholder="eg : 4.5" name="rating" value={formData.rating} onChange={(e) => handleInputChange(e)} />
+              <input
+                type="number"
+                className="hotelAddInput"
+                placeholder="eg : 4.5"
+                name="rating"
+                value={formData.rating}
+                onChange={(e) => handleInputChange(e)}
+              />
             </div>
             <div className="price-container">
-              <h1 className="text-gray-800 font-medium">Distance from center</h1>
-              <input type="text" className="hotelAddInput" placeholder="eg : 2km" name="distanceFromCenter" value={formData.distanceFromCenter} onChange={(e) => handleInputChange(e)} />
+              <h1 className="text-gray-800 font-medium">
+                Distance from center
+              </h1>
+              <input
+                type="text"
+                className="hotelAddInput"
+                placeholder="eg : 2km"
+                name="distanceFromCenter"
+                value={formData.distanceFromCenter}
+                onChange={(e) => handleInputChange(e)}
+              />
             </div>
             <div className="price-container">
-              <h1 className="text-gray-800 font-medium">Location map link <span className="text-gray-400 font-light">(Iframe)</span></h1>
-              <input type="text" className="hotelAddInput" name="location" value={formData.location} onChange={(e) => handleLocationUrl(e)} />
+              <h1 className="text-gray-800 font-medium">
+                Location map link{" "}
+                <span className="text-gray-400 font-light">(Iframe)</span>
+              </h1>
+              <input
+                type="text"
+                className="hotelAddInput"
+                name="location"
+                value={formData.location}
+                onChange={(e) => handleLocationUrl(e)}
+              />
             </div>
-            {locationUrl && <div className="map-container">
-              <iframe src={locationUrl} frameborder="0" className="w-[100%] border border-gray-400 rounded" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>}
+            {locationUrl && (
+              <div className="map-container">
+                <iframe
+                  src={locationUrl}
+                  frameborder="0"
+                  className="w-[100%] border border-gray-400 rounded"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            )}
             <div className="price-container">
               <h1 className="text-gray-800 font-medium">Featured</h1>
 
               <div className="input-container ml-4 mt-2 flex items-center gap-5">
-
                 <div className="flex gap-2 items-center">
                   <input
                     type="radio"
@@ -401,26 +483,27 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                   <label className="text-gray-600">No</label>
                 </div>
               </div>
-
-
             </div>
           </div>
-
         </div>
-
       </section>
 
-
-      {isAmenityModal && <AmenityFormModal setIsAmenityModal={setIsAmenityModal} setForm={setFormData} formData={formData} />}
+      {isAmenityModal && (
+        <AmenityFormModal
+          setIsAmenityModal={setIsAmenityModal}
+          setForm={setFormData}
+          formData={formData}
+        />
+      )}
 
       {showModal && (
         <HotelAddModal
           type={modalType}
+          existingData={popularActivities}
           onClose={() => setShowModal(false)}
           onSave={handleSave}
         />
       )}
-
     </>
   );
 };

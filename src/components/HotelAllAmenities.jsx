@@ -33,7 +33,7 @@ const data1 = [
 ];
 
 const HotelAllAmenities = ({ data }) => {
-  console.log("amenities data : ", data?.amenities);
+  // console.log("amenities data : ", data?.amenities);
 
   // const mapped_ameniteis = data?.amenities?.map((item) => {
   //   return item;
@@ -48,13 +48,13 @@ const HotelAllAmenities = ({ data }) => {
         </header>
         <div className="content-container mt-3 grid grid-cols-3 gap-8">
           {data?.amenities?.map((item, index) => {
-            const list = item.data.split(","); // 👈 convert string to array
+            const list = item?.data?.split(","); // 👈 convert string to array
 
             return (
               <div key={index} className="card">
                 <h1 className="font-medium text-[#333333]">{item.name}</h1>
 
-                {list.map((listItem, i) => (
+                {list?.map((listItem, i) => (
                   <div
                     key={i}
                     className="list-container mt-3 w-full flex items-center gap-4"
@@ -65,15 +65,12 @@ const HotelAllAmenities = ({ data }) => {
                       readOnly
                       className="accent-amber-700"
                     />
-                    <h1 className="text-gray-500">
-                      {listItem.trim()}
-                    </h1>
+                    <h1 className="text-gray-500">{listItem?.trim()}</h1>
                   </div>
                 ))}
               </div>
             );
           })}
-
         </div>
       </section>
     </>

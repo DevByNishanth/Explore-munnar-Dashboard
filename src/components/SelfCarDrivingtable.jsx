@@ -122,7 +122,7 @@ const SelfCarDrivingtable = () => {
       const response = await axios.put(`${apiUrl}/api/self-drive/${item.id}`, {
         status: newStatus
       });
-      console.log("Response for status : ", response);
+      // console.log("Response for status : ", response);
       setOpenDropdownIndex(null);
       fetchBookingData()
     } catch (err) {
@@ -133,7 +133,7 @@ const SelfCarDrivingtable = () => {
 
   // search by name function
   const handleSearch = () => {
-    console.log("search functionality : ", searchTerm);
+    // console.log("search functionality : ", searchTerm);
     if (searchTerm == "") {
       setFilteredData(data);
       return;
@@ -169,7 +169,7 @@ const SelfCarDrivingtable = () => {
         "userName": "test user",
         "status": status
       })
-      console.log("response for self car driving: ", res.data.data.data)
+      // console.log("response for self car driving: ", res.data.data.data)
 
       setData(res.data.data.data);
       setFilteredData(res.data.data.data);

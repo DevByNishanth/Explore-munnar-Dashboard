@@ -360,8 +360,8 @@ const tableData = [
   },
 ];
 const BookedBikeRentalsTable = () => {
-  // Auth 
-  const apiUrl = import.meta.env.VITE_API_URL
+  // Auth
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // states
   const [openDropDownIndex, setOpenDropdownIndex] = useState(null);
@@ -370,8 +370,8 @@ const BookedBikeRentalsTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [data, setData] = useState([]);
-  const [paginationData, setPaginationData] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
+  const [paginationData, setPaginationData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   // ref's
   const dropdownRef = useRef(null);
@@ -379,15 +379,12 @@ const BookedBikeRentalsTable = () => {
   // useEffect's
 
   useEffect(() => {
-    fetchBookingData()
-  }, [])
-
+    fetchBookingData();
+  }, []);
 
   useEffect(() => {
     handleSearch();
   }, [searchTerm]);
-
-
 
   useEffect(() => {
     handlerFilter();
@@ -413,50 +410,52 @@ const BookedBikeRentalsTable = () => {
   };
 
   async function fetchBookingData() {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const res = await axios.post(`${apiUrl}/api/bike-rentals-list`, {
-        "limit": 10,
-        "page": 1,
-        "userName": "test user",
-        "status": status
-      })
+        limit: 10,
+        page: 1,
+        userName: "test user",
+        status: status,
+      });
       // console.log("response : ", res.data.data.data)
       setData(res.data.data.data);
       setFilteredData(res.data.data.data);
-      setPaginationData(res.data.data.pagination)
-      setIsLoading(false)
-
+      setPaginationData(res.data.data.pagination);
+      setIsLoading(false);
     } catch (err) {
-      setIsLoading(false)
-      console.error("error occured while fetching bike rentals booking data : ", err.message)
+      setIsLoading(false);
+      console.error(
+        "error occured while fetching bike rentals booking data : ",
+        err.message
+      );
     }
   }
 
-  const handleStatusChange = async (item, newStatus,) => {
-
+  const handleStatusChange = async (item, newStatus) => {
     // const updatedData = [...tableData];
     // updatedData[index].status = newStatus;
     // // setTableData(updatedData);
 
-
     try {
-      const response = await axios.put(`${apiUrl}/api/bike-rentals/${item.id}`, {
-        status: newStatus
-      });
+      const response = await axios.put(
+        `${apiUrl}/api/bike-rentals/${item.id}`,
+        {
+          status: newStatus,
+        }
+      );
       console.log("Response for status : ", response);
       setOpenDropdownIndex(null);
-      fetchBookingData()
+      fetchBookingData();
     } catch (err) {
-      console.error("Error occured while changing status : ", err.message)
+      console.error("Error occured while changing status : ", err.message);
     }
-
   };
 
   // search by name function
   const handleSearch = () => {
-    console.log("search functionality : ", searchTerm);
+    // console.log("search functionality : ", searchTerm);
     if (searchTerm == "") {
       setFilteredData(data);
       return;
@@ -482,7 +481,6 @@ const BookedBikeRentalsTable = () => {
     setFilteredData(filteredData);
   };
 
-
   return (
     <>
       <section>
@@ -505,8 +503,9 @@ const BookedBikeRentalsTable = () => {
               >
                 {status ? status : "Status"}{" "}
                 <ChevronDown
-                  className={`${isStautusDropdown ? "rotate-180" : "rotate-0"
-                    } transition-all duration-300 `}
+                  className={`${
+                    isStautusDropdown ? "rotate-180" : "rotate-0"
+                  } transition-all duration-300 `}
                 />
               </button>
               {isStautusDropdown && (
@@ -572,9 +571,11 @@ const BookedBikeRentalsTable = () => {
                   return (
                     <tr
                       key={index}
-                      className={` ${tableData.length - 1 == index ? "" : "border-b"
-                        }   border-gray-200 text-md text-[#333333]  ${index % 2 == 0 ? "bg-gray-50" : ""
-                        } `}
+                      className={` ${
+                        tableData.length - 1 == index ? "" : "border-b"
+                      }   border-gray-200 text-md text-[#333333]  ${
+                        index % 2 == 0 ? "bg-gray-50" : ""
+                      } `}
                     >
                       <td className="pl-3 py-2">{item.name}</td>
                       <td className="pl-3">{item.from}</td>
@@ -588,17 +589,19 @@ const BookedBikeRentalsTable = () => {
                         <div className="relative">
                           <button
                             onClick={() => handleStatusClick(index)}
-                            className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${item.status.toLowerCase() == "pending"
-                              ? "px-2 py-1  text-black bg-red-200 "
-                              : item.status.toLowerCase() == "booked"
+                            className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${
+                              item.status.toLowerCase() == "pending"
+                                ? "px-2 py-1  text-black bg-red-200 "
+                                : item.status.toLowerCase() == "booked"
                                 ? " bg-green-200 text-black px-2 py-1 "
                                 : "bg-gray-200 px-2 py-1  text-black"
-                              }`}
+                            }`}
                           >
                             {item.status}
                             <ChevronDown
-                              className={`cursor-pointer transition-all duration-300 ${openDropDownIndex == index ? "rotate-180" : ""
-                                } `}
+                              className={`cursor-pointer transition-all duration-300 ${
+                                openDropDownIndex == index ? "rotate-180" : ""
+                              } `}
                             />
                           </button>
                           {openDropDownIndex == index && (
@@ -649,7 +652,6 @@ const BookedBikeRentalsTable = () => {
         </section>
       </section>
       {isLoading && <LoadingPage />}
-
     </>
   );
 };

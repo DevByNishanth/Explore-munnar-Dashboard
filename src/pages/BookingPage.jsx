@@ -39,7 +39,7 @@ const BookingPage = () => {
                 setSelectedTab("hotelsBookings");
               }}
             >
-              Hotel Bookings
+              Hotel Bookings{" "}
             </button>
             <button
               onClick={() => {
@@ -91,7 +91,7 @@ const BookingPage = () => {
             </button>
           </div>
           {/* table-container  */}
-          {console.log("selected tab : ", bookingSelectedTab)}
+          {/* {console.log("selected tab : ", bookingSelectedTab)} */}
           <div className="table-container">
             {bookingSelectedTab == "cabBookings" && <CabBookingTable />}
             {bookingSelectedTab == "hotelsBookings" && <BookedHotelsTable />}
@@ -102,7 +102,7 @@ const BookingPage = () => {
               <SelfCarDrivingtable />
             )}
             {bookingSelectedTab.toLowerCase() == "enquiries" && (
-              <EnquiriesTable/>
+              <EnquiriesTable />
             )}
           </div>
         </div>

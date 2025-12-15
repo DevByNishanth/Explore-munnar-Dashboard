@@ -62,7 +62,7 @@ const LiveInformationPage = () => {
     setLoading(true)
     try {
       const response = await axios.get(`${apiUrl}/api/news`);
-      console.log("Live information fetched successfully : ", response.data.data)
+      // console.log("Live information fetched successfully : ", response.data.data)
       setData(response.data.data);
       setLoading(false)
     } catch (error) {

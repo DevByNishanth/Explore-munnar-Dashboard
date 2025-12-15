@@ -1,9 +1,27 @@
-import React from 'react'
-import Sidebar from '../components/Sidebar'
-import { ChevronRight, Plus } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import BusTimingsTable from '../components/BusTimingsTable'
+import React, { useState } from "react";
+import Sidebar from "../components/Sidebar";
+import { ChevronRight, Plus } from "lucide-react";
+import { Link, useNavigate, useViewTransitionState } from "react-router-dom";
+import BusTimingsTable from "../components/BusTimingsTable";
+import BusTimingsForm from "../components/BusTimingsForm";
 const BusTimingsPage = () => {
+  // states
+  const [isForm, setIsForm] = useState(false);
+
+  // router dom elements
+  const navigate = useNavigate();
+
+  // functions
+  const onClose = () => {
+    setIsForm(false);
+    navigate(`/BusTimings`);
+  };
+
+  // handling editClick
+  const handleEdit = () => {
+    navigate(`/BusTimings?editMode="true"`);
+    setIsForm(true);
+  };
   return (
     <>
       <section className="flex items-start">
@@ -12,21 +30,31 @@ const BusTimingsPage = () => {
           {/* breadcrum-section  */}
           <div className="breadcrumbs-section flex items-center justify-between">
             <div className="flex items-center justify-between w-[100%]  text-gray-600">
-              <div className='flex items-center'>
+              <div className="flex items-center">
                 <Link to="/">Dashboard</Link> <ChevronRight />
-                <Link to="/BusTimings" className='font-medium text-black'>Bus Timings</Link>{" "}
+                <Link to="/BusTimings" className="font-medium text-black">
+                  Bus Timings
+                </Link>{" "}
               </div>
-              <button className='btn-green text-white py-2 rounded px-3 flex items-center gap-2 cursor-pointer'>
+              <button
+                onClick={() => {
+                  setIsForm(true);
+                }}
+                className="btn-green text-white py-2 rounded px-3 flex items-center gap-2 cursor-pointer"
+              >
                 <Plus />
-                Add Timing</button>
+                Add Timing
+              </button>
             </div>
           </div>
           {/* table section  */}
-          <BusTimingsTable />
+          <BusTimingsTable handleEdit={handleEdit} />
         </div>
       </section>
-    </>
-  )
-}
 
-export default BusTimingsPage
+      {isForm && <BusTimingsForm onClose={onClose} />}
+    </>
+  );
+};
+
+export default BusTimingsPage;

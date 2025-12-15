@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { Edit, Pencil, Trash, Trash2 } from "lucide-react";
 import HotelPrevImgComponent from "./HotelPrevImgComponent";
@@ -17,6 +17,10 @@ const HotelDetailsPage = () => {
   // Auth and tokens
   const apiUrl = import.meta.env.VITE_API_URL;
 
+  // router dom elements
+  const navigate = useNavigate();
+
+  // params
   const { id } = useParams();
 
   // states
@@ -29,11 +33,12 @@ const HotelDetailsPage = () => {
     setIsDelete(false);
   }
 
+  // Get hotels
   async function handleFetchHotels() {
     try {
       setIsLoading(true);
       const res = await axios.get(`${apiUrl}/api/hotel/${id}`);
-      console.log("hotel data fetched : ", res.data.data);
+      // console.log("hotel data fetched : ", res.data.data);
       setData(res.data.data);
       setIsLoading(false);
     } catch (err) {
@@ -41,6 +46,16 @@ const HotelDetailsPage = () => {
       setIsLoading(false);
     }
   }
+
+  // Delete Hotel
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(`${apiUrl}/api/hotel/${id}`);
+      navigate("/hotels");
+    } catch (err) {
+      console.error("Error occured while deleting hotel : ", err.message);
+    }
+  };
 
   // side effects
   useEffect(() => {
@@ -78,7 +93,9 @@ const HotelDetailsPage = () => {
         </div>
       </section>
 
-      {isDelete && <BusTimingsActionPopup onclose={onclose} />}
+      {isDelete && (
+        <BusTimingsActionPopup onclose={onclose} handleDelete={handleDelete} />
+      )}
       {isLoading && <LoadingPage />}
     </>
   );

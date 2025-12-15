@@ -1,7 +1,13 @@
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const HotelAddModal = ({ type, onClose, onSave }) => {
+const HotelAddModal = ({ type, onClose, onSave, existingData = [] }) => {
+  const [selected, setSelected] = useState([]);
+
+  useEffect(() => {
+    setSelected(existingData);
+  }, [existingData]);
+
   const activityOptions = [
     "Free WiFi",
     "Campfire",
@@ -29,7 +35,7 @@ const HotelAddModal = ({ type, onClose, onSave }) => {
   ];
 
   const options = type === "activities" ? activityOptions : amenityOptions;
-  const [selected, setSelected] = useState([]);
+  // const [selected, setSelected] = useState([]);
 
   const handleSelect = (item) => {
     setSelected((prev) =>
@@ -65,9 +71,10 @@ const HotelAddModal = ({ type, onClose, onSave }) => {
               <input
                 type="checkbox"
                 checked={selected.includes(item)}
+                className="accent-amber-700 scale-120"
                 onChange={() => handleSelect(item)}
-                className="accent-amber-700"
               />
+
               <span>{item}</span>
             </label>
           ))}

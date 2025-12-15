@@ -2,20 +2,26 @@ import React, { useState } from "react";
 import { UploadCloud } from "lucide-react";
 import ErrorPopup from "./ErrorPopup";
 
-export default function ActivityForm({ formData, setFormData, editMode, id, oldImages, setOldImages }) {
+export default function ActivityForm({
+  formData,
+  setFormData,
+  editMode,
+  id,
+  oldImages,
+  setOldImages,
+}) {
+  console.log("old images : ", oldImages);
+  // Auth
+  const apiUrl = import.meta.env.VITE_API_URL;
 
-  console.log("old images : ", oldImages)
-  // Auth 
-  const apiUrl = import.meta.env.VITE_API_URL
-
-  // states 
+  // states
   const [previewImages, setPreviewImages] = useState([null, null, null]);
 
-  const [images, setImages] = useState([null, null, null]);  // 3 images
-  const [mapImage, setMapImage] = useState(null);            // map image
-  const [isError, setIsError] = useState(false)
-  const [errMessage, setErrMessage] = useState("")
-  const [editedImages, setEditedImages] = useState([])
+  const [images, setImages] = useState([null, null, null]); // 3 images
+  const [mapImage, setMapImage] = useState(null); // map image
+  const [isError, setIsError] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
+  const [editedImages, setEditedImages] = useState([]);
 
   const activityTypes = ["Seasonal Activities", "Regular Activities"];
 
@@ -31,10 +37,10 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
     "Local Cultural Events",
   ];
 
-  // functions 
+  // functions
 
   function onClose() {
-    setIsError(false)
+    setIsError(false);
   }
 
   const handleChange = (e) => {
@@ -50,18 +56,17 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
 
     setFormData({
       ...formData,
-      [e.target.name]: value
+      [e.target.name]: value,
     });
   };
 
   const handleImageChange = (file, index) => {
-
-    if (!file) return
-    const maxSize = 3 * 1024 * 1024
+    if (!file) return;
+    const maxSize = 3 * 1024 * 1024;
 
     if (file.size > maxSize) {
-      setIsError(true)
-      setErrMessage("Please select an image smaller than 2 MB.")
+      setIsError(true);
+      setErrMessage("Please select an image smaller than 2 MB.");
       return;
     }
 
@@ -70,24 +75,22 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
     setImages(updated);
 
     const previewUrl = URL.createObjectURL(file);
-    setPreviewImages(prev => {
-      const arr = [...prev]
+    setPreviewImages((prev) => {
+      const arr = [...prev];
       arr[index] = previewUrl;
       return arr;
-    })
+    });
   };
 
-
-
-  // POST method 
+  // POST method
   const handlePost = async () => {
     const imageArr = images.map((item) => {
-      return item
-    })
+      return item;
+    });
 
     if (imageArr.includes(null)) {
       setIsError(true);
-      setErrMessage("Required 3 images")
+      setErrMessage("Required 3 images");
       return;
     }
     const fd = new FormData();
@@ -120,7 +123,7 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
     } catch (err) {
       console.error(err.message);
     }
-  }
+  };
 
   // Edit method
   const handleEdit = async () => {
@@ -154,39 +157,36 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
     } catch (err) {
       console.error(err.message);
     }
-  }
+  };
 
   const handleSubmit = async () => {
     if (editMode == "true") {
-      handleEdit()
+      handleEdit();
     } else {
       handlePost();
     }
-
   };
 
   const handleOldImageReplace = (file, index) => {
-  if (!file) return;
+    if (!file) return;
 
-  const newImageUrl = URL.createObjectURL(file);
+    const newImageUrl = URL.createObjectURL(file);
 
-  // Update the specific index
-  setOldImages(prev => {
-    const updated = [...prev];
-    updated[index] = {
-      ...updated[index],
-      file: file,        // store actual file for backend use
-      url: newImageUrl,  // preview URL
-    };
-    return updated;
-  });
-};
-
+    // Update the specific index
+    setOldImages((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        file: file, // store actual file for backend use
+        url: newImageUrl, // preview URL
+      };
+      return updated;
+    });
+  };
 
   return (
     <>
       <div className="bg-white overflow-auto w-[80%] pr-4 h-[calc(100vh-70px)] py-6 space-y-6 ">
-
         <h2 className="font-medium text-lg">Activity Information</h2>
 
         {/* Title */}
@@ -254,7 +254,9 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
         </div>
         {/* Location URL */}
         <div className="space-y-1">
-          <label className="font-medium">Location URL (Google Maps Embed URL)</label>
+          <label className="font-medium">
+            Location URL (Google Maps Embed URL)
+          </label>
 
           <input
             type="text"
@@ -268,7 +270,8 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
           {/* Preview iframe instead of image */}
           {formData.locationURL && (
             <iframe
-              src={formData.locationURL} FF
+              src={formData.locationURL}
+              FF
               className="mt-2 w-full h-40 rounded-md border"
               style={{ border: 0 }}
               loading="lazy"
@@ -286,12 +289,15 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
             value={formData.type}
             onChange={handleChange}
           >
-            <option value="" className="text-gray-500" disabled>Select category</option>
+            <option value="" className="text-gray-500" disabled>
+              Select category
+            </option>
             {categories.map((item) => (
               <>
-                <option key={item} value={item}>{item}</option>
+                <option key={item} value={item}>
+                  {item}
+                </option>
               </>
-
             ))}
           </select>
         </div>
@@ -307,7 +313,9 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
           >
             <option value="">Select type</option>
             {activityTypes.map((item) => (
-              <option key={item} value={item}>{item}</option>
+              <option key={item} value={item}>
+                {item}
+              </option>
             ))}
           </select>
         </div>
@@ -328,82 +336,93 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
         </div>
 
         {/* 3 Images */}
-        {editMode == "true" ? <div className="">
-          <label className="font-medium ">Edit Images</label>
-          <div className="img-container mt-4 grid grid-cols-3 gap-4">
-            {oldImages.map((item, index) => {
-              return (
-                <div key={index} className="group relative">
+        {editMode == "true" ? (
+          <div className="">
+            <label className="font-medium ">Edit Images</label>
+            <div className="img-container mt-4 grid grid-cols-3 gap-4">
+              {oldImages?.map((item, index) => {
+                return (
+                  <div key={index} className="group relative">
+                    {/* Hidden File Input */}
+                    <input
+                      type="file"
+                      id={`old-img-${index}`}
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) =>
+                        handleOldImageReplace(e.target.files[0], index)
+                      }
+                    />
 
-                  {/* Hidden File Input */}
+                    {/* Image Block */}
+                    <div className="img-container relative">
+                      <img
+                        src={item?.url}
+                        className="rounded-xl h-[200px] border border-gray-300  w-full"
+                      />
+
+                      <div className="tint absolute rounded-xl opacity-0 group-hover:opacity-100 top-0 right-0 left-0 bottom-0"></div>
+                    </div>
+
+                    {/* Edit Button */}
+                    <label
+                      htmlFor={`old-img-${index}`}
+                      className="edit-btn text-white opacity-0 group-hover:opacity-100 font-medium text-lg cursor-pointer underline absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]"
+                    >
+                      Edit
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-1">
+            <label className="font-medium ">Images (3 Required)</label>
+
+            <div className="grid grid-cols-1 mt-2 gap-4">
+              {[0, 1, 2].map((index) => (
+                <div
+                  key={index}
+                  className="border rounded-md flex flex-col items-center justify-center py-6 cursor-pointer relative overflow-hidden"
+                >
                   <input
                     type="file"
-                    id={`old-img-${index}`}
-                    accept="image/*"
                     className="hidden"
-                    onChange={(e) => handleOldImageReplace(e.target.files[0], index)}
+                    id={`img-${index}`}
+                    accept="image/*"
+                    onChange={(e) =>
+                      handleImageChange(e.target.files[0], index)
+                    }
                   />
 
-                  {/* Image Block */}
-                  <div className="img-container relative">
-                    <img src={item.url} className="rounded-xl h-[200px] border border-gray-300  w-full" />
-
-                    <div className="tint absolute rounded-xl opacity-0 group-hover:opacity-100 top-0 right-0 left-0 bottom-0"></div>
-                  </div>
-
-                  {/* Edit Button */}
                   <label
-                    htmlFor={`old-img-${index}`}
-                    className="edit-btn text-white opacity-0 group-hover:opacity-100 font-medium text-lg cursor-pointer underline absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]"
+                    htmlFor={`img-${index}`}
+                    className="cursor-pointer text-center w-full h-full flex flex-col items-center justify-center"
                   >
-                    Edit
+                    {previewImages?.[index] ? (
+                      <div className="w-[95%] mx-2 ">
+                        <img
+                          src={previewImages?.[index]}
+                          className="w-full h-[200px]  object-cover rounded-md"
+                        />
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-blue-600">
+                          Upload Image {index + 1}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          JPEG, PNG less than 3MB
+                        </p>
+                      </>
+                    )}
                   </label>
-
                 </div>
-              );
-            })}
-
+              ))}
+            </div>
           </div>
-        </div> : <div className="space-y-1">
-          <label className="font-medium ">Images (3 Required)</label>
-
-          <div className="grid grid-cols-1 mt-2 gap-4">
-            {[0, 1, 2].map((index) => (
-              <div
-                key={index}
-                className="border rounded-md flex flex-col items-center justify-center py-6 cursor-pointer relative overflow-hidden"
-              >
-                <input
-                  type="file"
-                  className="hidden"
-                  id={`img-${index}`}
-                  accept="image/*"
-                  onChange={(e) => handleImageChange(e.target.files[0], index)}
-                />
-
-                <label
-                  htmlFor={`img-${index}`}
-                  className="cursor-pointer text-center w-full h-full flex flex-col items-center justify-center"
-                >
-                  {previewImages?.[index] ? (
-                    <div className="w-[95%] mx-2 ">
-                      <img
-                        src={previewImages?.[index]}
-                        className="w-full h-[200px]  object-cover rounded-md"
-                      />
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-blue-600">Upload Image {index + 1}</p>
-                      <p className="text-xs text-gray-500">JPEG, PNG less than 3MB</p>
-                    </>
-                  )}
-                </label>
-              </div>
-            ))}
-          </div>
-
-        </div>}
+        )}
 
         {/* Submit */}
         <div className="flex justify-end">
@@ -417,6 +436,5 @@ export default function ActivityForm({ formData, setFormData, editMode, id, oldI
       </div>
       {isError && <ErrorPopup onClose={onClose} errMessage={errMessage} />}
     </>
-
   );
 }
