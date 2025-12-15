@@ -90,7 +90,8 @@ const HotelAddForm = () => {
     try {
       const res = await axios.get(`${apiUrl}/api/hotel/${hotelId}`);
       const hotel = res.data.data;
-
+     
+    
       setFormData({
         name: hotel.name || "",
         images: [], // files cannot be prefilled

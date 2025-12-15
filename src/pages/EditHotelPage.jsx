@@ -64,7 +64,7 @@ const EditHotelPage = () => {
         try {
             const res = await axios.get(`${apiUrl}/api/hotel/${id}`);
             const hotel = res.data.data;
-
+            console.log("hotel data : ", hotel)
             setFormData({
                 name: hotel.name || "",
                 images: [],
@@ -74,7 +74,7 @@ const EditHotelPage = () => {
                 distanceFromCenter: hotel.distanceFromCenter || "",
                 stayType: hotel.stayType || "",
                 locationName: hotel.location || "",
-                locationUrl: hotel.locationUrl || "",
+                locationUrl: hotel.location_url || "",
                 isFeatured: hotel.isFeatured ? "Yes" : "No",
                 amenities: hotel.amenities || [],
                 experiences: hotel.experiences || [],
@@ -346,7 +346,7 @@ const EditHotelPage = () => {
                                 onChange={(e) => handleInputChange(e)}
                             />
                         </div>
-                        <div className="price-container">
+                        {/* <div className="price-container">
                             <h1 className="text-gray-800 font-medium">
                                 Distance from center
                             </h1>
@@ -358,7 +358,7 @@ const EditHotelPage = () => {
                                 value={formData.distanceFromCenter}
                                 onChange={(e) => handleInputChange(e)}
                             />
-                        </div>
+                        </div> */}
                         <div className="price-container">
                             <h1 className="text-gray-800 font-medium">
                                 Location name{" "}
