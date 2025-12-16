@@ -72,7 +72,7 @@ const ActivitiesDetailsPage = () => {
             setIsLoading(false)
         }
     }
-    // console.log("activity data : ", activityData.images[0].url) 
+    console.log("activity data 11: ", activityData) 
     return (
         <>
             <section className="flex items-start">

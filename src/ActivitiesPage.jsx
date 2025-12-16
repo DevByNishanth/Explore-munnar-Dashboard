@@ -158,9 +158,7 @@ const ActivitiesPage = () => {
     setFormatedData(filteredData);
   };
 
-
-  // console.log("filtered data: ", formatedData)
-  console.log("data: ", data)
+ 
 
   return (
     <>
