@@ -30,11 +30,10 @@ const BookingPage = () => {
           {/* tabs */}
           <div className="tab-container  w-fit px-2 py-2 border-b-gray-200 bg-gray-100 rounded-full mt-6 flex gap-4 text-gray-400">
             <button
-              className={`w-fit px-4 py-2 cursor-pointer ${
-                bookingSelectedTab.toLowerCase() == "hotelsbookings"
+              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab.toLowerCase() == "hotelsbookings"
                   ? "font-medium bg-white shadow text-black rounded-full"
                   : ""
-              }`}
+                }`}
               onClick={() => {
                 setSelectedTab("hotelsBookings");
               }}
@@ -45,11 +44,10 @@ const BookingPage = () => {
               onClick={() => {
                 setSelectedTab("cabBookings");
               }}
-              className={`w-fit px-4 py-2 cursor-pointer  ${
-                bookingSelectedTab.toLowerCase() == "cabbookings"
+              className={`w-fit px-4 py-2 cursor-pointer  ${bookingSelectedTab.toLowerCase() == "cabbookings"
                   ? "font-medium bg-white shadow text-black rounded-full"
                   : ""
-              }`}
+                }`}
             >
               Cab Bookings
             </button>
@@ -57,11 +55,10 @@ const BookingPage = () => {
               onClick={() => {
                 setSelectedTab("bikeRentals");
               }}
-              className={`w-fit px-4 py-2 cursor-pointer ${
-                bookingSelectedTab.toLowerCase() == "bikerentals"
+              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab.toLowerCase() == "bikerentals"
                   ? "font-medium bg-white shadow text-black rounded-full"
                   : ""
-              }`}
+                }`}
             >
               Bike Rentals
             </button>
@@ -69,11 +66,10 @@ const BookingPage = () => {
               onClick={() => {
                 setSelectedTab("selfCarDriving");
               }}
-              className={`w-fit px-4 py-2 cursor-pointer ${
-                bookingSelectedTab.toLowerCase() == "selfcardriving"
+              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab.toLowerCase() == "selfcardriving"
                   ? "font-medium bg-white shadow text-black rounded-full"
                   : ""
-              }`}
+                }`}
             >
               Self Car Driving
             </button>
@@ -81,11 +77,10 @@ const BookingPage = () => {
               onClick={() => {
                 setSelectedTab("enquiries");
               }}
-              className={`w-fit px-4 py-2 cursor-pointer ${
-                bookingSelectedTab.toLowerCase() == "enquiries"
+              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab.toLowerCase() == "enquiries"
                   ? "font-medium bg-white shadow text-black rounded-full"
                   : ""
-              }`}
+                }`}
             >
               Enquiries
             </button>
