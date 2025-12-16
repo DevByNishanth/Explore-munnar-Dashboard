@@ -5,6 +5,8 @@ import h3 from "../assets/h3.jpg";
 import noData from "../assets/noData.svg";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import HotelCanvas from "./HotelCanvas";
+import axios from "axios";
+import LoadingPage from "../pages/LoadingPage";
 const tableheader = [
   "Hotel",
   "Name",
@@ -132,6 +134,9 @@ const tableData = [
 ];
 
 const BookedHotelsTable = () => {
+  // Auth
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   // states
   const [isCanvas, setIsCanvas] = useState(false);
   const [canvasData, setCanvasData] = useState(null);
@@ -140,9 +145,16 @@ const BookedHotelsTable = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [status, setStatus] = useState(null);
+  const [bookingData, setBookingData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // ref's
   const dropdownRef = useRef(null);
+
+  // side effects
+  useEffect(() => {
+    getHotelBookings();
+  }, []);
 
   // handle click outside
   useEffect(() => {
@@ -168,16 +180,38 @@ const BookedHotelsTable = () => {
 
   // functions
 
+  async function getHotelBookings() {
+    try {
+      setIsLoading(true);
+      const reponse = await axios.post(`${apiUrl}/api/hotel-booking-list`, {
+        pageNumber: 1,
+        pageSize: 10,
+        search: "",
+        status: "",
+      });
+      console.log("hotel bookings : ", reponse.data.data.data);
+      setBookingData(reponse.data.data.data);
+      setFilteredData(reponse.data.data.data);
+      setIsLoading(false);
+    } catch (err) {
+      console.error(
+        "Error occured while fetching hotel bookings data : ",
+        err.message
+      );
+      setIsLoading(false);
+    }
+  }
+
   // Search handler ----------------->
   const handleSearch = () => {
     if (searchQuery == "") {
-      setFilteredData(tableData);
+      setFilteredData(bookingData);
       return;
     }
-    const filteredData = tableData.filter((item) => {
+    const filteredData = bookingData?.filter((item) => {
       return (
-        item.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.hotel_name.toLowerCase().includes(searchQuery.toLowerCase())
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.hotelName.toLowerCase().includes(searchQuery.toLowerCase())
       );
     });
     setFilteredData(filteredData);
@@ -186,16 +220,26 @@ const BookedHotelsTable = () => {
   // status filter handler ---------------->
 
   const handlerFilter = () => {
+    console.log("status : ", status);
     if (status == null) {
-      return;
-    } else if (status.toLowerCase() == "all") {
-      setFilteredData(tableData);
+      setFilteredData(bookingData);
+    } else if (status.toLowerCase() == "") {
+      setFilteredData(bookingData);
       return;
     }
-    const filteredData = tableData.filter(
-      (item) => item.status.toLowerCase() == status.toLowerCase()
+    const filteredData = bookingData.filter(
+      (item) => item?.status?.toLowerCase() == status.toLowerCase()
     );
     setFilteredData(filteredData);
+    console.log("filtered data : ", filteredData);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const year = date.getUTCFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -216,8 +260,9 @@ const BookedHotelsTable = () => {
           >
             {status ? status : "Status"}{" "}
             <ChevronDown
-              className={`${isStautusDropdown ? "rotate-180" : "rotate-0"
-                } transition-all duration-300 `}
+              className={`${
+                isStautusDropdown ? "rotate-180" : "rotate-0"
+              } transition-all duration-300 `}
             />
           </button>
           {isStautusDropdown && (
@@ -227,7 +272,7 @@ const BookedHotelsTable = () => {
             >
               <button
                 onClick={() => {
-                  setStatus("all");
+                  setStatus("");
                   setIsStatusDropdown(false);
                 }}
                 className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
@@ -282,33 +327,36 @@ const BookedHotelsTable = () => {
                 return (
                   <tr
                     key={index}
-                    className={` ${tableData.length - 1 == index ? "" : "border-b"
-                      }   border-gray-200 text-md text-[#333333]  ${index % 2 == 0 ? "bg-gray-50" : ""
-                      } `}
+                    className={` ${
+                      bookingData.length - 1 == index ? "" : "border-b"
+                    }   border-gray-200 text-md text-[#333333]  ${
+                      index % 2 == 0 ? "bg-gray-50" : ""
+                    } `}
                   >
                     <td className="container-1 pl-2 py-3">
                       <div className="flex items-center gap-4">
                         <img
-                          src={item.hotelImg}
+                          src={item?.image?.url}
                           className="w-[120px] h-[60px] rounded-lg object-fit "
                         />
                         <div>
                           <h1 className="text-green-700">#1234</h1>
-                          <h1>{item.hotel_name.slice(0, 15)}..</h1>
+                          <h1>{item.hotelName.slice(0, 15)}..</h1>
                         </div>
                       </div>
                     </td>
-                    <td className="pl-3">{item.customer_name}</td>
+                    <td className="pl-3">{item.name}</td>
                     <td className="pl-3">{item.phone}</td>
                     <td className="pl-3">{item.mail}</td>
-                    <td className="pl-3">{item.checkIn}</td>
-                    <td className="pl-3">{item.checkOut}</td>
+                    <td className="pl-3">{formatDate(item.checkIn)}</td>
+                    <td className="pl-3">{formatDate(item.checkOut)}</td>
                     <td className="pl-3">
                       <button
-                        className={`${item.status.toLowerCase() == "pending"
+                        className={`${
+                          item.status.toLowerCase() == "pending"
                             ? "text-rose-600  "
                             : "text-green-600 -white"
-                          } text-center py-1 rounded-lg `}
+                        } text-center py-1 rounded-lg `}
                       >
                         {item.status}
                       </button>
@@ -348,8 +396,10 @@ const BookedHotelsTable = () => {
           setIsCanvas={setIsCanvas}
           isCanvas={isCanvas}
           canvasData={canvasData}
+          getHotelBookings={getHotelBookings}
         />
       )}
+      {isLoading && <LoadingPage />}
     </>
   );
 };

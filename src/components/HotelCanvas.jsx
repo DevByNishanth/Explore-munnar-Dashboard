@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import h3 from "../assets/h3.jpg";
 import { ChevronDown, ChevronUp, Pencil } from "lucide-react";
-const HotelCanvas = ({ setIsCanvas, canvasData }) => {
+import axios from "axios";
+const HotelCanvas = ({ setIsCanvas, canvasData, getHotelBookings }) => {
+  // Auth
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   // ref's
   const canvasRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -25,15 +29,27 @@ const HotelCanvas = ({ setIsCanvas, canvasData }) => {
     };
   }, []);
 
+  // functions
+  const handleStatusEdit = async (selectedSatus) => {
+    try {
+      const response = await axios.put(
+        `${apiUrl}/api/hotel-booking/${canvasData.id}`,
+        { status: selectedSatus }
+      );
+      getHotelBookings();
+    } catch (err) {
+      console.error("Error occured while editing status : ", err);
+    }
+  };
   return (
     <>
       <section
         ref={canvasRef}
-        className="bg-white w-[55%] z-20 absolute right-0 top-0 h-[100vh] p-4"
+        className="bg-white w-[65%] z-20 absolute right-0 top-0 h-[100vh] p-4"
       >
         <div className="hotel-image-slider ">
           <img
-            src={canvasData?.hotelImg}
+            src={canvasData?.image?.url}
             className="h-[calc(100vh-400px)] w-[100%] object-cover rounded-lg "
           />
         </div>
@@ -57,17 +73,19 @@ const HotelCanvas = ({ setIsCanvas, canvasData }) => {
               <table>
                 <tr>
                   <td className="text-black font-medium">Hotel Name : </td>
-                  <td className="pl-5">{canvasData?.hotel_name}</td>
+                  <td className="pl-5">{canvasData?.hotelName}</td>
                 </tr>
                 <tr>
                   <td className="text-black font-medium pt-3">
                     Room / night :{" "}
                   </td>
-                  <td className="pl-5 pt-3">{canvasData?.price}</td>
+                  <td className="pl-5 pt-3">{canvasData?.pricePerNight}</td>
                 </tr>
                 <tr>
                   <td className="text-black font-medium pt-3">Phone : </td>
-                  <td className="pl-5 pt-3">{canvasData?.hotelNumber}</td>
+                  <td className="pl-5 pt-3">
+                    {canvasData?.holtePhone || "--"}
+                  </td>
                 </tr>
               </table>
               <h1 className="mt-4 w-[100%]">{canvasData?.address}</h1>
@@ -81,7 +99,7 @@ const HotelCanvas = ({ setIsCanvas, canvasData }) => {
               <table>
                 <tr>
                   <td className="text-black font-medium">Name : </td>
-                  <td className="pl-5">{canvasData?.customer_name}</td>
+                  <td className="pl-5">{canvasData?.name}</td>
                 </tr>
                 <tr>
                   <td className="text-black font-medium pt-3">Phone</td>
@@ -89,7 +107,7 @@ const HotelCanvas = ({ setIsCanvas, canvasData }) => {
                 </tr>
                 <tr>
                   <td className="text-black font-medium pt-3">Email : </td>
-                  <td className="pl-5 pt-3">{canvasData?.mail}</td>
+                  <td className="pl-5 pt-3">{canvasData?.email}</td>
                 </tr>
                 <tr>
                   <td className="text-black font-medium pt-3">check - In : </td>
@@ -137,6 +155,7 @@ const HotelCanvas = ({ setIsCanvas, canvasData }) => {
               <button
                 onClick={() => {
                   setStatus("booked");
+                  handleStatusEdit("Booked");
                   setIsStatusDropdown(false);
                 }}
                 className="w-[100%] text-left px-2 hover:bg-gray-200 outline-none py-2 cursor-pointer"
@@ -146,6 +165,7 @@ const HotelCanvas = ({ setIsCanvas, canvasData }) => {
               <button
                 onClick={() => {
                   setStatus("pending");
+                  handleStatusEdit("Pending");
                   setIsStatusDropdown(false);
                 }}
                 className="w-[100%] text-left px-2 hover:bg-gray-200 outline-none py-2 cursor-pointer"
@@ -155,6 +175,7 @@ const HotelCanvas = ({ setIsCanvas, canvasData }) => {
               <button
                 onClick={() => {
                   setStatus("canceled");
+                  handleStatusEdit("Canceled");
                   setIsStatusDropdown(false);
                 }}
                 className="w-[100%] text-left px-2 hover:bg-gray-200 outline-none py-2 cursor-pointer"
