@@ -13,10 +13,10 @@ const AddedHotels = ({ data }) => {
           return (
             <div className="w-full h-fit bg-gray-50 px-3 py-3 rounded-2xl shadow-md">
               {/* Image */}
-              <div className="overflow-hidden rounded-xl h-[40%]">
+              <div className="overflow-hidden  rounded-xl h-[230px]">
                 <img
                   src={item?.images?.[0]?.url}
-                  alt="Misty Hill Eco Retreat"
+                  alt=""
                   className="w-full h-[100%] object-cover"
                 />
               </div>
