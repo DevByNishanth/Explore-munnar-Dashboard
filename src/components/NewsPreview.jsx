@@ -1,13 +1,33 @@
 import { Trash2, UserStar } from "lucide-react";
 import React, { useState } from "react";
 import BusTimingsActionPopup from "./BusTimingsActionPopup";
+import axios from "axios";
 
 const NewsPreview = ({ news, setIsPreviewModal }) => {
+  // Auth
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  // states
   const [isDelete, setIsDelete] = useState(false);
 
+  // functions
+
   function onclose() {
-    setIsDelete(false)
+    setIsDelete(false);
   }
+
+  async function handleDelete() {
+    const id = news?.id;
+    try {
+      const res = await axios.delete(`${apiUrl}/api/news/:${id}`);
+    } catch (err) {
+      console.error(
+        "Error occured while deleting Live information : ",
+        err.message
+      );
+    }
+  }
+
   return (
     <>
       <div
@@ -25,19 +45,25 @@ const NewsPreview = ({ news, setIsPreviewModal }) => {
           <h1 className="mb-2 font-medium text-xl">{news.heading}</h1>
           {/* <h1 className="text-gray-600">{news.detail}</h1> */}
 
-          {news.detail.split('. ').map((sentence, index) => {
-            return <h1 className="text-gray-600 text-justify mb-2">{sentence}.</h1>
+          {news.detail.split(". ").map((sentence, index) => {
+            return (
+              <h1 className="text-gray-600 text-justify mb-2">{sentence}.</h1>
+            );
           })}
         </div>
         <div className="btn-container flex justify-end">
-          <button onClick={() => setIsDelete(true)} className="bg-amber-700 flex items-center gap-2 text-white px-4 py-2 rounded-md cursor-pointer">
+          <button
+            onClick={() => setIsDelete(true)}
+            className="bg-amber-700 flex items-center gap-2 text-white px-4 py-2 rounded-md cursor-pointer"
+          >
             <Trash2 className="text-white w-5 h-5" />
             Delete
           </button>
         </div>
       </section>
-      {isDelete && <BusTimingsActionPopup onclose={onclose} />}
-
+      {isDelete && (
+        <BusTimingsActionPopup onclose={onclose} handleDelete={handleDelete} />
+      )}
     </>
   );
 };

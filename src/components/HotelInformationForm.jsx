@@ -32,6 +32,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
   //   amenities: [],
   //   experiences: [] // popular faciliteis
   // })
+
   const [imgFiles, setImgFiles] = useState([]);
   const [previewUrls, setpreviewUrls] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -196,6 +197,8 @@ const HotelInformationForm = ({ setFormData, formData }) => {
 
     setPopularActivities(normalized);
   }, [formData.experiences]);
+
+  console.log("form data : ", formData)
 
   return (
     <>

@@ -20,7 +20,6 @@ const LiveInformationForm = () => {
     }));
   };
 
-
   // functions
   //   function to upload a new file or list of files
   const handleFileChange = (e) => {
@@ -56,8 +55,6 @@ const LiveInformationForm = () => {
     setImages((prev) => [...prev, ...mapped]);
   };
 
-
-
   //   function to remeve a file
   function handleFileRemove(fileToRemove) {
     setImages((prev) =>
@@ -92,7 +89,6 @@ const LiveInformationForm = () => {
     }
   };
 
-
   return (
     <>
       <section className="mt-6">
@@ -101,8 +97,10 @@ const LiveInformationForm = () => {
         </div>
 
         <div className="form-container w-[380px] mt-4">
-          <form className="space-y-4 relative h-[calc(100vh-120px)]" onSubmit={handleSubmit}>
-
+          <form
+            className="space-y-4 relative h-[calc(100vh-120px)]"
+            onSubmit={handleSubmit}
+          >
             {/* TITLE */}
             <div className="title-container">
               <h1 className="text-gray-800 font-medium mb-2">Title</h1>
@@ -161,7 +159,8 @@ const LiveInformationForm = () => {
                 <div className="img-input-container relative mt-2 bg-gray-50 border border-gray-200 rounded-lg text-sm px-4 w-full text-center py-4">
                   <UploadCloud className="text-gray-400 w-9 h-9 mx-auto" />
                   <p>
-                    <span className="text-blue-500">Click to upload</span> or drag & drop
+                    <span className="text-blue-500">Click to upload</span> or
+                    drag & drop
                   </p>
                   <p className="text-gray-400">JPEG, PNG, WEBP, AVIF</p>
 
@@ -196,15 +195,17 @@ const LiveInformationForm = () => {
                 onChange={handleInputChange}
                 className="w-full outline-none border rounded border-gray-400 py-2 px-3"
               >
-                <option value="" disabled>Select Category</option>
-                <option value="roadsAndtransportConditions">
+                <option value="" disabled>
+                  Select Category
+                </option>
+                <option value="Roads And Transports Conditions">
                   Roads and Transport conditions
                 </option>
-                <option value="emergencyAlerts">Emergency Alerts</option>
-                <option value="localEventsAndFestivals">
+                <option value="Emergency Alerts">Emergency Alerts</option>
+                <option value="Local Events And Festivals">
                   Local Events and Festivals
                 </option>
-                <option value="travelRestictionsAndHealthGuidelines">
+                <option value="Travel Restictions And Health Guidelines">
                   Travel Restrictions & Health Guidelines
                 </option>
               </select>
@@ -216,7 +217,6 @@ const LiveInformationForm = () => {
                 Update
               </button>
             </div>
-
           </form>
         </div>
       </section>

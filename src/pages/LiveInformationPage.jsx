@@ -7,7 +7,7 @@ import newsImg2 from "../assets/newsImg2.jpeg";
 import newsImg3 from "../assets/newsImg3.jpeg";
 import NewsPreview from "../components/NewsPreview";
 import axios from "axios";
-import LoadingPage from '../pages/LoadingPage'
+import LoadingPage from "../pages/LoadingPage";
 
 const liveInformationData = [
   {
@@ -42,35 +42,36 @@ const liveInformationData = [
   },
 ];
 const LiveInformationPage = () => {
-  // Auth 
-  const apiUrl = import.meta.env.VITE_API_URL
-
+  // Auth
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // states
   const [news, setNews] = useState(null);
   const [isPreviewModal, setIsPreviewModal] = useState(false);
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // handling sideEffects 
+  // handling sideEffects
   useEffect(() => {
-    fetchLiveInfo()
-  }, [])
+    fetchLiveInfo();
+  }, []);
 
-  // functions 
+  // functions
   const fetchLiveInfo = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await axios.get(`${apiUrl}/api/news`);
       // console.log("Live information fetched successfully : ", response.data.data)
       setData(response.data.data);
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
-      setLoading(false)
-      console.error("Error occured while fetching live information : ", error.message)
+      setLoading(false);
+      console.error(
+        "Error occured while fetching live information : ",
+        error.message
+      );
     }
-  }
-
+  };
 
   return (
     <>
@@ -106,6 +107,7 @@ const LiveInformationPage = () => {
                   />
                   <div className="content-container mt-2">
                     <h1 className="font-medium text-xl">{item.heading}</h1>
+                    <h1 className="font-medium text-xl">{item.id}</h1>
                     <p className="description mt-2 text-gray-600 text-justify text-[16px]">
                       {item.detail.slice(0, 100)}...
                     </p>
