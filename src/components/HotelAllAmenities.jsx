@@ -33,12 +33,7 @@ const data1 = [
 ];
 
 const HotelAllAmenities = ({ data }) => {
-  // console.log("amenities data : ", data?.amenities);
 
-  // const mapped_ameniteis = data?.amenities?.map((item) => {
-  //   return item;
-  // })
-  // console.log("mapped ameniteis : ", mapped_ameniteis)
 
   return (
     <>
@@ -72,6 +67,14 @@ const HotelAllAmenities = ({ data }) => {
             );
           })}
         </div>
+      </section>
+
+      {/* loaction container  */}
+      <section className="mt-6">
+        <header className="mb-3">
+          <h1 className="text-[#333333] font-medium text-xl">Location</h1>
+        </header>
+        <iframe src={data?.location_url} frameborder="0" className="rounded-xl w-[100%] h-[240px]"></iframe>
       </section>
     </>
   );
