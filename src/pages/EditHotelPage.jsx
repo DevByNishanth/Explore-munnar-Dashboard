@@ -235,8 +235,8 @@ const EditHotelPage = () => {
     return (formData.amenities || [])
       .filter((g) => (g.data || []).length > 0)
       .map((g) => ({
-        name: g.title,
-        data: (g.data || []).join(", "),
+        title: g.title,
+        data: g.data || [],
       }));
   };
 
@@ -253,7 +253,7 @@ const EditHotelPage = () => {
         distanceFromCenter: formData.distanceFromCenter,
         stayType: formData.stayType,
         location: formData.locationName,
-        location_url: formData.locationUrl,
+        locationUrl: formData.locationUrl,
         isFeatured: formData.isFeatured === "Yes",
         amenities: amenitiesPayload,
 
