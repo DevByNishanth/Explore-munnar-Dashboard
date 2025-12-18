@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { UploadCloud, X, Plus } from "lucide-react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LiveInformationForm = () => {
+  const navigate = useNavigate()
+
   const [previewUrls, setpreviewUrls] = useState([]);
   const [imgFiles, setImgFiles] = useState([]);
   const [images, setImages] = useState([]); // each item = { file, url }
@@ -81,7 +84,7 @@ const LiveInformationForm = () => {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      alert("Uploaded Successfully!");
+      navigate(`/liveInformation`)
       // console.log(res.data);
     } catch (error) {
       console.error(error);
@@ -198,14 +201,17 @@ const LiveInformationForm = () => {
                 <option value="" disabled>
                   Select Category
                 </option>
-                <option value="Roads And Transports Conditions">
-                  Roads and Transport conditions
+                <option value="Roads And Transport Conditions">
+                  Roads And Transport conditions
                 </option>
                 <option value="Emergency Alerts">Emergency Alerts</option>
-                <option value="Local Events And Festivals">
+                <option value="Local Events & Festivals">
                   Local Events and Festivals
                 </option>
-                <option value="Travel Restictions And Health Guidelines">
+                <option value="Travel Restrictions & Health Guidelines">
+                  Travel Restrictions & Health Guidelines
+                </option>
+                <option value="Travel Restrictions & Health Guidelines">
                   Travel Restrictions & Health Guidelines
                 </option>
               </select>

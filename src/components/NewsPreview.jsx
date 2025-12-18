@@ -20,6 +20,7 @@ const NewsPreview = ({ news, setIsPreviewModal }) => {
     const id = news?.id;
     try {
       const res = await axios.delete(`${apiUrl}/api/news/${id}`);
+      window.location.reload()
     } catch (err) {
       console.error(
         "Error occured while deleting Live information : ",

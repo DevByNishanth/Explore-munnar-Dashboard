@@ -8,6 +8,7 @@ import newsImg3 from "../assets/newsImg3.jpeg";
 import NewsPreview from "../components/NewsPreview";
 import axios from "axios";
 import LoadingPage from "../pages/LoadingPage";
+import noData from '../assets/noData.svg'
 
 const liveInformationData = [
   {
@@ -91,30 +92,35 @@ const LiveInformationPage = () => {
             </Link>
           </div>
           <div className="news-container mt-6 grid grid-cols-3 gap-4 max-h-[calc(100vh-120px)] overflow-auto">
-            {data.map((item, index) => {
-              return (
-                <div
-                  onClick={() => {
-                    setNews(item);
-                    setIsPreviewModal(true);
-                  }}
-                  className="news-card border border-gray-300 h-[340px] w-full p-2 hover:shadow cursor-pointer rounded-lg shadow-gray-400"
-                >
-                  <img
-                    src={item.imageUrl}
-                    alt="News Image"
-                    className="w-[100%] object-cover rounded-lg h-[180px]"
-                  />
-                  <div className="content-container mt-2">
-                    <h1 className="font-medium text-xl">{item.heading}</h1>
-                    <h1 className="font-medium text-xl">{item.id}</h1>
-                    <p className="description mt-2 text-gray-600 text-justify text-[16px]">
-                      {item.detail.slice(0, 100)}...
-                    </p>
+            {data.length > 0 ? (
+              data.map((item, index) => {
+                return (
+                  <div
+                    onClick={() => {
+                      setNews(item);
+                      setIsPreviewModal(true);
+                    }}
+                    className="news-card border border-gray-300 h-[340px] w-full p-2 hover:shadow cursor-pointer rounded-lg shadow-gray-400"
+                  >
+                    <img
+                      src={item.imageUrl}
+                      alt="News Image"
+                      className="w-[100%] object-cover rounded-lg h-[180px]"
+                    />
+                    <div className="content-container mt-2">
+                      <h1 className="font-medium text-xl">{item.heading}</h1>
+                      <h1 className="font-medium text-xl">{item.id}</h1>
+                      <p className="description mt-2 text-gray-600 text-justify text-[16px]">
+                        {item.detail.slice(0, 100)}...
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (<div className="text-center">
+              <img src={noData} className="w-[300px] h-[300px]" />
+              <h1 className="font-medium mt-[-40px] text-lg text-[#333333]">No data found!</h1>
+            </div>)}
           </div>
         </div>
       </section>
