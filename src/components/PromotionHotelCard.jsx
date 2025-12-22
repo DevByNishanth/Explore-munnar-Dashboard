@@ -123,7 +123,9 @@ const hotelData = [
       "Luxury resort featuring backwater cruises, fine dining, and premium rooms.",
   },
 ];
-const PromotionHotelCard = () => {
+const PromotionHotelCard = ({ data }) => {
+  console.log("Higlights hotels : ", data)
+
   // states
   const [isCanvas, setisCanvas] = useState(false);
   const [canvasData, setCanvasData] = useState([]);
@@ -136,7 +138,7 @@ const PromotionHotelCard = () => {
   return (
     <>
       <div className="card-container grid grid-cols-3 gap-4 mt-6 h-[calc(100vh-170px)] overflow-auto">
-        {hotelData.map((item, index) => {
+        {data.map((item, index) => {
           return (
             <div
               onClick={() => handleCanvas(item)}
@@ -145,7 +147,7 @@ const PromotionHotelCard = () => {
             >
               <div className="img-container w-[25%]">
                 <img
-                  src={item.hotelImg}
+                  src={item?.images?.[0]?.url}
                   className="w-[100%] rounded-md h-[70px]  "
                 />
                 <div className="icon-container flex items-center gap-2">
@@ -160,33 +162,36 @@ const PromotionHotelCard = () => {
               </div>
               <div className="content-container w-[55%] ">
                 <h1 className="text-[#333333] font-medium text-md">
-                  {item.hotelName.slice(0, 18)}..
+                  {item?.name?.slice(0, 18)}..
                 </h1>
                 <p className="text-sm text-gray-600">
-                  {item.description.slice(0, 32)}..
+                  {item?.description?.slice(0, 32)}..
                 </p>
               </div>
               <div className="icon-container w-[20%] flex items-center justify-end gap-2">
                 {item.ratings !== null && (
                   <p className="flex items-center  text-gray-500">
-                    {item.ratings}{" "}
+                    {item?.rating}{" "}
                     <span className="text-[12px] mt-[-3px] ">⭐</span>
                   </p>
                 )}
               </div>
               {/* ------- icon container ------  */}
               <div className="icon-container absolute bottom-3 right-2 flex gap-2">
-                {item.isPromotion && (
+                {item?.isFeatured && (
                   <div className="w-[28px] group relative rounded-full bg-green-100 h-[28px] flex items-center justify-center ">
                     <Megaphone className="w-[70%] text-green-700" />
-                    <span className="bg-gray-900 absolute top-[-100%] transition-all duration-300 right-0 border opacity-0 group-hover:opacity-100 text-gray-300 px-2 py-1 text-[10px]">Promotion</span>
+                    <span className="bg-gray-900 absolute top-[-100%] transition-all duration-300 right-0 border opacity-0 group-hover:opacity-100 text-gray-300 px-2 py-1 text-[10px]">
+                      Promotion
+                    </span>
                   </div>
                 )}
-                {item.isCardView && (
+                {item?.isHighlighted && (
                   <div className="w-[28px] rounded-full relative group bg-amber-100 h-[28px] flex items-center justify-center ">
                     <ClipboardList className="w-[70%] text-amber-400" />
-                    <span className="bg-gray-900 absolute top-[-100%] left-0 z-10 transition-all duration-200 border opacity-0 group-hover:opacity-100 text-gray-300 py-1 text-[10px] w-[70px] text-center">Card view</span>
-
+                    <span className="bg-gray-900 absolute top-[-100%] left-0 z-10 transition-all duration-200 border opacity-0 group-hover:opacity-100 text-gray-300 py-1 text-[10px] w-[70px] text-center">
+                      Card view
+                    </span>
                   </div>
                 )}
               </div>

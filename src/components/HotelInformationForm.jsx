@@ -13,8 +13,6 @@ const categoryData = [
 ];
 
 const HotelInformationForm = ({ setFormData, formData }) => {
-
-
   const location = useLocation();
   const query = new URLSearchParams(location.search);
 
@@ -198,7 +196,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
     setPopularActivities(normalized);
   }, [formData.experiences]);
 
-  console.log("form data : ", formData)
+  console.log("form data : ", formData);
 
   return (
     <>
@@ -303,10 +301,11 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                     key={index}
                     onClick={() => handleCategoryClick(item)}
                     className={`px-6 py-2 rounded-full cursor-pointer transition-all duration-200 
-                    ${selectedCategory === item
+                    ${
+                      selectedCategory === item
                         ? " text-gray-9009 font-medium bg-gray-200 "
                         : "border border-dashed border-gray-300 text-gray-700 hover:bg-gray-0"
-                      }`}
+                    }`}
                   >
                     {item}
                   </div>
@@ -434,9 +433,30 @@ const HotelInformationForm = ({ setFormData, formData }) => {
               />
             </div>
             <div className="price-container">
-              <h1 className="text-gray-800 font-medium">
-                Location name{" "}
-              </h1>
+              <h1 className="text-gray-800 font-medium">Location Range </h1>
+              {/* <input
+                type="text"
+                className="hotelAddInput"
+                name="locationRange"
+                value={formData.locationRange}
+                onChange={(e) => handleInputChange(e)}
+              /> */}
+              <select className="hotelAddInput">
+                <option value="" disabled>
+                  Select Location Range
+                </option>
+                <option value="Chinnakanal">Chinnakanal</option>
+                <option value="Munnar Town">Munnar Town</option>
+                <option value="Devikulam">Devikulam</option>
+                <option value="Lockhart Gap">Lockhart Gap</option>
+                <option value="Anachal">Anachal</option>
+                <option value="Suryanelli">Suryanelli</option>
+                <option value="Pallivasal">Pallivasal</option>
+                <option value="Mangulam">Mangulam</option>
+              </select>
+            </div>
+            <div className="price-container">
+              <h1 className="text-gray-800 font-medium">Location name </h1>
               <input
                 type="text"
                 className="hotelAddInput"
@@ -470,7 +490,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                 ></iframe>
               </div>
             )}
-            <div className="price-container">
+            {/* <div className="price-container">
               <h1 className="text-gray-800 font-medium">Featured</h1>
 
               <div className="input-container ml-4 mt-2 flex items-center gap-5">
@@ -498,7 +518,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                   <label className="text-gray-600">No</label>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

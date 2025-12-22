@@ -27,24 +27,24 @@ const HotelAddForm = () => {
   // states
   const [selectedTab, setSelectedTab] = useState("infoPage");
 
-    const [formData, setFormData] = useState({
-      name: "",
-      images: [],
-      description: "",
-      pricePerNight: "",
-      rating: "",
-      distanceFromCenter: "",
-      stayType: "",
-      locationName: "",
-      locationUrl: "",
-      isFeatured: "",
-      amenities: [],
-      experiences: [], // popular faciliteis
-    });
+  const [formData, setFormData] = useState({
+    name: "",
+    images: [],
+    description: "",
+    pricePerNight: "",
+    rating: "",
+    distanceFromCenter: "",
+    stayType: "",
+    locationName: "",
+    locationUrl: "",
+    isFeatured: "",
+    amenities: [],
+    locationRange: "",
+    experiences: [], // popular faciliteis
+  });
 
   // functions
   async function onSave() {
-
     try {
       const filteredAmeniteis = formData.amenities.filter((item) => {
         return item.data.length > 0;
@@ -90,8 +90,7 @@ const HotelAddForm = () => {
     try {
       const res = await axios.get(`${apiUrl}/api/hotel/${hotelId}`);
       const hotel = res.data.data;
-     
-    
+
       setFormData({
         name: hotel.name || "",
         images: [], // files cannot be prefilled
