@@ -2,6 +2,7 @@ import { ArrowUpRight, ChevronDown } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import ItnearyCanvas from "./ItnearyCanvas";
 import noData from "../assets/noData.svg";
+import axios from "axios";
 
 const tableHeader = [
   "Name",
@@ -161,14 +162,21 @@ const tableData = [
 ];
 
 const ItnearyTable = () => {
+  // Auth 
+  const apiUrl = import.meta.env.VITE_API_URL
+
   // states
   const [openDropDownIndex, setOpenDropdownIndex] = useState(null);
-  const [status, setStatus] = useState("all");
+  const [status, setStatus] = useState("");
   const [isCanvas, setIsCanvas] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const [isStautusDropdown, setIsStatusDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [data, setData] = useState([])
+  const [canvasItem, setCanvasItem] = useState({})
 
+
+  console.log("can uitem : ", canvasItem)
   // ref's
   const dropdownRef = useRef(null);
 
@@ -187,6 +195,10 @@ const ItnearyTable = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   // search functionality call
   useEffect(() => {
@@ -212,11 +224,11 @@ const ItnearyTable = () => {
   // Search handler ----------------->
   const handleSearch = () => {
     if (searchQuery == "") {
-      setFilteredData(tableData);
+      setFilteredData(data);
       return;
     }
-    const filteredData = tableData.filter((item) => {
-      return item.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const filteredData = data?.filter((item) => {
+      return item?.full_name.toLowerCase().includes(searchQuery.toLowerCase());
     });
     setFilteredData(filteredData);
   };
@@ -224,15 +236,42 @@ const ItnearyTable = () => {
   const handlerFilter = () => {
     if (status == null) {
       return;
-    } else if (status.toLowerCase() == "all") {
-      setFilteredData(tableData);
+    } else if (status.toLowerCase() == "") {
+      setFilteredData(data);
       return;
     }
-    const filteredData = tableData.filter(
+    const filteredData = data.filter(
       (item) => item.status.toLowerCase() == status.toLowerCase()
     );
     setFilteredData(filteredData);
   };
+
+  async function fetchData() {
+    try {
+      const res = await axios.post(`${apiUrl}/api/itineraries/list`, {
+        "page": 1,
+        "limit": 10,
+        "search": "",
+        "status": status
+      });
+      // console.log("Itneary list : ", res.data.data.itineraries)
+      setData(res.data.data.itineraries)
+      setFilteredData(res.data.data.itineraries)
+    } catch (err) {
+      console.error("Error occured while fetching Itneary list : ", err.message)
+    }
+  }
+
+  function handleCanvas(item) {
+    setCanvasItem(item)
+    setIsCanvas(true);
+  }
+
+  const formatDate = (date) => {
+    if (!date) return "-";
+    return new Date(date).toLocaleDateString("en-IN");
+  };
+
   return (
     <>
       <section className="mt-6">
@@ -254,9 +293,8 @@ const ItnearyTable = () => {
             >
               {status ? status : "Status"}{" "}
               <ChevronDown
-                className={`${
-                  isStautusDropdown ? "rotate-180" : "rotate-0"
-                } transition-all duration-300 `}
+                className={`${isStautusDropdown ? "rotate-180" : "rotate-0"
+                  } transition-all duration-300 `}
               />
             </button>
             {isStautusDropdown && (
@@ -266,7 +304,7 @@ const ItnearyTable = () => {
               >
                 <button
                   onClick={() => {
-                    setStatus("all");
+                    setStatus("");
                     setIsStatusDropdown(false);
                   }}
                   className="px-2 text-left py-2 hover:bg-gray-50 w-[100%] cursor-pointer"
@@ -307,7 +345,7 @@ const ItnearyTable = () => {
 
         {/* table section ----------------------  */}
 
-        <div className="table-container mt-6 w-[100%] overflow-auto  h-[calc(100vh-195px)]">
+        <div className="table-container mt-6 w-[100%] overflow-auto  h-[calc(100vh-240px)]">
           <table className="w-[100%] border border-gray-300 rounded-lg">
             <thead className="text-white btn-green sticky top-0 z-10">
               {tableHeader.map((item, index) => {
@@ -323,30 +361,28 @@ const ItnearyTable = () => {
                 filteredData.map((item, index) => {
                   return (
                     <tr>
-                      <td className="pl-4 py-2">{item.name}</td>
-                      <td className="pl-4 py-2">{item.phone}</td>
-                      <td className="pl-4 py-2">{item.mail}</td>
-                      <td className="pl-4 py-2">{item.comingFrom}</td>
-                      <td className="pl-4 py-2">{item.startDate}</td>
-                      <td className="pl-4 py-2">{item.endDate}</td>
+                      <td className="pl-4 py-2">{item.full_name}</td>
+                      <td className="pl-4 py-2">{item.mobile_number}</td>
+                      <td className="pl-4 py-2">{item.mail_id}</td>
+                      <td className="pl-4 py-2">{item.coming_from}</td>
+                      <td className="pl-4 py-2">{formatDate(item.start_date)}</td>
+                      <td className="pl-4 py-2">{formatDate(item.end_date)}</td>
                       <td className="pl-4 py-2">
                         <div className="relative">
                           <button
                             onClick={() => handleStatusClick(index)}
-                            className={`flex items-center justify-between  rounded-lg  gap-2 w-[120px] text-sm ${
-                              item.status.toLowerCase() == "pending"
-                                ? "px-2 py-1  text-black bg-red-200 "
-                                : item.status.toLowerCase() == "booked"
+                            className={`flex items-center justify-center py-2 text-center  rounded-lg  gap-2 w-[120px] text-sm ${item.status.toLowerCase() == "pending"
+                              ? "px-2 py-1  text-black bg-red-200 "
+                              : item.status.toLowerCase() == "booked"
                                 ? " bg-green-200 text-black px-2 py-1 "
                                 : "bg-gray-200 px-2 py-1  text-black"
-                            }`}
+                              }`}
                           >
                             {item.status}
-                            <ChevronDown
-                              className={`cursor-pointer transition-all duration-300 ${
-                                openDropDownIndex == index ? "rotate-180" : ""
-                              } `}
-                            />
+                            {/* <ChevronDown
+                              className={`cursor-pointer transition-all duration-300 ${openDropDownIndex == index ? "rotate-180" : ""
+                                } `}
+                            /> */}
                           </button>
                           {openDropDownIndex == index && (
                             <div className="absolute top-full shadow-lg shadow-gray-400 rounded left-0 bg-white w-[120px] z-10 ">
@@ -380,7 +416,7 @@ const ItnearyTable = () => {
                       </td>
                       <td className="pl-4 py-2">
                         <div
-                          onClick={() => setIsCanvas(true)}
+                          onClick={() => { handleCanvas(item); }}
                           className="bg-gray-200 cursor-pointer w-8 h-8 flex items-center justify-center rounded-full"
                         >
                           <ArrowUpRight className="cursor-pointer w-5 h-5 text-black" />
@@ -410,7 +446,7 @@ const ItnearyTable = () => {
       {/* child components -------------------  */}
 
       {isCanvas && (
-        <ItnearyCanvas isCanvas={isCanvas} setIsCanvas={setIsCanvas} />
+        <ItnearyCanvas isCanvas={isCanvas} setIsCanvas={setIsCanvas} setCanvasItem={setCanvasItem} canvasItem={canvasItem} />
       )}
     </>
   );
