@@ -5,7 +5,7 @@ import axios from "axios";
 
 const statusData = ["Pending", "Booked", "Canceled"];
 
-const ItnearyCanvas = ({ setIsCanvas, canvasItem }) => {
+const ItnearyCanvas = ({ setIsCanvas, canvasItem, fetchData }) => {
   // Auth 
   const apiUrl = import.meta.env.VITE_API_URL
   // states
@@ -52,7 +52,8 @@ const ItnearyCanvas = ({ setIsCanvas, canvasItem }) => {
     try {
       const res = await axios.put(`${apiUrl}/api/itinerary/${canvasItem?.id}/status`, { status: status });
       setIsStatusDropdown(false);
-      window.location.reload()
+      fetchData()
+      setIsCanvas(false)
     } catch (err) {
       console.log("Error occured while updating itneary status : ", err.message)
     }

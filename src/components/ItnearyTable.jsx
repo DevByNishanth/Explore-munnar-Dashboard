@@ -446,7 +446,7 @@ const ItnearyTable = () => {
       {/* child components -------------------  */}
 
       {isCanvas && (
-        <ItnearyCanvas isCanvas={isCanvas} setIsCanvas={setIsCanvas} setCanvasItem={setCanvasItem} canvasItem={canvasItem} />
+        <ItnearyCanvas isCanvas={isCanvas} setIsCanvas={setIsCanvas} setCanvasItem={setCanvasItem} canvasItem={canvasItem} fetchData={fetchData} />
       )}
     </>
   );
