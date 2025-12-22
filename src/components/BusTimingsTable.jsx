@@ -12,184 +12,7 @@ const tableheader = [
   "Price",
   "Action",
 ];
-const tableData = [
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-  {
-    router: "Munnar - Coimbatore",
-    depature: "7.30 Am",
-    arraivalTime: "7.30Pm",
-    busType: "Kerla RTC",
-    duration: "5.30 Hrs",
-    price: "280",
-  },
-];
+
 
 const BusTimingsTable = ({ handleEdit }) => {
   // Auth
@@ -199,6 +22,7 @@ const BusTimingsTable = ({ handleEdit }) => {
   const [isModal, setIsModal] = useState(false);
   const [toggleState, setToggleState] = useState(null);
   const [data, setData] = useState([]);
+  const [selectedId, setSelectedId] = useState(null)
 
   // side effects
   useEffect(() => {
@@ -206,7 +30,8 @@ const BusTimingsTable = ({ handleEdit }) => {
   }, [apiUrl]);
 
   // functions
-  const handleModal = (actionName) => {
+  const handleModal = (actionName, item) => {
+    setSelectedId(item.id)
     setToggleState(actionName);
     setIsModal(true);
   };
@@ -224,6 +49,14 @@ const BusTimingsTable = ({ handleEdit }) => {
       console.error("Error occured while fetching bus timings : ", err.message);
     }
   }
+  async function handleDelete() {
+    try {
+      const res = await axios.delete(`${apiUrl}/api/bus-timing/${selectedId}`)
+      window.location.reload()
+    } catch (err) {
+      console.error("Error occured while deleting Bus timing : ", err.message)
+    }
+  }
   return (
     <>
       <div className="main-section  mt-8 ">
@@ -233,11 +66,9 @@ const BusTimingsTable = ({ handleEdit }) => {
               {tableheader.map((item, index) => {
                 return (
                   <td
-                    className={`text-md py-3 px-4 ${
-                      index == 0 ? "roundedd-tl-lg" : ""
-                    } ${
-                      index == tableheader.length - 1 ? "roundedd-tr-lg" : ""
-                    } `}
+                    className={`text-md py-3 px-4 ${index == 0 ? "roundedd-tl-lg" : ""
+                      } ${index == tableheader.length - 1 ? "roundedd-tr-lg" : ""
+                      } `}
                   >
                     {item}
                   </td>
@@ -248,13 +79,12 @@ const BusTimingsTable = ({ handleEdit }) => {
               {data.map((item, index) => {
                 return (
                   <tr
-                    className={`text-[#333333] ${
-                      index % 2 == 0
-                        ? "bg-gray-100 border-b border-gray-200"
-                        : ""
-                    } text-md `}
+                    className={`text-[#333333] ${index % 2 == 0
+                      ? "bg-gray-100 border-b border-gray-200"
+                      : ""
+                      } text-md `}
                   >
-                    <td className="pl-3 py-2">{item.route}</td>
+                    <td className="pl-3 py-2">{item.from} - {item.to}</td>
                     <td className="pl-3 py-2">{item.departure_time}</td>
                     <td className="pl-3 py-2">{item.arrival_time}</td>
                     <td className="pl-3 py-2">{item.bus_type}</td>
@@ -262,12 +92,12 @@ const BusTimingsTable = ({ handleEdit }) => {
                     <td className="pl-3 py-2">{item.price}</td>
                     <td className="pl-3 py-2">
                       <div className="btn-container flex gap-3 items-center ml-2">
-                        <button onClick={handleEdit}>
+                        <button onClick={() => handleEdit(item)}>
                           <Edit className="text-green-800 w-5 h-5 cursor-pointer" />
                         </button>
                         <button
                           onClick={() => {
-                            handleModal("delete");
+                            handleModal("delete", item);
                           }}
                         >
                           <Trash2 className="text-amber-800 w-5 h-5 cursor-pointer" />
@@ -282,7 +112,7 @@ const BusTimingsTable = ({ handleEdit }) => {
         </section>
       </div>
       {isModal && (
-        <BusTimingsActionPopup toggleState={toggleState} onclose={onclose} />
+        <BusTimingsActionPopup toggleState={toggleState} onclose={onclose} handleDelete={handleDelete} />
       )}
     </>
   );

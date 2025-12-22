@@ -10,7 +10,7 @@ const BusTimingsActionPopup = ({ toggleState, onclose, handleDelete }) => {
   return (
     <>
       <div className="fixed inset-0 bg-black/50"></div>
-      <section className="bg-white w-[40%] pb-4 px-6 absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-lg z-60">
+      <section className="bg-white w-[95%] md:w-[40%] pb-4 px-6 absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-lg z-60">
         <header className="py-4 flex items-center gap-2 justify-between">
           <h1 className="font-medium text-lg">
             {toggleState == "edit" ? "Edit record" : "Delete record"}

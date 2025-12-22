@@ -1,14 +1,16 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import att1 from '../assets/att1.jpg'
-import { MapPin } from 'lucide-react'
+import { MapPin, Trash2 } from 'lucide-react'
+import BusTimingsActionPopup from '../components/BusTimingsActionPopup'
 const AttractionsCard = () => {
     // Auth 
     const apiUrl = import.meta.env.VITE_API_URL
 
     // states 
     const [data, setData] = useState([])
-
+    const [isModal, setIsModal] = useState(false)
+    const [selectedId, setSelectedId] = useState(null)
     // side effects 
 
     useEffect(() => {
@@ -24,21 +26,38 @@ const AttractionsCard = () => {
             console.error("Error while fetching Attractions : ", err.message)
         }
     }
+    async function handleDelete() {
+        try {
+            const res = await axios.delete(`${apiUrl}/api/attractions/${selectedId}`)
+            window.location.reload()
+        } catch (err) {
+            console.error("Error occured while deleting attraction record : ", err.message)
+        }
+    }
+    function onclose() {
+        setIsModal(false)
+    }
     return (
         <>
             <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 max-h-[calc(100vh-160px)] overflow-auto">
                 {data.map((item) => {
-                    return <div className="card border border-gray-300 p-2 rounded-lg h-[340px] ">
-                        <img src={att1} className="h-[60%] rounded-lg w-full object-cover" />
+                    return <div className="card border border-gray-300 p-2 rounded-lg h-fit ">
+                        <img src={att1} className="h-[240px] rounded-lg w-full object-cover" />
                         <div className="content-container mt-2 space-y-2">
-                            <h1 className='font-medium text-lg text-green-800'>{item.route}</h1>
+                            <div className='flex items-center justify-between'>
+                                <h1 className='font-medium text-lg text-green-800'>{item.route}</h1>
+                                <div onClick={() => { setIsModal(true); setSelectedId(item.id) }} className="delete-btn-container bg-amber-700 hover:bg-amber-900 cursor-pointer w-8 h-8 flex items-center justify-center rounded-full">
+                                    <button><Trash2 className='text-white h-6 w-6' /></button>
+                                </div>
+                            </div>
                             <h1 className='text-gray-900 flex items-center gap-1 font-medium'><MapPin className='w-5 h-5 text-amber-700' /> {item.spot_name}</h1>
                             <h1 className='text-gray-500'>{item.description.slice(0, 34)}..</h1>
                         </div>
+
                     </div>
                 })}
             </div>
-
+            {isModal && <BusTimingsActionPopup handleDelete={handleDelete} onclose={onclose} />}
         </>
     )
 }

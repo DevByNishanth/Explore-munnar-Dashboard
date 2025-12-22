@@ -31,8 +31,6 @@ const ItnearyPage = () => {
 
           {/* table-section --------------  */}
           {selectedTab == "Bookings" ? <ItnearyTable /> : <AttractionsCard />}
-
-
         </div>
 
       </section>

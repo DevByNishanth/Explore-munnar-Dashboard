@@ -59,6 +59,10 @@ const ItnearyCanvas = ({ setIsCanvas, canvasItem, fetchData }) => {
     }
   }
 
+  const formatDate = (date) => {
+    if (!date) return "-";
+    return new Date(date).toLocaleDateString("en-IN");
+  };
   // ---------------------------------------------------------------------Jsx  ------------------------------------------------------
 
   return (
@@ -97,7 +101,7 @@ const ItnearyCanvas = ({ setIsCanvas, canvasItem, fetchData }) => {
           <div className="personalInfo-container mt-4">
             <h1 className="font-medium text-lg">Trip dates & group details</h1>
             <div className="sub-content-container mt-2 flex items-center gap-6">
-              <h1 className="text-gray-600">{canvasItem?.start_date} – {canvasItem?.end_date}</h1>
+              <h1 className="text-gray-600">{formatDate(canvasItem?.start_date)} – {formatDate(canvasItem?.end_date)}</h1>
               <h1 className="text-gray-600"> {canvasItem?.adult} Adults</h1>
               <h1 className="text-gray-600">{canvasItem?.type_of_group}</h1>
             </div>

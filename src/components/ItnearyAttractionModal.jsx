@@ -31,6 +31,7 @@ const ItnearyAttractionModal = ({ setIsModal }) => {
             console.error("Error occured while posting attraction data : ", err.message)
         }
     }
+    
     return (
 
         <>
