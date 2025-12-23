@@ -3,7 +3,7 @@ import { Handshake, Heading2, Plus, UploadCloud, X } from "lucide-react";
 import HotelAddModal from "./hotelAddModal";
 import AmenityFormModal from "./AmenityFormModal";
 import { useLocation, useSearchParams } from "react-router-dom";
-
+import PoliciesForm from "../components/PoliciesForm";
 const categoryData = [
   "Tents & Camping Grounds",
   "Eco Cottages",
@@ -15,6 +15,14 @@ const categoryData = [
 const HotelInformationForm = ({ setFormData, formData }) => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
+  const [policies, setPolicies] = useState({
+    general:
+      "Check-in at 12 PM, valid ID required, only registered guests allowed.\n\nGuests are required to show a photo ID and credit card at check-in. You need to let the property know what time you’ll be arriving in advance.",
+    prohibited: "",
+    usage: "",
+    payment: "",
+    guest: "",
+  });
 
   // states
   // const [formData, setFormData] = useState({
@@ -490,6 +498,8 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                 ></iframe>
               </div>
             )}
+
+            <PoliciesForm policies={policies} setPolicies={setPolicies} />
             {/* <div className="price-container">
               <h1 className="text-gray-800 font-medium">Featured</h1>
 

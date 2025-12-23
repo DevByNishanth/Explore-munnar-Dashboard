@@ -200,9 +200,18 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
                 Do you want to highlight this hotel on the homepage?
               </h1>{" "}
             </div>
+            <div className="flex items-center gap-3 mt-2">
+              <input
+                type="checkbox"
+                className="scale-120 accent-green-800"
+              />
+              <h1 className="font-medium">
+                Do you want to highlight this hotel under unique stays?
+              </h1>{" "}
+            </div>
           </div>
           {/* btn-container -----------------------  */}
-          <div className="btn-container absolute bottom-2 right-4  flex justify-end">
+          <div className="btn-container absolute bottom-8 right-4  flex justify-end">
             <button className="btn-green px-4 py-2 rounded-lg text-white hover:cursor-pointer">
               Save
             </button>

@@ -125,7 +125,9 @@ const HomepageModificationPage = () => {
                 <input
                   type="text"
                   placeholder="Search hotels by name.."
-                  onChange={(e) => { setSearchQuery(e.target.value) }}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                  }}
                   className="border w-[300px] py-2 px-4 text- border-gray-400 rounded-lg  outline-gray-400 "
                 />
                 <div className="search-icon-container w-fit absolute top-[50%] right-4 translate-y-[-50%]">
