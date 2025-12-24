@@ -4,7 +4,7 @@ import HotelAddStepper from "../components/HotelAddStepper";
 import HotelInformationForm from "../components/HotelInformationForm";
 import HotelAddButtonFooter from "../components/HotelAddButtonFooter";
 import HotelAddForm2 from "../components/HotelAddForm2";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 // let data = [
 //   { "title": "Room comfort", "data": ["Comfortable beds (Double/Queen/King)", "Clean linens and blankets", "Attached private bathrooms", "Hot water supply (solar/geyser)"] },
@@ -23,6 +23,8 @@ const HotelAddForm = () => {
   const queries = new URLSearchParams(searchParams);
   const hotelId = queries.get("hotelId");
   const editMode = queries.get("editMode");
+
+  const router = useNavigate();
 
   // states
   const [selectedTab, setSelectedTab] = useState("infoPage");
@@ -78,6 +80,8 @@ const HotelAddForm = () => {
         body: fd,
       });
 
+      router("/hotels");
+      // window.location.reload();
       const data = await res.json();
       // console.log("Upload success:", data);
     } catch (error) {

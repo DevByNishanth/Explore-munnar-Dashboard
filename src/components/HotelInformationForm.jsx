@@ -452,7 +452,7 @@ const HotelInformationForm = ({ setFormData, formData }) => {
               <select className="hotelAddInput">
                 <option value="" disabled>
                   Select Location Range
-                </option>
+                </option> 
                 <option value="Chinnakanal">Chinnakanal</option>
                 <option value="Munnar Town">Munnar Town</option>
                 <option value="Devikulam">Devikulam</option>
