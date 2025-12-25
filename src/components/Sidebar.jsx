@@ -48,7 +48,7 @@ const Sidebar = () => {
             <div
               className={`content-container ${isCollapsed ? "hidden" : ""} `}
             >
-              <h1 className="text-black font-medium">Nishanth</h1>
+              <h1 className="text-black font-medium">Nishanth A</h1>
               <h1 className="text-gray-700 mt-[-3px] text-[12px]">Admin</h1>
             </div>
           </div>
