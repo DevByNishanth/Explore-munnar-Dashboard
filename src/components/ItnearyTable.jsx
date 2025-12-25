@@ -254,8 +254,9 @@ const ItnearyTable = () => {
         "search": "",
         "status": status
       });
-      // console.log("Itneary list : ", res.data.data.itineraries)
+      console.log("Itneary list : ", res.data.data.itineraries)
       setData(res.data.data.itineraries)
+
       setFilteredData(res.data.data.itineraries)
     } catch (err) {
       console.error("Error occured while fetching Itneary list : ", err.message)
@@ -446,7 +447,7 @@ const ItnearyTable = () => {
       {/* child components -------------------  */}
 
       {isCanvas && (
-        <ItnearyCanvas isCanvas={isCanvas} setIsCanvas={setIsCanvas} setCanvasItem={setCanvasItem} canvasItem={canvasItem} fetchData={fetchData}  />
+        <ItnearyCanvas isCanvas={isCanvas} setIsCanvas={setIsCanvas} setCanvasItem={setCanvasItem} canvasItem={canvasItem} fetchData={fetchData} />
       )}
     </>
   );

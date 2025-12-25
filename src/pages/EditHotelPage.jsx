@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Edit, Plus, Trash } from "lucide-react";
-import HotelAddModal from "../components/hotelAddModal";
+import HotelAddModal from "../components/HotelAddModal";
 import AmenityFormModal from "../components/AmenityFormModal";
 
 const categoryData = [
@@ -68,9 +68,9 @@ const EditHotelPage = () => {
             title: group.name,
             data: group.data
               ? group.data
-                  .split(",")
-                  .map((s) => s.trim())
-                  .filter(Boolean)
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean)
               : [],
           })) || [];
 
@@ -384,10 +384,9 @@ const EditHotelPage = () => {
                     key={index}
                     onClick={() => handleCategoryClick(item)}
                     className={`px-6 py-2 rounded-full cursor-pointer transition-all duration-200 
-                      ${
-                        formData.stayType === item
-                          ? "text-gray-900 font-medium bg-gray-200"
-                          : "border border-dashed border-gray-300 text-gray-700 hover:bg-gray-50"
+                      ${formData.stayType === item
+                        ? "text-gray-900 font-medium bg-gray-200"
+                        : "border border-dashed border-gray-300 text-gray-700 hover:bg-gray-50"
                       }`}
                   >
                     {item}

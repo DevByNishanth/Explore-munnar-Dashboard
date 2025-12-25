@@ -8,14 +8,16 @@ const initialPolicies = [
   { key: "Guest Guidelines", title: "", description: "" },
 ];
 
-const PoliciesForm = () => {
+const PoliciesForm = ({ setFormData, formData }) => {
   const [policies, setPolicies] = useState(initialPolicies);
 
   const handleChange = (index, field, value) => {
     const updated = [...policies];
     updated[index][field] = value;
     setPolicies(updated);
+    formData.rules = updated
   };
+  // console.log("Policies form data : ", formData)
 
   return (
     <div className="space-y-6">

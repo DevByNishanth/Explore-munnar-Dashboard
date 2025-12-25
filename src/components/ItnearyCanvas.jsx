@@ -126,7 +126,7 @@ const ItnearyCanvas = ({ setIsCanvas, canvasItem, fetchData }) => {
             <h1 className="font-medium text-lg">Routes</h1>
             <div className="sub-content-container mt-2 flex items-center gap-6">
               {canvasItem?.routes?.map((item, index) => {
-                return <h1 className="text-gray-600">{item.route}</h1>
+                return <h1 className="text-gray-600">{item}</h1>
               })}
             </div>
           </div>

@@ -40,6 +40,7 @@ const HotelAddForm = () => {
     locationName: "",
     locationUrl: "",
     isFeatured: "",
+    rules: [],
     amenities: [],
     locationRange: "",
     experiences: [], // popular faciliteis
@@ -68,12 +69,13 @@ const HotelAddForm = () => {
       fd.append("location", formData.locationName);
       fd.append("locationUrl", formData.locationUrl);
       fd.append("isFeatured", formData.isFeatured == "Yes" ? true : false);
+      fd.append("locationRange", formData.locationRange)
 
       // ---- Convert arrays to JSON strings ----
       // fd.append("amenities", JSON.stringify(formData.amenities));
       fd.append("amenities", JSON.stringify(filteredAmeniteis));
       fd.append("experiences", JSON.stringify(formData.experiences));
-
+      fd.append("rules", JSON.stringify(formData.rules))
       // ---- POST request ----
       const res = await fetch(`${apiUrl}/api/hotel`, {
         method: "POST",

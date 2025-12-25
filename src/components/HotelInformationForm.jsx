@@ -122,6 +122,8 @@ const HotelInformationForm = ({ setFormData, formData }) => {
       alert("Only 16 images are allowed ");
       return;
     }
+
+    const maxFileSize = 5 * 1024 * 1024; // 5MB in bytes
     const allowedTypes = [
       "image/jpeg",
       "image/jpg",
@@ -131,23 +133,39 @@ const HotelInformationForm = ({ setFormData, formData }) => {
     ];
     const files = Array.from(e.target.files);
 
-    // Filter only allowed file types
-    const validFiles = files.filter((file) => allowedTypes.includes(file.type));
+    // Filter only allowed file types AND check file size
+    const validFiles = files.filter((file) => {
+      if (!allowedTypes.includes(file.type)) {
+        return false;
+      }
+      if (file.size > maxFileSize) {
+        alert(`File "${file.name}" is too large. Maximum size is 5MB.`);
+        return false;
+      }
+      return true;
+    });
 
-    if (validFiles.length === 0) {
-      alert("Only JPEG, JPG, PNG, WEBP, or AVIF images are allowed.");
-      return;
-    }
+    // if (validFiles.length === 0) {
+    //   if (files.length > 0 && validFiles.length < files.length) {
+    //     alert("Only JPEG, JPG, PNG, WEBP, or AVIF images under 5MB are allowed.");
+    //   }
+    //   return;
+    // }
+
+    // if (validFiles.length < files.length) {
+    //   alert(`${files.length - validFiles.length} file(s) were skipped due to invalid type or size.`);
+    // }
 
     const newUrls = validFiles.map((item) => URL.createObjectURL(item));
-    setpreviewUrls((prev) => [...prev, ...newUrls]); // ✅ flatten
-    setImgFiles((prev) => [...prev, ...validFiles]); // ✅ flatten
+    setpreviewUrls((prev) => [...prev, ...newUrls]);
+    setImgFiles((prev) => [...prev, ...validFiles]);
 
     setFormData((prev) => ({
       ...prev,
       images: [...prev.images, ...validFiles],
     }));
   }
+
 
   const handleFileRemove = (index) => {
     // Remove from imgFiles
@@ -204,7 +222,16 @@ const HotelInformationForm = ({ setFormData, formData }) => {
     setPopularActivities(normalized);
   }, [formData.experiences]);
 
-  console.log("form data : ", formData);
+  function handleLocationRange(e) {
+
+    const { value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      locationRange: value
+    }))
+  }
+
+  console.log("form darta : ", formData)
 
   return (
     <>
@@ -309,11 +336,10 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                     key={index}
                     onClick={() => handleCategoryClick(item)}
                     className={`px-6 py-2 rounded-full cursor-pointer transition-all duration-200 
-                    ${
-                      selectedCategory === item
+                    ${selectedCategory === item
                         ? " text-gray-9009 font-medium bg-gray-200 "
                         : "border border-dashed border-gray-300 text-gray-700 hover:bg-gray-0"
-                    }`}
+                      }`}
                   >
                     {item}
                   </div>
@@ -449,10 +475,10 @@ const HotelInformationForm = ({ setFormData, formData }) => {
                 value={formData.locationRange}
                 onChange={(e) => handleInputChange(e)}
               /> */}
-              <select className="hotelAddInput">
-                <option value="" disabled>
+              <select className="hotelAddInput" value={formData.locationRange} onChange={(e) => handleLocationRange(e)}>
+                <option value="" >
                   Select Location Range
-                </option> 
+                </option>
                 <option value="Chinnakanal">Chinnakanal</option>
                 <option value="Munnar Town">Munnar Town</option>
                 <option value="Devikulam">Devikulam</option>
@@ -499,39 +525,11 @@ const HotelInformationForm = ({ setFormData, formData }) => {
               </div>
             )}
 
-            <PoliciesForm policies={policies} setPolicies={setPolicies} />
-            {/* <div className="price-container">
-              <h1 className="text-gray-800 font-medium">Featured</h1>
+            <PoliciesForm policies={policies} setPolicies={setPolicies} setFormData={setFormData} formData={formData} />
 
-              <div className="input-container ml-4 mt-2 flex items-center gap-5">
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="radio"
-                    className="scale-120 accent-amber-700"
-                    name="isFeatured"
-                    value="Yes"
-                    checked={formData.isFeatured === "Yes"}
-                    onChange={handleInputChange}
-                  />
-                  <label className="text-gray-600">Yes</label>
-                </div>
-
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="radio"
-                    className="scale-120 accent-amber-700"
-                    name="isFeatured"
-                    value="No"
-                    checked={formData.isFeatured === "No"}
-                    onChange={handleInputChange}
-                  />
-                  <label className="text-gray-600">No</label>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
-      </section>
+      </section >
 
       {isAmenityModal && (
         <AmenityFormModal
@@ -539,16 +537,19 @@ const HotelInformationForm = ({ setFormData, formData }) => {
           setForm={setFormData}
           formData={formData}
         />
-      )}
+      )
+      }
 
-      {showModal && (
-        <HotelAddModal
-          type={modalType}
-          existingData={popularActivities}
-          onClose={() => setShowModal(false)}
-          onSave={handleSave}
-        />
-      )}
+      {
+        showModal && (
+          <HotelAddModal
+            type={modalType}
+            existingData={popularActivities}
+            onClose={() => setShowModal(false)}
+            onSave={handleSave}
+          />
+        )
+      }
     </>
   );
 };
