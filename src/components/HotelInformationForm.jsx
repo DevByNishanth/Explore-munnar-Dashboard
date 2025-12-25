@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Handshake, Heading2, Plus, UploadCloud, X } from "lucide-react";
-import HotelAddModal from "./hotelAddModal";
+import HotelAddModal from "./HotelAddModal";
 import AmenityFormModal from "./AmenityFormModal";
 import { useLocation, useSearchParams } from "react-router-dom";
 import PoliciesForm from "../components/PoliciesForm";
