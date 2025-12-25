@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import att1 from '../assets/att1.jpg'
 import { MapPin, Trash2 } from 'lucide-react'
+import LoadingPage from '../pages/LoadingPage'
 import BusTimingsActionPopup from '../components/BusTimingsActionPopup'
 const AttractionsCard = () => {
     // Auth 
@@ -11,6 +12,8 @@ const AttractionsCard = () => {
     const [data, setData] = useState([])
     const [isModal, setIsModal] = useState(false)
     const [selectedId, setSelectedId] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
+
     // side effects 
 
     useEffect(() => {
@@ -20,9 +23,12 @@ const AttractionsCard = () => {
 
     async function getData() {
         try {
+            setIsLoading(true)
             const res = await axios.get(`${apiUrl}/api/attractions`);
             setData(res.data.data)
+            setIsLoading(false)
         } catch (err) {
+            setIsLoading(false)
             console.error("Error while fetching Attractions : ", err.message)
         }
     }
@@ -57,6 +63,7 @@ const AttractionsCard = () => {
                     </div>
                 })}
             </div>
+            {isLoading && <LoadingPage />}
             {isModal && <BusTimingsActionPopup handleDelete={handleDelete} onclose={onclose} />}
         </>
     )
