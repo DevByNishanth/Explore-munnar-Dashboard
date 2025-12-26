@@ -1,19 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import noData from "../assets/noData.svg";
+import NoData from "./NoData";
 const SeasonalActivitesCard = ({ formatedData }) => {
   // states
   const [selectedCardData, setSlectedCardData] = useState(null);
 
   if (formatedData == null || formatedData.length == 0) {
-    return (
-      <div className="h-[320px] text-center">
-        <img src={noData} className="w-[100%]" />
-        <h1 className="font-medium text-gray-600 text-lg mt-2">
-          No data found
-        </h1>
-      </div>
-    );
+    return <NoData />;
   }
 
   return (

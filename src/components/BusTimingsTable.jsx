@@ -2,6 +2,7 @@ import { ArrowUpRight, Edit, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import BusTimingsActionPopup from "./BusTimingsActionPopup";
 import axios from "axios";
+import NoData from "./NoData";
 
 const tableheader = [
   "Route",
@@ -76,37 +77,45 @@ const BusTimingsTable = ({ handleEdit }) => {
               })}
             </tr>
             <tbody className="border border-gray-400">
-              {data.map((item, index) => {
-                return (
-                  <tr
-                    className={`text-[#333333] ${index % 2 == 0
-                      ? "bg-gray-100 border-b border-gray-200"
-                      : ""
-                      } text-md `}
-                  >
-                    <td className="pl-3 py-2">{item.from} - {item.to}</td>
-                    <td className="pl-3 py-2">{item.departure_time}</td>
-                    <td className="pl-3 py-2">{item.arrival_time}</td>
-                    <td className="pl-3 py-2">{item.bus_type}</td>
-                    <td className="pl-3 py-2">{item.duration}</td>
-                    <td className="pl-3 py-2">{item.price}</td>
-                    <td className="pl-3 py-2">
-                      <div className="btn-container flex gap-3 items-center ml-2">
-                        <button onClick={() => handleEdit(item)}>
-                          <Edit className="text-green-800 w-5 h-5 cursor-pointer" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleModal("delete", item);
-                          }}
-                        >
-                          <Trash2 className="text-amber-800 w-5 h-5 cursor-pointer" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+              {data.length > 0 ? (
+                data.map((item, index) => {
+                  return (
+                    <tr
+                      className={`text-[#333333] ${index % 2 == 0
+                        ? "bg-gray-100 border-b border-gray-200"
+                        : ""
+                        } text-md `}
+                    >
+                      <td className="pl-3 py-2">{item.from} - {item.to}</td>
+                      <td className="pl-3 py-2">{item.departure_time}</td>
+                      <td className="pl-3 py-2">{item.arrival_time}</td>
+                      <td className="pl-3 py-2">{item.bus_type}</td>
+                      <td className="pl-3 py-2">{item.duration}</td>
+                      <td className="pl-3 py-2">{item.price}</td>
+                      <td className="pl-3 py-2">
+                        <div className="btn-container flex gap-3 items-center ml-2">
+                          <button onClick={() => handleEdit(item)}>
+                            <Edit className="text-green-800 w-5 h-5 cursor-pointer" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleModal("delete", item);
+                            }}
+                          >
+                            <Trash2 className="text-amber-800 w-5 h-5 cursor-pointer" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={tableheader.length}>
+                    <NoData />
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </section>

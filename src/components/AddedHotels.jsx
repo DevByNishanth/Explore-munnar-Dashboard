@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MapPin, Wifi, Flame, Leaf } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import noData from '../assets/noData.svg'
+import NoData from "./NoData";
 
 
 const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -58,10 +58,9 @@ const AddedHotels = ({ data }) => {
               </div>
             );
           })
-        ) : (<div className="w-full">
-          <img src={noData} alt="" />
-          <h1 className="font-medium text-xl mt-3 text-center text-[#333333]">No data found!</h1>
-        </div>)}
+        ) : (
+          <NoData />
+        )}
 
       
       </section>

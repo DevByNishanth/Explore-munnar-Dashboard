@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import noDataFound from "../assets/noData.svg";
+import NoData from "./NoData";
 import axios from "axios";
 import LoadingPage from "../pages/LoadingPage";
 
@@ -341,13 +341,10 @@ const SelfCarDrivingtable = () => {
                 );
               })
             ) : (
-              <tr className="">
-                <div className="translate-x-[400px] w-[300px] text-center">
-                  <img src={noDataFound} className="w-[300px] h-[200px] " />
-                  <h1 className="mb-4 text-gray-600 text-lg">
-                    No data found..
-                  </h1>
-                </div>
+              <tr>
+                <td colSpan={tableheader.length}>
+                  <NoData />
+                </td>
               </tr>
             )}
           </tbody>

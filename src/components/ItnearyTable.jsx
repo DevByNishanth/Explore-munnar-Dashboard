@@ -1,7 +1,7 @@
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import ItnearyCanvas from "./ItnearyCanvas";
-import noData from "../assets/noData.svg";
+import NoData from "./NoData";
 import axios from "axios";
 
 const tableHeader = [
@@ -427,16 +427,10 @@ const ItnearyTable = () => {
                   );
                 })
               ) : (
-                <tr className="">
-                  <div>
-                    <img
-                      src={noData}
-                      className="w-[300px] translate-x-[390px] mt-8"
-                    />
-                    <h1 className="text-gray-600 translate-x-[480px] mb-4">
-                      No data found
-                    </h1>
-                  </div>
+                <tr>
+                  <td colSpan={tableHeader.length}>
+                    <NoData />
+                  </td>
                 </tr>
               )}
             </tbody>

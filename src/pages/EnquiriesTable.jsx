@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import axios from "axios";
+import NoData from "../components/NoData";
 
 const tableheader = [
     "First Name",
@@ -182,8 +183,8 @@ const EnquiriesTable = () => {
 
                         {filteredData.length === 0 && (
                             <tr>
-                                <td colSpan="5" className="text-center py-6 text-gray-500">
-                                    No enquiries found
+                                <td colSpan={tableheader.length}>
+                                    <NoData />
                                 </td>
                             </tr>
                         )}

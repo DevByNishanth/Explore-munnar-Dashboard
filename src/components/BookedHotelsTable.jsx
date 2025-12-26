@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import h1 from "../assets/h1.jpg";
 import h2 from "../assets/h2.jpg";
 import h3 from "../assets/h3.jpg";
-import noData from "../assets/noData.svg";
+import NoData from "./NoData";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import HotelCanvas from "./HotelCanvas";
 import axios from "axios";
@@ -376,16 +376,10 @@ const BookedHotelsTable = () => {
                 );
               })
             ) : (
-              <tr className="">
-                <div>
-                  <img
-                    src={noData}
-                    className="w-[300px] translate-x-[390px] mt-8"
-                  />
-                  <h1 className="text-gray-600 translate-x-[480px] mt-4">
-                    No data found
-                  </h1>
-                </div>
+              <tr>
+                <td colSpan={tableheader.length}>
+                  <NoData />
+                </td>
               </tr>
             )}
           </tbody>

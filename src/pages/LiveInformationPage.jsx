@@ -8,7 +8,7 @@ import newsImg3 from "../assets/newsImg3.jpeg";
 import NewsPreview from "../components/NewsPreview";
 import axios from "axios";
 import LoadingPage from "../pages/LoadingPage";
-import noData from '../assets/noData.svg'
+import NoData from "../components/NoData";
 
 const liveInformationData = [
   {
@@ -117,10 +117,9 @@ const LiveInformationPage = () => {
                   </div>
                 );
               })
-            ) : (<div className="text-center">
-              <img src={noData} className="w-[300px] h-[300px]" />
-              <h1 className="font-medium mt-[-40px] text-lg text-[#333333]">No data found!</h1>
-            </div>)}
+            ) : (
+              <NoData />
+            )}
           </div>
         </div>
       </section>

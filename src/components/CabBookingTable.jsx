@@ -1,6 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import noData from '../assets/noData.svg'
+import NoData from "./NoData";
 import axios from "axios";
 import LoadingPage from "../pages/LoadingPage";
 
@@ -623,12 +623,13 @@ const CabBookingTable = () => {
                   </tr>
                 );
               })
-            ) : <tr className="">
-              <div>
-                <img src={noData} className="w-[300px] translate-x-[390px] mt-8" />
-                <h1 className="text-gray-600 translate-x-[480px] mt-4">No data found</h1>
-              </div>
-            </tr>}
+            ) : (
+              <tr>
+                <td colSpan={tableheader.length}>
+                  <NoData />
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </section>
