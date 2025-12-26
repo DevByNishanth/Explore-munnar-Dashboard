@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Edit } from "lucide-react";
 import axios from "axios";
 import NoData from "../components/NoData";
 
@@ -9,6 +9,7 @@ const tableheader = [
     "Phone number",
     "E mail",
     "Status",
+    "Action",
 ];
 
 const tableData = [
@@ -18,7 +19,11 @@ const tableData = [
 ];
 
 const EnquiriesTable = () => {
-    // 🔹 states
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [modalStatus, setModalStatus] = useState("");
+    const [modalNote, setModalNote] = useState("");
+    const [selectedId, setSelectedId] = useState(null);
     const [enquiries, setEnquiries] = useState(tableData);
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("");
@@ -27,10 +32,9 @@ const EnquiriesTable = () => {
 
     const dropdownRef = useRef(null);
 
-    // 🔹 API status update
     const updateStatus = async (id, newStatus) => {
         try {
-            await axios.put(`/api/enquiries/${id}`, { status: newStatus });
+            await axios.put(`${apiUrl}/api/enquiries/${id}`, { status: newStatus });
 
             setEnquiries((prev) =>
                 prev.map((item) =>
@@ -44,7 +48,33 @@ const EnquiriesTable = () => {
         }
     };
 
-    // 🔹 filtering logic
+    function openEdit(item) {
+        setSelectedId(item.id);
+        setModalStatus(item.status);
+        setModalNote("");
+        setIsEditModalOpen(true);
+    }
+
+    async function handleUpdate() {
+        if (!selectedId) return;
+        try {
+            await axios.put(`${apiUrl}/api/enquiries/${selectedId}`, {
+                status: modalStatus,
+                note: modalNote,
+            });
+            setEnquiries((prev) =>
+                prev.map((item) =>
+                    item.id === selectedId ? { ...item, status: modalStatus } : item
+                )
+            );
+            setIsEditModalOpen(false);
+            setSelectedId(null);
+            setModalNote("");
+        } catch (err) {
+            console.error("Failed to update enquiry", err);
+        }
+    }
+
     const filteredData = enquiries.filter((item) => {
         const nameMatch =
             item.firstName.toLowerCase().includes(search.toLowerCase()) ||
@@ -178,6 +208,14 @@ const EnquiriesTable = () => {
                                         </div>
                                     )}
                                 </td>
+                                <td className="pl-3 py-2">
+                                    <button
+                                        onClick={() => openEdit(item)}
+                                        className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"
+                                    >
+                                        <Edit className="w-4 h-4 text-gray-700" />
+                                    </button>
+                                </td>
                             </tr>
                         ))}
 
@@ -191,6 +229,48 @@ const EnquiriesTable = () => {
                     </tbody>
                 </table>
             </section>
+            {isEditModalOpen && (
+                <div className="fixed inset-0 bg-black/50 z-30 flex items-center justify-center">
+                    <div className="bg-white w-[420px] rounded-lg shadow-lg p-5">
+                        <h1 className="text-lg font-medium text-[#333333]">Update Enquiry</h1>
+                        <div className="mt-4">
+                            <label className="text-sm text-gray-600">Note</label>
+                            <input
+                                type="text"
+                                value={modalNote}
+                                onChange={(e) => setModalNote(e.target.value)}
+                                className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none mt-1"
+                                placeholder="Add a note..."
+                            />
+                        </div>
+                        <div className="mt-4">
+                            <label className="text-sm text-gray-600">Status</label>
+                            <select
+                                value={modalStatus}
+                                onChange={(e) => setModalStatus(e.target.value)}
+                                className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none mt-1"
+                            >
+                                <option value="Pending">Pending</option>
+                                <option value="Done">Done</option>
+                            </select>
+                        </div>
+                        <div className="mt-5 flex justify-end gap-3">
+                            <button
+                                onClick={() => setIsEditModalOpen(false)}
+                                className="px-4 py-2 rounded-md border border-gray-300 text-gray-700"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleUpdate}
+                                className="btn-green text-white px-4 py-2 rounded-md"
+                            >
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
