@@ -35,6 +35,7 @@ const EditHotelPage = () => {
     stayType: "",
     locationName: "", // mapped to backend `location`
     locationUrl: "", // mapped to backend `location_url`
+    locationRange: "",
     isFeatured: "",
     amenities: [], // [{ title, data: [] }]
     experiences: [],
@@ -84,6 +85,7 @@ const EditHotelPage = () => {
           stayType: hotel.stayType || "",
           locationName: hotel.location || "", // map from backend field
           locationUrl: hotel.location_url || "",
+          locationRange: hotel.locationRange || hotel.location_range || "",
           isFeatured: hotel.isFeatured ? "Yes" : "No",
           amenities: normalizedAmenities,
           experiences: hotel.experiences || [],
@@ -253,6 +255,7 @@ const EditHotelPage = () => {
         distanceFromCenter: formData.distanceFromCenter,
         stayType: formData.stayType,
         location: formData.locationName,
+        locationRange: formData.locationRange,
         locationUrl: formData.locationUrl,
         isFeatured: formData.isFeatured === "Yes",
         amenities: amenitiesPayload,
@@ -507,6 +510,26 @@ const EditHotelPage = () => {
 
             {/* LOCATION NAME */}
             <div className="price-container">
+              <h1 className="text-gray-800 font-medium">Location Range</h1>
+              <select
+                className="hotelAddInput"
+                name="locationRange"
+                value={formData.locationRange}
+                onChange={handleInputChange}
+              >
+                <option value="">Select Location Range</option>
+                <option value="Chinnakanal">Chinnakanal</option>
+                <option value="Munnar Town">Munnar Town</option>
+                <option value="Devikulam">Devikulam</option>
+                <option value="Lockhart Gap">Lockhart Gap</option>
+                <option value="Anachal">Anachal</option>
+                <option value="Suryanelli">Suryanelli</option>
+                <option value="Pallivasal">Pallivasal</option>
+                <option value="Mangulam">Mangulam</option>
+              </select>
+            </div>
+            {/* LOCATION NAME */}
+            <div className="price-container">
               <h1 className="text-gray-800 font-medium">Location name</h1>
               <input
                 type="text"
@@ -546,7 +569,7 @@ const EditHotelPage = () => {
             )}
 
             {/* FEATURED */}
-            <div className="price-container">
+            {/* <div className="price-container">
               <h1 className="text-gray-800 font-medium">Featured</h1>
 
               <div className="input-container ml-4 mt-2 flex items-center gap-5">
@@ -574,7 +597,7 @@ const EditHotelPage = () => {
                   <label className="text-gray-600">No</label>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* SAVE / UPDATE BUTTON */}
             <div className="flex justify-end py-4">
