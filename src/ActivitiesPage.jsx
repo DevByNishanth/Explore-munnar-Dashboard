@@ -7,7 +7,7 @@ import activityImg1 from "./assets/activityImg1.jpg";
 import activityImg2 from "./assets/activityImg2.jpg";
 import activityImg3 from "./assets/activityImg3.jpeg";
 import axios from "axios";
-import LoadingPage from '../src/pages/LoadingPage'
+import LoadingPage from "../src/pages/LoadingPage";
 const allData = [
   {
     img: activityImg1,
@@ -108,37 +108,40 @@ const allData = [
 ];
 
 const ActivitiesPage = () => {
-  // Auth 
+  // Auth
   const apiUrl = import.meta.env.VITE_API_URL;
 
   // states
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
   const [bookingSelectedTab, setSelectedTab] = useState("");
   const [formatedData, setFormatedData] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   // useEffect call's
 
   useEffect(() => {
     async function fetchActivities() {
       try {
-        setLoading(true)
+        setLoading(true);
         const response = await axios.post(`${apiUrl}/api/activities-list`, {
           search: "",
           pageNumber: 1,
           category: bookingSelectedTab,
-          type: ""
+          type: "",
         });
-        // console.log("activity list : ", response);
-        setData(response.data.data.activities)
-        setLoading(false)
+        console.log("activity list : ", response.data.data.activities);
+        setData(response.data.data.activities);
+        setLoading(false);
       } catch (err) {
-        setLoading(false)
-        console.error("Error occured while fetching acitvities list : ", err.message || err)
+        setLoading(false);
+        console.error(
+          "Error occured while fetching acitvities list : ",
+          err.message || err
+        );
       }
     }
-    fetchActivities()
-  }, [bookingSelectedTab])
+    fetchActivities();
+  }, [bookingSelectedTab]);
 
   useEffect(() => {
     handleCardRendering();
@@ -157,8 +160,6 @@ const ActivitiesPage = () => {
     // console.log("filtered : , ", filteredData)
     setFormatedData(filteredData);
   };
-
- 
 
   return (
     <>
@@ -181,10 +182,11 @@ const ActivitiesPage = () => {
           {/* tabs */}
           <div className="tab-container  w-fit px-2 py-2 border-b-gray-200 bg-gray-100 rounded-full mt-6 flex gap-2 text-gray-400">
             <button
-              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab == ""
-                ? "font-medium bg-white shadow text-black rounded-full"
-                : ""
-                }`}
+              className={`w-fit px-4 py-2 cursor-pointer ${
+                bookingSelectedTab == ""
+                  ? "font-medium bg-white shadow text-black rounded-full"
+                  : ""
+              }`}
               onClick={() => {
                 setSelectedTab("");
               }}
@@ -192,10 +194,11 @@ const ActivitiesPage = () => {
               All
             </button>
             <button
-              className={`w-fit px-4 py-2 cursor-pointer ${bookingSelectedTab == "Seasonal Activities"
-                ? "font-medium bg-white shadow text-black rounded-full"
-                : ""
-                }`}
+              className={`w-fit px-4 py-2 cursor-pointer ${
+                bookingSelectedTab == "Seasonal Activities"
+                  ? "font-medium bg-white shadow text-black rounded-full"
+                  : ""
+              }`}
               onClick={() => {
                 setSelectedTab("Seasonal Activities");
               }}
@@ -206,10 +209,11 @@ const ActivitiesPage = () => {
               onClick={() => {
                 setSelectedTab("Regular Activities");
               }}
-              className={`w-fit px-4 py-2 cursor-pointer  ${bookingSelectedTab == "Regular Activities"
-                ? "font-medium bg-white shadow text-black rounded-full"
-                : ""
-                }`}
+              className={`w-fit px-4 py-2 cursor-pointer  ${
+                bookingSelectedTab == "Regular Activities"
+                  ? "font-medium bg-white shadow text-black rounded-full"
+                  : ""
+              }`}
             >
               Regular Activities
             </button>

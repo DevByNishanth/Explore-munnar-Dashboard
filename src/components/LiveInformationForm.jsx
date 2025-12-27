@@ -211,9 +211,9 @@ const LiveInformationForm = () => {
                 <option value="Travel Restrictions & Health Guidelines">
                   Travel Restrictions & Health Guidelines
                 </option>
-                <option value="Travel Restrictions & Health Guidelines">
+                {/* <option value="Travel Restrictions & Health Guidelines">
                   Travel Restrictions & Health Guidelines
-                </option>
+                </option> */}
               </select>
             </div>
 

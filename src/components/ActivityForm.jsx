@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UploadCloud } from "lucide-react";
 import ErrorPopup from "./ErrorPopup";
-
+import { useNavigate } from "react-router-dom";
 export default function ActivityForm({
   formData,
   setFormData,
@@ -14,6 +14,8 @@ export default function ActivityForm({
   // Auth
   const apiUrl = import.meta.env.VITE_API_URL;
 
+  const navigate = useNavigate();
+
   // states
   const [previewImages, setPreviewImages] = useState([null, null, null]);
 
@@ -22,6 +24,7 @@ export default function ActivityForm({
   const [isError, setIsError] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const [editedImages, setEditedImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const activityTypes = ["Seasonal Activities", "Regular Activities"];
 
@@ -105,23 +108,36 @@ export default function ActivityForm({
       if (img) fd.append("images", img);
     });
 
-    // Add map image (Postman key: "locationURL"??)
+    // Add map image
     if (mapImage) {
       fd.append("locationURL", mapImage);
     }
 
+    setIsLoading(true);
+
     // Send request
     try {
-      // console.log("posting")
       const res = await fetch(`${apiUrl}/api/activity`, {
         method: "POST",
         body: fd,
       });
 
       const data = await res.json();
-      // console.log("Success:", data);
+
+      if (res.ok) {
+        // Success — refresh page
+        navigate(`/activities`);
+      } else {
+        setIsError(true);
+        navigate;
+        setErrMessage(data?.message || "Failed to add activity");
+        setIsLoading(false);
+      }
     } catch (err) {
       console.error(err.message);
+      setIsError(true);
+      setErrMessage("Network error. Please try again.");
+      setIsLoading(false);
     }
   };
 
@@ -139,31 +155,43 @@ export default function ActivityForm({
       if (img) fd.append("images", img);
     });
 
-    // Add map image (Postman key: "locationURL"??)
+    // Add map image
     if (mapImage) {
       fd.append("locationURL", mapImage);
     }
 
+    setIsLoading(true);
+
     // Send request
     try {
-      // console.log("posting")
       const res = await fetch(`${apiUrl}/api/activity/${id}`, {
         method: "PUT",
         body: fd,
       });
 
       const data = await res.json();
-      // console.log("Success:", data);
+
+      if (res.ok) {
+        navigate(`/activities`);
+        window.location.reload();
+      } else {
+        setIsError(true);
+        setErrMessage(data?.message || "Failed to update activity");
+        setIsLoading(false);
+      }
     } catch (err) {
       console.error(err.message);
+      setIsError(true);
+      setErrMessage("Network error. Please try again.");
+      setIsLoading(false);
     }
   };
 
   const handleSubmit = async () => {
     if (editMode == "true") {
-      handleEdit();
+      await handleEdit();
     } else {
-      handlePost();
+      await handlePost();
     }
   };
 
@@ -428,9 +456,11 @@ export default function ActivityForm({
         <div className="flex justify-end">
           <button
             onClick={handleSubmit}
-            className="btn-green cursor-pointer text-white px-5 py-2 rounded-md hover:bg-green-800"
+            className="btn-green cursor-pointer text-white px-5 py-2 rounded-md hover:bg-green-800 disabled:opacity-60"
+            disabled={isLoading}
+            aria-busy={isLoading}
           >
-            Submit
+            {isLoading ? "Submitting..." : "Submit"}
           </button>
         </div>
       </div>

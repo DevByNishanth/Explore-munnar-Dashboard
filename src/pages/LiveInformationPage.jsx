@@ -100,7 +100,7 @@ const LiveInformationPage = () => {
                       setNews(item);
                       setIsPreviewModal(true);
                     }}
-                    className="news-card border border-gray-300 h-[340px] w-full p-2 hover:shadow cursor-pointer rounded-lg shadow-gray-400"
+                    className="news-card border border-gray-300 h-[340px] overflow-hidden w-full p-2 hover:shadow cursor-pointer rounded-lg shadow-gray-400"
                   >
                     <img
                       src={item.imageUrl}
