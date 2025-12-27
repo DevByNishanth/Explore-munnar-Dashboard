@@ -139,7 +139,7 @@ const PromotionHotelCard = ({ data }) => {
   return (
     <>
       {data?.length > 0 ? (
-        <div className="card-container grid grid-cols-3 gap-4 mt-6 h-[calc(100vh-170px)] overflow-auto">
+        <div className="card-container grid grid-cols-3 gap-x-4 mt-6 h-[calc(100vh-170px)] overflow-auto">
           {data.map((item, index) => {
             return (
               <div

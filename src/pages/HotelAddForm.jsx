@@ -28,6 +28,7 @@ const HotelAddForm = () => {
 
   // states
   const [selectedTab, setSelectedTab] = useState("infoPage");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -48,6 +49,7 @@ const HotelAddForm = () => {
 
   // functions
   async function onSave() {
+    setIsLoading(true);
     try {
       const filteredAmeniteis = formData.amenities.filter((item) => {
         return item.data.length > 0;
@@ -68,7 +70,7 @@ const HotelAddForm = () => {
       fd.append("stayType", formData.stayType);
       fd.append("location", formData.locationName);
       fd.append("locationUrl", formData.locationUrl);
-      fd.append("isFeatured", formData.isFeatured == "Yes" ? true : false);
+      // fd.append("isFeatured", formData.isFeatured == "Yes" ? true : false);
       fd.append("locationRange", formData.locationRange)
 
       // ---- Convert arrays to JSON strings ----
@@ -76,19 +78,24 @@ const HotelAddForm = () => {
       fd.append("amenities", JSON.stringify(filteredAmeniteis));
       fd.append("experiences", JSON.stringify(formData.experiences));
       fd.append("rules", JSON.stringify(formData.rules))
-      // ---- POST request ----
-      const res = await fetch(`${apiUrl}/api/hotel`, {
-        method: "POST",
+      // ---- POST/PUT request ----
+      const url = editMode === "true" ? `${apiUrl}/api/hotel/${hotelId}` : `${apiUrl}/api/hotel`;
+      const method = editMode === "true" ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method: method,
         body: fd,
       });
 
       router("/hotels");
       // window.location.reload();
       const data = await res.json();
-      // console.log("Upload success:", data);
+      console.log("Upload success:", data);
     } catch (error) {
       console.error("Error uploading:", error);
       alert("Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -147,6 +154,7 @@ const HotelAddForm = () => {
             setSelectedTab={setSelectedTab}
             onSave={onSave}
             editMode={editMode}
+            isLoading={isLoading}
           />
         </div>
       </section>

@@ -8,10 +8,15 @@ import {
   X,
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
 const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
-  const [promotion, setPromotion] = useState(false);
-  const [cardView, setCardView] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [isHighlighted, setIsHighlighted] = useState(false);
+  const [isUniqueStays, setIsUniqueStays] = useState(false);
   const [previewImg, setPreviewImg] = useState(null);
+  const [featuredImage, setFeaturedImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPromotionDays, setSelectedPromotionDays] = useState("");
   const [fileName, setFileName] = useState(null);
@@ -19,6 +24,14 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
 
   // ref's
   const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (canvasData) {
+      setIsFeatured(canvasData.isFeatured || false);
+      setIsHighlighted(canvasData.isHighlighted || false);
+      setIsUniqueStays(canvasData.isUniqueStays || false);
+    }
+  }, [canvasData]);
 
   useEffect(() => {
     function handleOutsideClick(e) {
@@ -33,12 +46,46 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
   }, []);
 
   // functions
+  // functions
   const handleFileChange = (e) => {
     // console.log("file : ", e.target.files);
     const file = e.target.files[0];
-    setFileName(file.name);
-    const previewUrl = URL.createObjectURL(file);
-    setPreviewImg(previewUrl);
+    if (file) {
+      setFileName(file.name);
+      setFeaturedImage(file);
+      const previewUrl = URL.createObjectURL(file);
+      setPreviewImg(previewUrl);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      const fd = new FormData();
+      fd.append("isFeatured", isFeatured);
+      fd.append("isHighlighted", isHighlighted);
+      fd.append("isUniqueStays", isUniqueStays);
+
+      if (isFeatured && selectedPromotionDays) {
+        const date = new Date();
+        date.setDate(date.getDate() + parseInt(selectedPromotionDays));
+        fd.append("featuredUntil", date.toISOString());
+      }
+
+      if (featuredImage) {
+        fd.append("featuredImage", featuredImage);
+      }
+
+      await axios.put(`${apiUrl}/api/hotel/${canvasData?.id}/promotions`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setisCanvas(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating promotions:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -46,7 +93,7 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
       <div className="fixed inset-0 bg-black/30"></div>
       <div
         ref={canvasRef}
-        className="main-container w-[40%] z-30 bg-white p-2 h-[100vh] absolute top-0 right-0"
+        className="main-container w-full md:w-[40%] z-30 bg-white p-2 h-[100vh] absolute top-0 right-0"
       >
         <div className="img-container w-[100%] h-[270px]">
           <img
@@ -121,15 +168,15 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
-                checked={canvasData.isFeatured}
-                onChange={() => setPromotion(!promotion)}
+                checked={isFeatured}
+                onChange={() => setIsFeatured(!isFeatured)}
                 className="scale-120 accent-green-800"
               />
               <h1 className="font-medium">
                 Do you want to promote this hotel?
               </h1>{" "}
             </div>
-            {promotion && (
+            {isFeatured && (
               <div className="form-container mx-4 mt-2 mb-8 grid gap-2 grid-cols-2">
                 {previewImg == null ? (
                   <div className="input relative  border border-dashed rounded bg-gray-100 border-green-800 flex items-center justify-center">
@@ -192,8 +239,8 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
             <div className="flex items-center gap-3 mt-2">
               <input
                 type="checkbox"
-                checked={canvasData?.isHighlighted}
-                onChange={() => setCardView(!cardView)}
+                checked={isHighlighted}
+                onChange={() => setIsHighlighted(!isHighlighted)}
                 className="scale-120 accent-green-800"
               />
               <h1 className="font-medium">
@@ -203,6 +250,8 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
             <div className="flex items-center gap-3 mt-2">
               <input
                 type="checkbox"
+                checked={isUniqueStays}
+                onChange={() => setIsUniqueStays(!isUniqueStays)}
                 className="scale-120 accent-green-800"
               />
               <h1 className="font-medium">
@@ -212,8 +261,12 @@ const HotelViewCanvas = ({ canvasData, setisCanvas }) => {
           </div>
           {/* btn-container -----------------------  */}
           <div className="btn-container absolute bottom-8 right-4  flex justify-end">
-            <button className="btn-green px-4 py-2 rounded-lg text-white hover:cursor-pointer">
-              Save
+            <button
+              onClick={handleSave}
+              disabled={isLoading}
+              className={`btn-green px-4 py-2 rounded-lg text-white hover:cursor-pointer ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {isLoading ? "Saving..." : "Save"}
             </button>
           </div>
         </div>

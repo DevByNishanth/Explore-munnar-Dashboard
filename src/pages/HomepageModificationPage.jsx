@@ -64,11 +64,10 @@ const HomepageModificationPage = () => {
           <div className="tab-search-container  mt-6 flex gap-4 items-center justify-between">
             <div className="tab-container  w-fit py-2 rounded-full  text-gray-400">
               <button
-                className={`w-fit cursor-pointer ${
-                  selectedTab == "Hotel Collection"
+                className={`w-fit cursor-pointer ${selectedTab == "Hotel Collection"
                     ? "font-medium  text-black rounded-full"
                     : ""
-                }`}
+                  }`}
                 onClick={() => {
                   setSelectedTab("Hotel Collection");
                 }}
@@ -99,9 +98,8 @@ const HomepageModificationPage = () => {
                     All{" "}
                     <span>
                       <ChevronDown
-                        className={`text-gray-500 ${
-                          dropdown ? "rotate-180" : "rotate-0"
-                        } transition-all duration-300 `}
+                        className={`text-gray-500 ${dropdown ? "rotate-180" : "rotate-0"
+                          } transition-all duration-300 `}
                       />
                     </span>
                   </button>

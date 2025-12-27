@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Edit, Plus, Trash } from "lucide-react";
 import HotelAddModal from "../components/HotelAddModal";
 import AmenityFormModal from "../components/AmenityFormModal";
@@ -40,6 +40,7 @@ const EditHotelPage = () => {
     amenities: [], // [{ title, data: [] }]
     experiences: [],
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const [locationUrl, setLocationUrl] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -242,8 +243,10 @@ const EditHotelPage = () => {
       }));
   };
 
+  const navigate = useNavigate();
   // ---------------- SUBMIT ----------------
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       const amenitiesPayload = buildAmenitiesPayload();
 
@@ -287,6 +290,9 @@ const EditHotelPage = () => {
       });
     } catch (err) {
       console.error("Error updating hotel:", err);
+    } finally {
+      setIsLoading(false);
+      navigate('/hotels')
     }
   };
 
@@ -603,9 +609,10 @@ const EditHotelPage = () => {
             <div className="flex justify-end py-4">
               <button
                 onClick={handleSubmit}
-                className="px-6 py-2 rounded-md bg-amber-700 text-white hover:bg-amber-800"
+                disabled={isLoading}
+                className={`px-6 py-2 rounded-md bg-amber-700 text-white hover:bg-amber-800 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                Save Changes
+                {isLoading ? "Saving..." : "Save Changes"}
               </button>
             </div>
           </div>

@@ -41,7 +41,7 @@ const HotelsPage = () => {
       const response = await axios.post(`${apiUrl}/api/hotels-list`, {
         "pageNumber": pageNumber
       });
-      // console.log("hotels : ", response.data.data.hotels)
+      console.log("hotels : ", response.data.data.hotels)
       setData(response.data.data.hotels)
     } catch (err) {
       console.error("Error occured while fetching hotel list : ", err.message)
