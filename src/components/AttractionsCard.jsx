@@ -50,7 +50,7 @@ const AttractionsCard = () => {
                 {data?.length > 0 ? (
                     data.map((item) => {
                         return <div className="card border border-gray-300 p-2 rounded-lg h-fit ">
-                            <img src={att1} className="h-[240px] rounded-lg w-full object-cover" />
+                            <img src={item?.image_url} className="h-[240px] rounded-lg w-full object-cover" />
                             <div className="content-container mt-2 space-y-2">
                                 <div className='flex items-center justify-between'>
                                     <h1 className='font-medium text-lg text-green-800'>{item.route}</h1>

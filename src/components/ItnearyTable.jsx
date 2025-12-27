@@ -264,6 +264,7 @@ const ItnearyTable = () => {
   }
 
   function handleCanvas(item) {
+    console.log("canvas item : ", item)
     setCanvasItem(item)
     setIsCanvas(true);
   }
