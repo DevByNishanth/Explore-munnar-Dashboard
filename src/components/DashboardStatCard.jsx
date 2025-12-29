@@ -1,7 +1,38 @@
 import { Bike, Car, CarFront, Hotel, Route } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const DashboardStatCard = () => {
+  const apiURL = import.meta.env.VITE_API_URL;
+  const [counts, setCounts] = useState({
+    hotelBookings: 0,
+    cabBookings: 0,
+    bikeRentals: 0,
+    selfDriveRequests: 0,
+    itineraries: 0,
+  });
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const response = await fetch(`${apiURL}/api/dashboard/counts`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        console.log("Dashboard Counts API Response:", result);
+        if (result && result.data) {
+          setCounts(result.data);
+        } else if (result) {
+          // Fallback if data is directly in result (though user said it is in 'data')
+          setCounts(result);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard counts:", error);
+      }
+    };
+    fetchCounts();
+  }, [apiURL]);
+
   return (
     <>
       <section className="grid grid-cols-5 gap-4 mt-4">
@@ -12,7 +43,7 @@ const DashboardStatCard = () => {
             </div>
             <div>
               <h1 className="font-medium text-gray-500">Hotel Booking</h1>
-              <h1 className="font-medium text-black">5</h1>
+              <h1 className="font-medium text-black">{counts.hotelBookings || 0}</h1>
             </div>
           </div>
         </div>
@@ -23,7 +54,7 @@ const DashboardStatCard = () => {
             </div>
             <div>
               <h1 className="font-medium text-gray-500">Cab Booking</h1>
-              <h1 className="font-medium text-black">5</h1>
+              <h1 className="font-medium text-black">{counts.cabBookings || 0}</h1>
             </div>
           </div>
         </div>
@@ -34,7 +65,7 @@ const DashboardStatCard = () => {
             </div>
             <div>
               <h1 className="font-medium text-gray-500">Bike Rentals</h1>
-              <h1 className="font-medium text-black">5</h1>
+              <h1 className="font-medium text-black">{counts.bikeRentals || 0}</h1>
             </div>
           </div>
         </div>
@@ -45,7 +76,7 @@ const DashboardStatCard = () => {
             </div>
             <div>
               <h1 className="font-medium text-gray-500">Self Car Driving</h1>
-              <h1 className="font-medium text-black">5</h1>
+              <h1 className="font-medium text-black">{counts.selfDriveRequests || 0}</h1>
             </div>
           </div>
         </div>
@@ -56,7 +87,7 @@ const DashboardStatCard = () => {
             </div>
             <div>
               <h1 className="font-medium text-gray-500">Itnearies</h1>
-              <h1 className="font-medium text-black">5</h1>
+              <h1 className="font-medium text-black">{counts.itineraries || 0}</h1>
             </div>
           </div>
         </div>

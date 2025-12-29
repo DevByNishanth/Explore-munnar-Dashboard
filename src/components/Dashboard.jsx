@@ -26,6 +26,7 @@ const months = [
 const Dashboard = () => {
   // states
   const [isMonthFilterDropdown, setIsMonthFilterDropdown] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState(months[new Date().getMonth()]); // Default to current month
 
   // ref's
   const monthFilterDropdownRef = useRef(null);
@@ -62,8 +63,10 @@ const Dashboard = () => {
               <div className="red-box w-2 h-2 bg-red-400 rounded-full absolute top-[0px] right-1 "></div>
             </div>
             <div className="profile-dropdown flex items-center gap-2 bg-gray-100 w-fit px-4 py-2 rounded-full">
-              <img src={man} className="w-6 h-6 rounded-full object-cover" />
-              <h1>Nishanth</h1>
+              <div className="bg-green-800 text-white w-[30px] h-[30px] rounded-full flex items-center justify-center">
+                <p>A</p>
+              </div>
+              <h1>Admin</h1>
               <ChevronDown className="text-gray-500" />
             </div>
           </div>
@@ -82,7 +85,7 @@ const Dashboard = () => {
                   }}
                   className="border border-gray-300 text-gray-800 rounded-md px-4 py-1 w-[120px] text-left flex justify-between items-center"
                 >
-                  Nov{" "}
+                  {selectedMonth}{" "}
                   <span className="h-5 w-5 ">
                     <ChevronDown
                       className={`text-gray-600 ${isMonthFilterDropdown ? "rotate-180" : "rotate-0"
@@ -97,7 +100,13 @@ const Dashboard = () => {
                   >
                     {months.map((item) => {
                       return (
-                        <button className="w-full px-5 hover:bg-gray-200 py-2 cursor-pointer text-left">
+                        <button
+                          key={item}
+                          onClick={() => {
+                            setSelectedMonth(item);
+                            setIsMonthFilterDropdown(false);
+                          }}
+                          className="w-full px-5 hover:bg-gray-200 py-2 cursor-pointer text-left">
                           {item}
                         </button>
                       );
@@ -106,16 +115,16 @@ const Dashboard = () => {
                 )}
               </div>
             </div>
-            <HotelBookingBarChart />
+            <HotelBookingBarChart month={selectedMonth} />
           </div>
           <div className="main-chart-container col-span-4 h-[483px]">
             <div className="chart-container2 h-[241px] bg-white  rounded-lg border border-gray-100 pb-2">
               <div className="pie-chart">
                 <div className="header mt-2 mx-6 flex items-center justify-between">
                   <h1 className="font-medium">Tranport Bookings</h1>
-                  <button className="cursor-pointer border border-gray-400 text-gray-600 rounded px-3 py-1 text-[12px]">
+                  {/* <button className="cursor-pointer border border-gray-400 text-gray-600 rounded px-3 py-1 text-[12px]">
                     View
-                  </button>
+                  </button> */}
                 </div>
                 <PieChart1 />
               </div>

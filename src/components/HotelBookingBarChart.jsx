@@ -8,19 +8,50 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import NoData from "./NoData";
 
-const data = [
-  { name: "5 Star", pv: 800 },
-  { name: "3 Star", pv: 967 },
-  { name: "Tree house", pv: 1098 },
-  { name: "Eco cotages", pv: 1200 },
-  { name: "Tents", pv: 1108 },
-  { name: "Hotels", pv: 1400 },
-  { name: "Resorts", pv: 1400 },
-  { name: "Home stays", pv: 1400 },
-];
+const HotelBookingBarChart = ({ month }) => {
+  const apiURL = import.meta.env.VITE_API_URL;
+  const [data, setData] = React.useState([]);
 
-const HotelBookingBarChart = () => {
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${apiURL}/api/dashboard/hotel-bookings-chart?month=${month.toLowerCase()}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        console.log("API Response:", result); // Debugging log
+        if (Array.isArray(result)) {
+          setData(result);
+        } else if (result && Array.isArray(result.data)) {
+          setData(result.data);
+        } else {
+          console.error("API response is not an array:", result);
+          setData([]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    if (month) {
+      fetchData();
+    }
+  }, [month]);
+
+  if (data.length === 0) {
+    return (
+      <section
+        className="w-full h-[410px] flex items-center justify-center outline-none focus:outline-none"
+        style={{ outline: "none" }}
+      >
+        <NoData />
+      </section>
+    );
+  }
+
   return (
     <section
       className="w-full  h-[410px] outline-none focus:outline-none"
