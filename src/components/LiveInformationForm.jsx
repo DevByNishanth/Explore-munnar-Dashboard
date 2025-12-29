@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const LiveInformationForm = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [previewUrls, setpreviewUrls] = useState([]);
   const [imgFiles, setImgFiles] = useState([]);
@@ -84,7 +84,7 @@ const LiveInformationForm = () => {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      navigate(`/liveInformation`)
+      navigate(`/liveInformation`);
       // console.log(res.data);
     } catch (error) {
       console.error(error);
