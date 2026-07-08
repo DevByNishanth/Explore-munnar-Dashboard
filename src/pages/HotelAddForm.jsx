@@ -40,11 +40,12 @@ const HotelAddForm = () => {
     stayType: "",
     locationName: "",
     locationUrl: "",
-    isFeatured: "",
+    isFeatured: false,
     rules: [],
     amenities: [],
     locationRange: "",
     experiences: [], // popular faciliteis
+    isVerified: false,
   });
 
   // functions
@@ -70,7 +71,7 @@ const HotelAddForm = () => {
       fd.append("stayType", formData.stayType);
       fd.append("location", formData.locationName);
       fd.append("locationUrl", formData.locationUrl);
-      // fd.append("isFeatured", formData.isFeatured == "Yes" ? true : false);
+      fd.append("isFeatured", formData.isFeatured);
       fd.append("locationRange", formData.locationRange)
 
       // ---- Convert arrays to JSON strings ----
@@ -78,6 +79,7 @@ const HotelAddForm = () => {
       fd.append("amenities", JSON.stringify(filteredAmeniteis));
       fd.append("experiences", JSON.stringify(formData.experiences));
       fd.append("rules", JSON.stringify(formData.rules))
+      fd.append("isVerified", formData.isVerified);
       // ---- POST/PUT request ----
       const url = editMode === "true" ? `${apiUrl}/api/hotel/${hotelId}` : `${apiUrl}/api/hotel`;
       const method = editMode === "true" ? "PUT" : "POST";
@@ -114,9 +116,10 @@ const HotelAddForm = () => {
         stayType: hotel.stayType || "",
         locationName: hotel.location || "",
         locationUrl: hotel.locationUrl,
-        isFeatured: hotel.isFeatured ? "Yes" : "No",
+        isFeatured: hotel.isFeatured || false,
         amenities: hotel.amenities || [],
         experiences: hotel.experiences || [],
+        isVerified: hotel.isVerified || false,
       });
 
       // optional: store existing images separately for preview
@@ -150,6 +153,30 @@ const HotelAddForm = () => {
           ) : (
             <HotelAddForm2 />
           )}
+          <div className="px-6 py-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={formData.isVerified}
+                onChange={(e) =>
+                  setFormData({ ...formData, isVerified: e.target.checked })
+                }
+                className="w-4 h-4"
+              />
+              <span className="text-gray-700">Is Verified</span>
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={formData.isFeatured}
+                onChange={(e) =>
+                  setFormData({ ...formData, isFeatured: e.target.checked })
+                }
+                className="w-4 h-4"
+              />
+              <span className="text-gray-700">Is Promoted</span>
+            </label>
+          </div>
           <HotelAddButtonFooter
             setSelectedTab={setSelectedTab}
             onSave={onSave}

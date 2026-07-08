@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UploadCloud, X, Plus } from "lucide-react";
+import { UploadCloud, X, Plus, Calendar, Tag, FileText, Image as ImageIcon, Send } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,10 @@ const LiveInformationForm = () => {
     title: "",
     description: "",
     category: "",
+    expirationDate: ""
   });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -58,172 +61,279 @@ const LiveInformationForm = () => {
     setImages((prev) => [...prev, ...mapped]);
   };
 
-  //   function to remeve a file
+  //   function to remove a file
   function handleFileRemove(fileToRemove) {
     setImages((prev) =>
       prev.filter((item) => item.file.name !== fileToRemove.file.name)
     );
   }
 
+  // Drag and drop handlers
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    const fakeEvent = { target: { files } };
+    handleFileChange(fakeEvent);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const form = new FormData();
     form.append("heading", formData.title);
     form.append("detail", formData.description);
     form.append("category", formData.category);
+    form.append("expirationDate", formData.expirationDate);
 
     images.forEach((img) => {
       form.append("image", img.file);
     });
 
     try {
-      const res = await axios.post(
+      await axios.post(
         "https://munnar-backend.onrender.com/api/news",
         form,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
       navigate(`/liveInformation`);
-      // console.log(res.data);
     } catch (error) {
       console.error(error);
       alert("Upload failed");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <>
-      <section className="mt-6">
-        <div className="header">
-          <h1 className="font-medium text-lg">Live Information</h1>
-        </div>
-
-        <div className="form-container w-[380px] mt-4">
-          <form
-            className="space-y-4 relative h-[calc(100vh-120px)]"
-            onSubmit={handleSubmit}
-          >
-            {/* TITLE */}
-            <div className="title-container">
-              <h1 className="text-gray-800 font-medium mb-2">Title</h1>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                className="border border-gray-400 rounded px-3 py-2 w-full outline-none"
-              />
+      <section className="min-h-screenpy-8 px-4">
+        <div className="max-w-full  mx-auto">
+          {/* Header */}
+          <div className="text-center mb-2">
+            <div className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br from-green-800 to-emerald-600 rounded-lg mb-4 shadow-lg">
+              <FileText className="text-white w-6 h-6" />
             </div>
+            <h1 className="text-lg font-semibold text-gray-800 mb-">
+              Live Information
+            </h1>
+            <p className="text-gray-500 text-sm">
+              Share important updates and information with travelers
+            </p>
+          </div>
 
-            {/* IMAGE UPLOAD */}
-            <div className="img-container">
-              <h1 className="text-gray-800 font-medium mb-2">Image</h1>
+          {/* Form Card */}
+          <div className="bg-white rounded-3xl  shadow-xl ">
+            <form onSubmit={handleSubmit} className="p-4 space-y-6 max-h-[calc(100vh-260px)] overflow-auto">
 
-              {images.length > 0 ? (
-                <div className="img-upload-container w-full border border-gray-300 h-[70px] flex items-center gap-3 px-3 rounded mt-2">
-                  {images.map((item) => (
-                    <div
-                      key={item.file.name}
-                      className="relative group w-[80px] h-[60%]"
-                    >
-                      <img
-                        src={item.url}
-                        alt="preview"
-                        className="w-full h-full object-cover rounded-md"
-                      />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition"></div>
+              {/* TITLE */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-gray-700 font-semibold">
+                  <FileText className="w-4 h-4 text-emerald-800" />
+                  Title
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  placeholder="Enter a descriptive title..."
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-green-900 focus:ring-2 focus:ring-green-700 transition-all duration-200 bg-gray-50 hover:bg-white"
+                />
+              </div>
 
-                      <X
-                        onClick={() => handleFileRemove(item)}
-                        className="absolute text-white cursor-pointer top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100"
-                        size={20}
-                      />
+              {/* IMAGE UPLOAD */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-gray-700 font-semibold">
+                  <ImageIcon className="w-4 h-4 text-emerald-800" />
+                  Images
+                  {/* <span className="text-xs font-normal text-gray-400 ml-auto">
+                    Max 4 images
+                  </span> */}
+                </label>
+
+                {images.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {images.map((item) => (
+                      <div
+                        key={item.file.name}
+                        className="relative group aspect-square rounded-xl overflow-hidden border-2 border-gray-200 hover:border-green-400 transition-all duration-200"
+                      >
+                        <img
+                          src={item.url}
+                          alt="preview"
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-200" />
+                        <button
+                          type="button"
+                          onClick={() => handleFileRemove(item)}
+                          className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-red-600 hover:scale-110"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+
+                    {images.length < 4 && (
+                      <label className="relative aspect-square rounded-xl border-2 border-dashed border-gray-300 hover:border-green-900 hover:bg-green-500 transition-all duration-200 cursor-pointer flex flex-col items-center justify-center gap-2 group">
+                        <Plus className="w-6 h-6 text-gray-400 group-hover:text-green-900 transition-colors" />
+                        <span className="text-xs text-gray-400 group-hover:text-green-900 transition-colors">
+                          Add Image
+                        </span>
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                      </label>
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    className={`relative rounded-2xl border-2 border-dashed transition-all duration-200 p-8 text-center ${isDragging
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-gray-300 hover:border-green-400 hover:bg-gray-50'
+                      }`}
+                  >
+                    <div className="flex flex-col items-center gap-3">
+                      <div className={`p-4 rounded-full transition-colors ${isDragging ? 'bg-green-200' : 'bg-gray-100'
+                        }`}>
+                        <UploadCloud className={`w-8 h-8 ${isDragging ? 'text-emerald-800' : 'text-gray-400'
+                          }`} />
+                      </div>
+                      <div>
+                        <p className="text-gray-600 font-medium">
+                          <span className="text-green-800 font-semibold">Click to upload</span> or drag & drop
+                        </p>
+                        <p className="text-sm text-gray-400 mt-1">
+                          JPEG, PNG, WEBP, AVIF
+                        </p>
+                      </div>
                     </div>
-                  ))}
-
-                  {/* ADD MORE BUTTON */}
-                  {/* <div className="relative">
-                    <button
-                      type="button"
-                      className="bg-gray-100 hover:bg-gray-200 w-[80px] h-[60%] rounded-lg flex justify-center items-center"
-                    >
-                      <Plus />
-                    </button>
                     <input
                       type="file"
                       multiple
+                      accept="image/*"
                       onChange={handleFileChange}
                       className="absolute inset-0 opacity-0 cursor-pointer"
                     />
-                  </div> */}
+                  </div>
+                )}
+              </div>
+
+              {/* DESCRIPTION */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-gray-700 font-semibold">
+                  <FileText className="w-4 h-4 text-emerald-800" />
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  placeholder="Provide detailed information..."
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-green-900 focus:ring-2 focus:ring-green-700 transition-all duration-200 bg-gray-50 hover:bg-white resize-none max-h-[200px]"
+                />
+              </div>
+
+              {/* CATEGORY */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-gray-700 font-semibold">
+                  <Tag className="w-4 h-4 text-emerald-800" />
+                  Category
+                </label>
+                <div className="relative">
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-green-900 focus:ring-2 focus:ring-green-700 transition-all duration-200 bg-gray-50 hover:bg-white appearance-none cursor-pointer"
+                  >
+                    <option value="" disabled>
+                      Select a category
+                    </option>
+                    <option value="Roads And Transport Conditions">
+                      Roads And Transport Conditions
+                    </option>
+                    <option value="Emergency Alerts">Emergency Alerts</option>
+                    <option value="Local Events & Festivals">
+                      Local Events & Festivals
+                    </option>
+                    <option value="Travel Restrictions & Health Guidelines">
+                      Travel Restrictions & Health Guidelines
+                    </option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
-              ) : (
-                <div className="img-input-container relative mt-2 bg-gray-50 border border-gray-200 rounded-lg text-sm px-4 w-full text-center py-4">
-                  <UploadCloud className="text-gray-400 w-9 h-9 mx-auto" />
-                  <p>
-                    <span className="text-blue-500">Click to upload</span> or
-                    drag & drop
-                  </p>
-                  <p className="text-gray-400">JPEG, PNG, WEBP, AVIF</p>
+              </div>
 
-                  <input
-                    type="file"
-                    multiple
-                    onChange={handleFileChange}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                </div>
-              )}
-            </div>
+              {/* EXPIRATION DATE */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-gray-700 font-semibold">
+                  <Calendar className="w-4 h-4 text-emerald-800" />
+                  Expiration Date
+                </label>
+                <input
+                  type="date"
+                  name="expirationDate"
+                  value={formData.expirationDate}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-green-900 focus:ring-2 focus:ring-green-700 transition-all duration-200 bg-gray-50 hover:bg-white"
+                />
+              </div>
 
-            {/* DESCRIPTION */}
-            <div className="description-container">
-              <h1 className="text-gray-800 font-medium mb-2">Description</h1>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                className="border max-h-[140px] border-gray-400 rounded px-3 py-2 w-full outline-none"
-              />
-            </div>
+              {/* SUBMIT BUTTON */}
 
-            {/* CATEGORY */}
-            <div className="input-container">
-              <h1 className="text-gray-800 font-medium mb-2">Category</h1>
-
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                className="w-full outline-none border rounded border-gray-400 py-2 px-3"
+            </form>
+            <div className="pt-4">
+              <button
+                onClick={handleSubmit}
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full py-4 px-6 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2 transition-all duration-300 ${isSubmitting
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-emerald-800 to-emerald-700 hover:from-green-800 hover:to-emerald-900 shadow-lg hover:shadow-xl hover:-translate-y-0.5'
+                  }`}
               >
-                <option value="" disabled>
-                  Select Category
-                </option>
-                <option value="Roads And Transport Conditions">
-                  Roads And Transport conditions
-                </option>
-                <option value="Emergency Alerts">Emergency Alerts</option>
-                <option value="Local Events & Festivals">
-                  Local Events and Festivals
-                </option>
-                <option value="Travel Restrictions & Health Guidelines">
-                  Travel Restrictions & Health Guidelines
-                </option>
-                <option value="Travel Restrictions & Health Guidelines">
-                  Travel Restrictions & Health Guidelines
-                </option>
-              </select>
-            </div>
-
-            {/* SUBMIT */}
-            <div className="btn-container flex justify-end absolute bottom-4 right-0">
-              <button className="text-white b px-4 py-2 btn-green rounded cursor-pointer">
-                Update
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Publishing...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    Publish Information
+                  </>
+                )}
               </button>
             </div>
-          </form>
+          </div>
+
         </div>
       </section>
     </>

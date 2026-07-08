@@ -19,7 +19,7 @@ const AddNewsPage = () => {
               <span className="font-medium text-black">Add Information</span>
             </h1>
           </div>
-          <LiveInformationForm/>
+          <LiveInformationForm />
         </div>
       </section>
     </>
