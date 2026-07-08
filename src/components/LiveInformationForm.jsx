@@ -44,6 +44,13 @@ const LiveInformationForm = () => {
       return;
     }
 
+    const maxSize = 3 * 1024 * 1024; // 2 MB
+    const oversizedFiles = selectedFiles.filter((file) => file.size > maxSize);
+    if (oversizedFiles.length > 0) {
+      alert("Each image must be less than 2 MB");
+      return;
+    }
+
     const validFiles = selectedFiles.filter((file) =>
       allowedTypes.includes(file.type)
     );
