@@ -153,7 +153,7 @@ const HotelAddForm = () => {
           ) : (
             <HotelAddForm2 />
           )}
-          <div className="px-6 py-4">
+          <div className="px-6 py-4 ">
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"

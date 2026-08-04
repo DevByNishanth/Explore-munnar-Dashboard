@@ -21,6 +21,7 @@ import HomepageModificationPage from "./pages/HomepageModificationPage";
 import ReportsPage from "./pages/ReportsPage";
 import BusTimingsPage from "./pages/BusTimingsPage";
 import EditHotelPage from "./pages/EditHotelPage";
+import HomepageSlidesPage from "./pages/HomepageSlidesPage";
 const App = () => {
   return (
     <>
@@ -45,6 +46,7 @@ const App = () => {
           path="/homepageModification"
           element={<HomepageModificationPage />}
         />
+        <Route path="/homepageSlides" element={<HomepageSlidesPage />} />
         <Route path="/BusTimings" element={<BusTimingsPage />} />
         <Route path="/reports" element={<ReportsPage />} />
       </Routes>
