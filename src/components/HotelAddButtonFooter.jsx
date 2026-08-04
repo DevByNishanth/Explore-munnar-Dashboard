@@ -4,7 +4,7 @@ import React from "react";
 const HotelAddButtonFooter = ({ setSelectedTab, onSave, editMode, isLoading }) => {
   return (
     <>
-      <div className="main-container w-[80%] mx-6 fixed bottom-6 z-10 flex items-center justify-end">
+      <div className="main-container w-[80%] mx-6  z-10 flex items-center justify-end">
         {/* <button className="underline text-black cursor-pointer">Cancel</button> */}
         {editMode == "true" ? (
           <button

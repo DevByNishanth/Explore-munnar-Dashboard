@@ -55,7 +55,8 @@ const ItnearyAttractionModal = ({ setIsModal }) => {
 
             const res = await axios.post(`${apiUrl}/api/attractions`, data, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             })
             window.location.reload()

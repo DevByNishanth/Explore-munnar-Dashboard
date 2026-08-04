@@ -14,6 +14,7 @@ const HotelsPage = () => {
   const [data, setData] = useState([])
   const [pageNumber, setPageNumber] = useState(1)
   const [filteredData, setFilteredData] = useState([])
+  const [promotionFilter, setPromotionFilter] = useState("all")
 
   // side effects 
   useEffect(() => {
@@ -23,15 +24,24 @@ const HotelsPage = () => {
   // console.log("filtered data : ", filteredData)
 
   useEffect(() => {
+    let filtered = data;
+
+    // Filter by name search
     if (searchQuery !== "") {
-      const filtered = data.filter((item) =>
+      filtered = filtered.filter((item) =>
         item.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(data);
     }
-  }, [searchQuery, data]);
+
+    // Filter by promotion status
+    if (promotionFilter === "promoted") {
+      filtered = filtered.filter((item) => item.isFeatured === true);
+    } else if (promotionFilter === "not-promoted") {
+      filtered = filtered.filter((item) => item.isFeatured === false);
+    }
+
+    setFilteredData(filtered);
+  }, [searchQuery, data, promotionFilter]);
 
 
   // functions
@@ -71,8 +81,19 @@ const HotelsPage = () => {
               <h1 className="font-medium text-[#333333] text-xl mt-4">
                 Manage Your Hotels
               </h1>
-              <div className="search-container border border-gray-400 rounded-lg">
-                <input type="text" onChange={(e) => { setSearchQuery(e.target.value) }} placeholder="Search hotels by name.." className="px-4 py-2 outline-none" />
+              <div className="flex items-center gap-3">
+                <select
+                  value={promotionFilter}
+                  onChange={(e) => setPromotionFilter(e.target.value)}
+                  className="border border-gray-400 rounded-lg px-4 py-2 outline-none text-gray-700 bg-white cursor-pointer"
+                >
+                  <option value="all">All</option>
+                  <option value="promoted">Promoted</option>
+                  <option value="not-promoted">Not Promoted</option>
+                </select>
+                <div className="search-container border border-gray-400 rounded-lg">
+                  <input type="text" onChange={(e) => { setSearchQuery(e.target.value) }} placeholder="Search hotels by name.." className="px-4 py-2 outline-none" />
+                </div>
               </div>
             </div>
           </div>

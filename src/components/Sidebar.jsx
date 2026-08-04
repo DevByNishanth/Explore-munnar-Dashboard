@@ -19,6 +19,7 @@ import {
   Rss,
   Sparkle,
   User,
+  Image as ImageIcon,
 } from "lucide-react";
 import LoginModal from "./LoginModal";
 import { useGeneralData } from "../context/GeneralData";
@@ -35,15 +36,15 @@ const Sidebar = () => {
     <>
       {/* bg-[#ecececbd] */}
       <section
-        className={`relative sidebar bg-[#ecececbd] hidden md:block transition-all duration-300 ${isCollapsed ? "w-[5%]" : "w-[20%]"
+        className={`relative sidebar max-h-[calc(100vh-0px)]  bg-[#ecececbd] hidden md:block transition-all duration-300 ${isCollapsed ? "w-[5%]" : "w-[20%]"
           } h-[100vh] `}
       >
         <div className="logo-container px-5 m-auto mt-3">
           <img src={logo} className="w-[120px]" />
         </div>
-        <div className="header px-5 mt-4 ">
+        <div className="header px-5 ">
           <div
-            className="profile-container  flex items-center gap-3 cursor-pointer"
+            className="profile-container flex items-center gap-3 cursor-pointer"
           >
             {/* <img
               src={man}
@@ -63,7 +64,7 @@ const Sidebar = () => {
         </div>
         {/* navigation-container  */}
 
-        <div className="links-container mt-7 space-y-1 ">
+        <div className="links-container whitespace-nowrap mt-2 space-y-1 ">
           <Link
             to={"/"}
             className={`link-container px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
@@ -206,9 +207,9 @@ const Sidebar = () => {
               Bus timings
             </h1>
           </Link>
-          <Link
+           <Link
             to={"/homepageModification"}
-            className={`link-container ${location.pathname.toLowerCase().includes("homepage")
+            className={`link-container ${location.pathname.toLowerCase().includes("homepagemodification")
               ? "bg-white"
               : ""
               } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
@@ -222,6 +223,24 @@ const Sidebar = () => {
                 } `}
             >
               Highlights
+            </h1>
+          </Link>
+          <Link
+            to={"/homepageSlides"}
+            className={`link-container ${location.pathname.toLowerCase().includes("homepageslides")
+              ? "bg-white"
+              : ""
+              } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
+          >
+            <ImageIcon
+              className={`text-gray-600 w-5 h-5 transition-all duration-300 ${isCollapsed ? "m-auto" : ""
+                } `}
+            />
+            <h1
+              className={`text-gray-900 transition-all duration-300 ${isCollapsed ? "hidden" : ""
+                } `}
+            >
+              Homepage Slides
             </h1>
           </Link>
           <Link
