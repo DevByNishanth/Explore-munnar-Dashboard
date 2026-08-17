@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { Link } from "react-router-dom";
-import { ChevronRight, Plus, Trash2, X, UploadCloud, Image as ImageIcon, Check, Loader2 } from "lucide-react";
+import { ChevronRight, Plus, Trash2, X, UploadCloud, Image as ImageIcon, Check, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import axios from "axios";
 import ErrorPopup from "../components/ErrorPopup";
 
@@ -27,6 +27,16 @@ const HomepageSlidesPage = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [slideToDelete, setSlideToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Toast State
+  const [toast, setToast] = useState(null);
+
+  // Auto-dismiss toast after 3.5s
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 3500);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   // Drag and Drop State
   const [isDragging, setIsDragging] = useState(false);
@@ -164,13 +174,14 @@ const HomepageSlidesPage = () => {
       if (response.status === 200 && response.data.success) {
         setShowDeleteConfirm(false);
         setSlideToDelete(null);
+        setToast({ type: "success", message: "Slide deleted successfully." });
         fetchSlides();
       } else {
-        setErrorMsg("Failed to delete slide.");
+        setToast({ type: "error", message: "Failed to delete slide." });
       }
     } catch (error) {
       console.error("Error deleting homepage slide:", error);
-      setErrorMsg("Delete failed: " + (error.response?.data?.message || error.message));
+      setToast({ type: "error", message: "Delete failed: " + (error.response?.data?.message || error.message) });
     } finally {
       setIsDeleting(false);
     }
@@ -253,27 +264,20 @@ const HomepageSlidesPage = () => {
                       alt={slide.title || "Homepage Slide"}
                       className="w-[100%] h-[100%] object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    {/* <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                      <button
-                        onClick={() => confirmDelete(slide)}
-                        className="bg-red-600 hover:bg-red-700 text-white p-2.5 rounded-full shadow-lg transition-transform hover:scale-110 ml-auto"
-                        title="Delete Slide"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div> */}
+                    {/* Delete Icon */}
+                    <button
+                      onClick={() => confirmDelete(slide)}
+                      className="absolute top-3 right-3 z-10 bg-white/90 hover:bg-red-600 hover:text-white text-red-600 p-2 rounded-full shadow-md transition-all duration-200 hover:scale-110 cursor-pointer"
+                      title="Delete Slide"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
 
                   {/* Slide Details */}
                   <div className="p-4 flex-1 flex flex-col justify-between">
-                    <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
+                    <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-400">
                       <span>Created: {new Date(slide.created_at).toLocaleDateString()}</span>
-                      <button
-                        onClick={() => confirmDelete(slide)}
-                        className="text-red-600 hover:text-red-700 font-medium md:hidden flex items-center gap-1"
-                      >
-                        <Trash2 className="w-4 h-4" /> Delete
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -457,7 +461,7 @@ const HomepageSlidesPage = () => {
       {showDeleteConfirm && slideToDelete && (
         <>
           <div className="fixed inset-0 bg-black/55 z-[60]"></div>
-          <section className="bg-white w-[55%] pb-6  fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 rounded-2xl z-[70] shadow-2xl border border-gray-100 overflow-hidden">
+          <section className="bg-white w-[35%] pb-6  fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 rounded-2xl z-[70] shadow-2xl border border-gray-100 overflow-hidden">
             <header className="py-4 bg-gray-100 flex px-3 items-center justify-between border-b border-gray-100">
               <h1 className="font-bold text-lg text-gray-800">Delete Slide</h1>
               <X
@@ -509,6 +513,27 @@ const HomepageSlidesPage = () => {
             </div>
           </section>
         </>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`fixed top-5 right-5 z-[100] flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium ${toast.type === "success" ? "bg-emerald-600" : "bg-red-600"}`}
+        >
+          {toast.type === "success" ? (
+            <CheckCircle2 className="w-5 h-5 shrink-0" />
+          ) : (
+            <AlertCircle className="w-5 h-5 shrink-0" />
+          )}
+          <span>{toast.message}</span>
+          <button
+            onClick={() => setToast(null)}
+            className="ml-2 text-white/80 hover:text-white transition-colors cursor-pointer"
+            title="Dismiss"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       )}
 
       {/* Error Popup */}

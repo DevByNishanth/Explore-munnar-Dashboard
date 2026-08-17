@@ -22,6 +22,7 @@ import ReportsPage from "./pages/ReportsPage";
 import BusTimingsPage from "./pages/BusTimingsPage";
 import EditHotelPage from "./pages/EditHotelPage";
 import HomepageSlidesPage from "./pages/HomepageSlidesPage";
+import ReviewsPage from "./pages/ReviewsPage";
 const App = () => {
   return (
     <>
@@ -49,6 +50,7 @@ const App = () => {
         <Route path="/homepageSlides" element={<HomepageSlidesPage />} />
         <Route path="/BusTimings" element={<BusTimingsPage />} />
         <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/reviews" element={<ReviewsPage />} />
       </Routes>
     </>
   );

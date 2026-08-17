@@ -20,6 +20,7 @@ import {
   Sparkle,
   User,
   Image as ImageIcon,
+  Star,
 } from "lucide-react";
 import LoginModal from "./LoginModal";
 import { useGeneralData } from "../context/GeneralData";
@@ -36,7 +37,7 @@ const Sidebar = () => {
     <>
       {/* bg-[#ecececbd] */}
       <section
-        className={`relative sidebar max-h-[calc(100vh-0px)]  bg-[#ecececbd] hidden md:block transition-all duration-300 ${isCollapsed ? "w-[5%]" : "w-[20%]"
+        className={`relative sidebar max-h-[calc(100vh-10px)] overflow-y-auto bg-[#ecececbd] hidden md:block transition-all duration-300 ${isCollapsed ? "w-[5%]" : "w-[20%]"
           } h-[100vh] `}
       >
         <div className="logo-container px-5 m-auto mt-3">
@@ -207,7 +208,7 @@ const Sidebar = () => {
               Bus timings
             </h1>
           </Link>
-           <Link
+          <Link
             to={"/homepageModification"}
             className={`link-container ${location.pathname.toLowerCase().includes("homepagemodification")
               ? "bg-white"
@@ -261,9 +262,27 @@ const Sidebar = () => {
               Reports
             </h1>
           </Link>
+          <Link
+            to={"/reviews"}
+            className={`link-container ${location.pathname.toLowerCase().includes("reviews")
+              ? "bg-white"
+              : ""
+              } px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full`}
+          >
+            <Star
+              className={`text-gray-600 w-5 h-5 transition-all duration-300 ${isCollapsed ? "m-auto" : ""
+                } `}
+            />
+            <h1
+              className={`text-gray-900 transition-all duration-300 ${isCollapsed ? "hidden" : ""
+                } `}
+            >
+              Reviews
+            </h1>
+          </Link>
           <button
             onClick={() => setShowLoginModal(true)}
-            className="px-5 w-[88%] flex items-center gap-2 hover:bg-white cursor-pointer py-2 rounded-r-full"
+            className="px-5 w-[88%] flex items-center gap-2 hover:bg-white bg-emerald-900/20 mt-3 cursor-pointer py-2 rounded-r-full"
           >
             <span>
               <LogOut className="w-4 h-4 text-gray-700" />
