@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import DashboardHeader from "./components/DashboardHeader";
 import Sidebar from "./components/Sidebar";
@@ -23,34 +23,54 @@ import BusTimingsPage from "./pages/BusTimingsPage";
 import EditHotelPage from "./pages/EditHotelPage";
 import HomepageSlidesPage from "./pages/HomepageSlidesPage";
 import ReviewsPage from "./pages/ReviewsPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import LoginModal from "./components/LoginModal";
+import { useAuth } from "./context/AuthContext";
+
+function LoginEntry() {
+  const { login, signup, user, loading } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const destination = location.state?.from?.pathname || "/";
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-600">Loading...</div>;
+  if (user?.role === "ADMIN") return <Navigate to={destination} replace />;
+  return <LoginModal open onClose={() => navigate("/")} onLogin={login} onSignup={signup} onSuccess={() => navigate(destination, { replace: true })} accessDenied={location.state?.accessDenied} />;
+}
 const App = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/login" element={<LoginEntry />} />
+        <Route element={<ProtectedRoute requiredRole="ADMIN" />}>
+          <Route path="/" element={<Homepage />} />
+
+          <Route path="/Bookings" element={<BookingPage />} />
+          <Route path="/activities" element={<ActivitiesPage />} />
+          <Route path="/itnearies" element={<ItnearyPage />} />
+          <Route path="/hotels/:id" element={<HotelDetailsPage />} />
+          <Route path="/activites/:id" element={<ActivitiesDetailsPage />} />
+          <Route path="/users" element={<UsersPage />} />
+
+          <Route path="/hotels/editHotel/:id" element={<EditHotelPage />} />
+          <Route
+            path="/activities/addActivity"
+            element={<AddActivityFormPage />}
+          />
+          <Route path="/liveInformation/addNews" element={<AddNewsPage />} />
+          <Route path="/liveInformation" element={<LiveInformationPage />} />
+          <Route
+            path="/homepageModification"
+            element={<HomepageModificationPage />}
+          />
+          <Route path="/homepageSlides" element={<HomepageSlidesPage />} />
+          <Route path="/BusTimings" element={<BusTimingsPage />} />
+          <Route path="/reviews" element={<ReviewsPage />} />
+        </Route>
+        
+        <Route path="/hotels/addHotels" element={<HotelAddForm />} /> F
         <Route path="/hotels" element={<HotelsPage />} />
-        <Route path="/Bookings" element={<BookingPage />} />
-        <Route path="/activities" element={<ActivitiesPage />} />
-        <Route path="/itnearies" element={<ItnearyPage />} />
-        <Route path="/hotels/:id" element={<HotelDetailsPage />} />
-        <Route path="/activites/:id" element={<ActivitiesDetailsPage />} />
-        <Route path="/users" element={<UsersPage />} />
-        <Route path="/hotels/addHotels" element={<HotelAddForm />} />
-        <Route path="/hotels/editHotel/:id" element={<EditHotelPage />} />
-        <Route
-          path="/activities/addActivity"
-          element={<AddActivityFormPage />}
-        />
-        <Route path="/liveInformation/addNews" element={<AddNewsPage />} />
-        <Route path="/liveInformation" element={<LiveInformationPage />} />
-        <Route
-          path="/homepageModification"
-          element={<HomepageModificationPage />}
-        />
-        <Route path="/homepageSlides" element={<HomepageSlidesPage />} />
-        <Route path="/BusTimings" element={<BusTimingsPage />} />
         <Route path="/reports" element={<ReportsPage />} />
-        <Route path="/reviews" element={<ReviewsPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );

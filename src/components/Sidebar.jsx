@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import logo from "../assets/logo.svg";
 import man from "../assets/man.jpg";
 import {
@@ -22,9 +22,9 @@ import {
   Image as ImageIcon,
   Star,
 } from "lucide-react";
-import LoginModal from "./LoginModal";
 import { useGeneralData } from "../context/GeneralData";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 const Sidebar = () => {
   // router dom hooks
   const location = useLocation();
@@ -32,7 +32,7 @@ const Sidebar = () => {
 
   // context
   const { setIsCollapsed, isCollapsed } = useGeneralData();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { logout } = useAuth();
   return (
     <>
       {/* bg-[#ecececbd] */}
@@ -281,7 +281,7 @@ const Sidebar = () => {
             </h1>
           </Link>
           <button
-            onClick={() => setShowLoginModal(true)}
+            onClick={logout}
             className="px-5 w-[88%] flex items-center gap-2 hover:bg-white bg-emerald-900/20 mt-3 cursor-pointer py-2 rounded-r-full"
           >
             <span>
@@ -291,11 +291,6 @@ const Sidebar = () => {
           </button>
         </div>
       </section>
-      <LoginModal
-        open={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onLogin={(creds) => console.log("Login attempt:", creds)}
-      />
     </>
   );
 };

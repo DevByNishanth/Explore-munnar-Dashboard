@@ -96,8 +96,7 @@ const ReportModal = ({ open, moduleLabel, icon: Icon, onClose, onGenerate }) => 
           {/* Modal Body */}
           <div className="p-6 space-y-4">
             <p className="text-sm text-gray-500">
-              Choose the filters for the {moduleLabel.toLowerCase()} report. The generated PDF will
-              contain only the matching records.
+              Choose the filters for the {moduleLabel.toLowerCase()} report. The downloaded Excel compatible CSV will contain only the matching records.
             </p>
 
             <div className="grid grid-cols-2 gap-4">
@@ -197,7 +196,7 @@ const ReportModal = ({ open, moduleLabel, icon: Icon, onClose, onGenerate }) => 
               ) : (
                 <>
                   <FileText className="w-4 h-4" />
-                  Generate Report
+                  Download Excel
                 </>
               )}
             </button>
