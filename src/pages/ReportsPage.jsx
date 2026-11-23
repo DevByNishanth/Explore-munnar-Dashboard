@@ -1,24 +1,21 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import ReportModal from "../components/ReportModal";
-import { generateModuleReportPdf } from "../utils/reportPdf";
 import { Link } from "react-router-dom";
 import {
-  Activity,
   Bike,
   CalendarCheck2,
   Car,
   CarFront,
+  ChartNoAxesCombined,
   CheckCircle2,
   ChevronRight,
   Clock,
   FileText,
   Hotel,
-  IndianRupee,
   ReceiptText,
-  TrendingDown,
-  TrendingUp,
-  Users,
+  Table2,
   XCircle,
 } from "lucide-react";
 import {
@@ -35,6 +32,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import ReportsTable from "../components/ReportsTable";
 
 /* ------------------------------------------------------------------ */
 /*  Mock report data — swap these shapes for the real API responses.  */
@@ -193,6 +191,37 @@ const formatCompactINR = (value) => {
   return `₹${value}`;
 };
 
+const getBookingAmount = (booking) => {
+  const nights = Math.max(1, Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / 86400000) || 1);
+  return Number(booking.pricePerNight || 0) * nights;
+};
+const normalizeBookingStatus = (status) => {
+  const value = String(status || "Pending").toLowerCase();
+  if (value.includes("cancel")) return "Cancelled";
+  if (value.includes("complete") || value.includes("confirm") || value === "booked") return "Completed";
+  return "Pending";
+};
+
+const downloadBookingsCsv = (rows, fileName, allRows = rows) => {
+  const keys = [...new Set(allRows.flatMap((row) => Object.keys(row)))];
+  const columns = keys.map((key) => [key, (row) => {
+    const value = row[key];
+    return value && typeof value === "object" ? JSON.stringify(value) : value;
+  }]);
+  const escapeCell = (value) => {
+    const text = String(value ?? "");
+    const safeText = /^[=+\-@]/.test(text) ? `'${text}` : text;
+    return `"${safeText.replaceAll('"', '""')}"`;
+  };
+  const csv = [columns.map(([label]) => escapeCell(label)).join(","), ...rows.map((row) => columns.map(([, value]) => escapeCell(value(row))).join(","))].join("\r\n");
+  const url = URL.createObjectURL(new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName.replace(/\.pdf$/i, ".csv");
+  link.click();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
 /* ------------------------------------------------------------------ */
 /*  Small presentational pieces                                        */
 /* ------------------------------------------------------------------ */
@@ -205,15 +234,14 @@ const KpiCard = ({ label, value, footer, trend, icon, iconClass }) => (
         {icon}
       </span>
     </div>
-    <p className="mt-3 text-2xl font-bold tracking-tight text-[#183c27]">{value}</p>
+    <p className="text-xl font-semibold tracking-tight text-[#183c27]">{value}</p>
     <p
-      className={`mt-1.5 flex items-center gap-1 text-xs font-medium ${
-        trend === "up"
-          ? "text-emerald-700"
-          : trend === "down"
-            ? "text-[#be5048]"
-            : "text-[#8a9a8e]"
-      }`}
+      className={`mt-1.5 flex items-center gap-1 text-xs font-medium ${trend === "up"
+        ? "text-emerald-700"
+        : trend === "down"
+          ? "text-[#be5048]"
+          : "text-[#8a9a8e]"
+        }`}
     >
       {trend === "up" && <TrendingUp size={13} />}
       {trend === "down" && <TrendingDown size={13} />}
@@ -279,7 +307,73 @@ const ModuleStatusDonut = ({ data }) => (
 /* ------------------------------------------------------------------ */
 
 const ReportsPage = () => {
-  const modules = useMemo(buildModules, []);
+  const [bookingsByModule, setBookingsByModule] = useState({ hotel: [], cab: [], selfcar: [], bike: [] });
+  const apiUrl = import.meta.env.VITE_API_URL;
+  useEffect(() => {
+    let active = true;
+    const endpoints = { hotel: "hotel-booking", cab: "cab-booking", selfcar: "self-drive", bike: "bike-rentals" };
+    Promise.all(Object.entries(endpoints).map(async ([key, endpoint]) => {
+      try {
+        const { data: result } = await axios.get(`${apiUrl}/api/${endpoint}`);
+        return [key, Array.isArray(result?.data) ? result.data : []];
+      } catch (error) {
+        console.error(`Unable to load ${key} booking analytics:`, error);
+        return [key, []];
+      }
+    })).then((entries) => {
+      if (active) setBookingsByModule(Object.fromEntries(entries));
+    }).catch((error) => console.error("Unable to load booking analytics:", error));
+    return () => { active = false; };
+  }, [apiUrl]);
+
+  const modules = useMemo(() => {
+    const base = buildModules();
+    const today = new Date();
+    const monday = new Date(today);
+    monday.setHours(0, 0, 0, 0);
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    const currentYear = today.getFullYear();
+    base.forEach((module) => {
+      const records = bookingsByModule[module.key] || [];
+      const bookingsByStatus = records.reduce((counts, booking) => {
+        const status = normalizeBookingStatus(booking.status);
+        counts[status.toLowerCase()] += 1;
+        return counts;
+      }, { completed: 0, pending: 0, cancelled: 0 });
+      const weekly = Array.from({ length: 7 }, (_, index) => {
+        const day = new Date(monday);
+        day.setDate(monday.getDate() + index);
+        return { name: day.toLocaleDateString("en-IN", { weekday: "short" }), value: 0 };
+      });
+      const monthly = MONTHS.map((name) => ({ name, bookings: 0, revenue: 0 }));
+      records.forEach((booking) => {
+        const createdAt = new Date(booking.createdAt || booking.created_at);
+        if (Number.isNaN(createdAt.getTime())) return;
+        const localDate = new Date(createdAt.getFullYear(), createdAt.getMonth(), createdAt.getDate());
+        const dayIndex = Math.floor((localDate - monday) / 86400000);
+        if (dayIndex >= 0 && dayIndex < 7) weekly[dayIndex].value += 1;
+        if (createdAt.getFullYear() === currentYear) {
+          monthly[createdAt.getMonth()].bookings += 1;
+          monthly[createdAt.getMonth()].revenue += module.key === "hotel" ? getBookingAmount(booking) : Number(booking.amount || booking.price || 0);
+        }
+      });
+      module.total = records.length;
+      module.revenue = records.reduce((total, booking) => total + (module.key === "hotel" ? getBookingAmount(booking) : Number(booking.amount || booking.price || 0)), 0);
+      module.status = bookingsByStatus;
+      module.weekly = weekly;
+      module.monthly = monthly;
+      module.bookings = records;
+      module.rows = records.map((booking) => ({
+        id: booking.id, customer: booking.name, item: module.key === "hotel"
+          ? `${booking.hotelName || "Hotel"} · ${booking.location || ""}`
+          : module.key === "cab" ? `${booking.pickup_point || ""} → ${booking.drop_point || ""} · ${booking.vehicle_type || ""}`
+            : `${booking.from || ""} → ${booking.to || ""} · ${booking.carCategory || booking.vehicle_type || ""}`,
+        date: (booking.createdAt || booking.created_at || booking.date || "").slice(0, 10),
+        status: booking.status, amount: module.key === "hotel" ? getBookingAmount(booking) : Number(booking.amount || booking.price || 0),
+      }));
+    });
+    return base;
+  }, [bookingsByModule]);
   const [modalModule, setModalModule] = useState(null);
 
   const totals = useMemo(() => {
@@ -288,17 +382,19 @@ const ReportsPage = () => {
     const completed = sum(modules.map((m) => m.status.completed));
     const pending = sum(modules.map((m) => m.status.pending));
     const cancelled = sum(modules.map((m) => m.status.cancelled));
-    const active = sum(modules.map((m) => m.active));
+    const pricedBookings = modules.reduce((count, module) => count + module.bookings.filter((booking) => {
+      const amount = module.key === "hotel" ? getBookingAmount(booking) : Number(booking.amount || booking.price || 0);
+      return amount > 0;
+    }).length, 0);
     return {
       bookings,
       revenue,
       completed,
       pending,
       cancelled,
-      active,
-      customers: 45890,
-      avgValue: Math.round(revenue / bookings),
-      completionRate: Math.round((completed / bookings) * 100),
+      pricedBookings,
+      avgValue: pricedBookings ? Math.round(revenue / pricedBookings) : 0,
+      completionRate: bookings ? Math.round((completed / bookings) * 100) : 0,
     };
   }, [modules]);
 
@@ -316,25 +412,28 @@ const ReportsPage = () => {
     { label: "Completed", value: totals.completed, color: STATUS_COLORS.Completed },
     { label: "Pending", value: totals.pending, color: STATUS_COLORS.Pending },
     { label: "Cancelled", value: totals.cancelled, color: STATUS_COLORS.Cancelled },
-    { label: "Active", value: totals.active, color: STATUS_COLORS.Active },
   ];
 
   const kpis = [
-    { label: "Total Bookings", value: formatCount(totals.bookings), footer: "+12.5% vs last month", trend: "up", icon: <CalendarCheck2 size={16} />, iconClass: "bg-[#e4f0ff] text-[#5882a5]" },
-    { label: "Total Revenue", value: formatCompactINR(totals.revenue), footer: "+15.7% vs last month", trend: "up", icon: <IndianRupee size={16} />, iconClass: "bg-[#ddf9e4] text-[#216432]" },
+    { label: "Total Bookings", value: formatCount(totals.bookings), footer: "Across all four booking modules", trend: null, icon: <CalendarCheck2 size={16} />, iconClass: "bg-[#e4f0ff] text-[#5882a5]" },
     { label: "Completed", value: formatCount(totals.completed), footer: `${totals.completionRate}% completion rate`, trend: null, icon: <CheckCircle2 size={16} />, iconClass: "bg-[#ddf9e4] text-[#216432]" },
     { label: "Pending", value: formatCount(totals.pending), footer: "Requires attention", trend: null, icon: <Clock size={16} />, iconClass: "bg-[#fdf3e0] text-[#d69e3e]" },
-    { label: "Cancelled", value: formatCount(totals.cancelled), footer: "-2.1% vs last month", trend: "down", icon: <XCircle size={16} />, iconClass: "bg-[#fbeae8] text-[#be5048]" },
-    { label: "Active Currently", value: formatCount(totals.active), footer: "Ongoing services", trend: null, icon: <Activity size={16} />, iconClass: "bg-[#e4f0ff] text-[#5882a5]" },
-    { label: "Total Customers", value: formatCount(totals.customers), footer: "+4.8% new this period", trend: "up", icon: <Users size={16} />, iconClass: "bg-[#eef0ee] text-[#6e7a72]" },
-    { label: "Avg Booking Value", value: formatINR(totals.avgValue), footer: "Across all service modules", trend: null, icon: <ReceiptText size={16} />, iconClass: "bg-[#ddf9e4] text-[#318454]" },
+    { label: "Cancelled", value: formatCount(totals.cancelled), footer: "Across all four booking modules", trend: null, icon: <XCircle size={16} />, iconClass: "bg-[#fbeae8] text-[#be5048]" },
+    { label: "Avg Booking Value", value: formatINR(totals.avgValue), footer: `${formatCount(totals.pricedBookings)} bookings with price data`, trend: null, icon: <ReceiptText size={16} />, iconClass: "bg-[#ddf9e4] text-[#318454]" },
   ];
 
   const filterModuleRows = (mod, filters) =>
     mod.rows.filter((row) => {
+      if (mod.key === "hotel") {
+        const date = row.date;
+        const inMonth = !filters.month || date.startsWith(`${filters.year}-${MONTH_NUM[filters.month]}`);
+        const inRange = !filters.fromDate || !filters.toDate || (date >= filters.fromDate && date <= filters.toDate);
+        const inStatus = filters.status === "All" || normalizeBookingStatus(row.status) === filters.status;
+        return inMonth && inRange && inStatus;
+      }
       const inMonth = !filters.month || row.date.startsWith(`${filters.year}-${MONTH_NUM[filters.month]}`);
       const inRange = !filters.fromDate || !filters.toDate || (row.date >= filters.fromDate && row.date <= filters.toDate);
-      const inStatus = filters.status === "All" || row.status === filters.status;
+      const inStatus = filters.status === "All" || normalizeBookingStatus(row.status) === filters.status;
       return inMonth && inRange && inStatus;
     });
 
@@ -342,42 +441,24 @@ const ReportsPage = () => {
     const mod = modalModule;
     if (!mod) return;
     const rows = filterModuleRows(mod, filters);
-    const summary = {
-      bookings: rows.length,
-      revenue: rows.reduce((s, r) => s + (r.amount || 0), 0),
-      completed: rows.filter((r) => r.status === "Completed").length,
-      pending: rows.filter((r) => r.status === "Pending").length,
-      cancelled: rows.filter((r) => r.status === "Cancelled").length,
-    };
-    const pieData = [
-      { label: "Completed", value: summary.completed },
-      { label: "Pending", value: summary.pending },
-      { label: "Cancelled", value: summary.cancelled },
-    ];
-    const periodLabel = filters.month
-      ? `${filters.month} ${filters.year}`
-      : filters.fromDate
-        ? `${filters.fromDate} to ${filters.toDate}`
-        : "All time";
-    const monthSlug = filters.month ? filters.month.toLowerCase() : filters.fromDate ? `${filters.fromDate}-${filters.toDate}` : "all";
-    generateModuleReportPdf({
-      moduleKey: mod.key,
-      moduleLabel: mod.label,
-      periodLabel,
-      statusLabel: filters.status,
-      summary,
-      chartData: mod.monthly.map((m) => ({ name: m.name, value: m.bookings })),
-      pieData,
-      rows,
-      fileName: `${mod.key}-booking-report-${monthSlug}-${filters.year}.pdf`,
-    });
+    const rowIds = new Set(rows.map((row) => String(row.id)));
+    const matchingBookings = mod.bookings.filter((booking) => rowIds.has(String(booking.id)));
+    const monthSlug = filters.month ? filters.month.toLowerCase() : `${filters.fromDate}-to-${filters.toDate}`;
+    downloadBookingsCsv(matchingBookings, `${mod.key}-booking-report-${monthSlug}-${filters.year}.csv`, mod.bookings);
   };
+
+  const [selectedTab, setSelectedtab] = useState("reports")
+
+  // jsx
+
 
   return (
     <>
       <section className="flex min-h-screen bg-[#fcfdfb]">
         <Sidebar />
-        <main className="w-full max-h-screen overflow-auto px-5 py-5 md:px-8 md:py-7">
+        <main className="w-full max-h-screen overflow-auto px-5 py-5 md:px-8 md:py-7 ">
+
+
           <div className="mx-auto max-w-[1400px]">
             {/* Breadcrumbs + title */}
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -399,235 +480,249 @@ const ReportsPage = () => {
               </span>
             </div>
 
-            {/* KPI cards */}
-            <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-              {kpis.map((kpi) => (
-                <KpiCard key={kpi.label} {...kpi} />
-              ))}
+
+            <div className="tabs mt-6 flex items-center gap-4 border-b border-gray-300">
+              <button onClick={() => setSelectedtab("reports")} className={`${selectedTab == "reports" ? "border-b-2 border-emerald-600 font-semibold text-emerald-800" : ""} flex items-center gap-2 pb-2 px-3 cursor-pointer `}><span><ChartNoAxesCombined size={17} /></span>Analytics</button>
+              <button onClick={() => setSelectedtab("table-view")} className={`${selectedTab == "table-view" ? "border-b-2 border-emerald-600 font-semibold text-emerald-800" : ""} flex items-center gap-2 pb-2 px-3 cursor-pointer`}> <span><Table2 size={17} /></span> Table view</button>
             </div>
 
-            {/* Overall analytics */}
-            <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-              {/* Overall business trend */}
-              <div className="rounded-2xl border border-[#e4eee6] bg-white p-5 shadow-sm lg:col-span-2">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h2 className="text-base font-semibold text-[#183c27]">Overall Business Trend</h2>
-                    <p className="text-xs text-[#8a9a8e]">Bookings and revenue across all modules</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#e4eee6] bg-[#f6faf6] px-3 py-1 text-xs font-medium text-[#183c27]">
-                      <span className="h-2 w-2 rounded-full bg-[#164722]" /> Bookings
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#e4eee6] bg-[#f6faf6] px-3 py-1 text-xs font-medium text-[#183c27]">
-                      <span className="h-2 w-2 rounded-full bg-[#318454]" /> Revenue
-                    </span>
-                  </div>
-                </div>
+            {/*  -------------------------- Analytics section -----------------------  */}
 
-                <div className="mt-4 h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={trendData} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="fillBookings" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#164722" stopOpacity={0.18} />
-                          <stop offset="100%" stopColor="#164722" stopOpacity={0} />
-                        </linearGradient>
-                        <linearGradient id="fillRevenue" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#318454" stopOpacity={0.14} />
-                          <stop offset="100%" stopColor="#318454" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#eef2ef" vertical={false} />
-                      <XAxis
-                        dataKey="name"
-                        tick={{ fill: "#8a9a8e", fontSize: 11 }}
-                        axisLine={false}
-                        tickLine={false}
-                        dy={6}
-                      />
-                      <YAxis
-                        yAxisId="bookings"
-                        tick={{ fill: "#8a9a8e", fontSize: 11 }}
-                        axisLine={false}
-                        tickLine={false}
-                        tickFormatter={(v) => formatCount(v)}
-                        width={46}
-                      />
-                      <YAxis
-                        yAxisId="revenue"
-                        orientation="right"
-                        tick={{ fill: "#8a9a8e", fontSize: 11 }}
-                        axisLine={false}
-                        tickLine={false}
-                        tickFormatter={(v) => `${(v / 100000).toFixed(1)}L`}
-                        width={42}
-                      />
-                      <Tooltip
-                        formatter={(value, name) =>
-                          name === "revenue" ? [formatINR(value), "Revenue"] : [formatCount(value), "Bookings"]
-                        }
-                        contentStyle={{ borderRadius: 12, border: "1px solid #e4eee6", fontSize: 12 }}
-                      />
-                      <Area
-                        yAxisId="bookings"
-                        type="monotone"
-                        dataKey="bookings"
-                        stroke="#164722"
-                        strokeWidth={2.5}
-                        fill="url(#fillBookings)"
-                        dot={false}
-                        activeDot={{ r: 5 }}
-                      />
-                      <Area
-                        yAxisId="revenue"
-                        type="monotone"
-                        dataKey="revenue"
-                        stroke="#318454"
-                        strokeWidth={2.5}
-                        fill="url(#fillRevenue)"
-                        dot={false}
-                        activeDot={{ r: 5 }}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+            {selectedTab == "reports" && <div className="analytics-section">
+              {/* KPI cards */}
+              <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-5">
+                {kpis.map((kpi) => (
+                  <KpiCard key={kpi.label} {...kpi} />
+                ))}
               </div>
 
-              {/* Global status donut */}
-              <div className="rounded-2xl border border-[#e4eee6] bg-white p-5 shadow-sm">
-                <h2 className="text-base font-semibold text-[#183c27]">Global Status</h2>
-                <p className="text-xs text-[#8a9a8e]">Overall status across all modules</p>
-                <div className="relative mt-2 h-[200px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={globalStatusData}
-                        dataKey="value"
-                        nameKey="label"
-                        innerRadius="64%"
-                        outerRadius="90%"
-                        paddingAngle={3}
-                        startAngle={90}
-                        endAngle={-270}
-                      >
-                        {globalStatusData.map((entry) => (
-                          <Cell key={entry.label} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(value) => formatCount(value)} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <DonutCenter
-                    total={formatCount(globalStatusData.reduce((s, d) => s + d.value, 0))}
-                  />
-                </div>
-                <div className="mt-4">
-                  <StatusLegend data={globalStatusData} />
-                </div>
-              </div>
-            </div>
 
-            {/* Module analytics sections */}
-            {modules.map((mod) => {
-              const Icon = mod.icon;
-              const moduleStatusData = [
-                { label: "Completed", value: mod.status.completed, color: STATUS_COLORS.Completed },
-                { label: "Pending", value: mod.status.pending, color: STATUS_COLORS.Pending },
-                { label: "Cancelled", value: mod.status.cancelled, color: STATUS_COLORS.Cancelled },
-              ];
-              const totalValue = sum(moduleStatusData.map((d) => d.value));
-              return (
-                <section
-                  key={mod.key}
-                  className="mt-6 overflow-hidden rounded-2xl border border-[#e4eee6] border-t-4 border-t-[#216432] bg-white shadow-sm"
-                >
-                  {/* Section header */}
-                  <div className="flex flex-col gap-3 border-b border-[#eef2ef] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ddf9e4] text-[#216432]">
-                        <Icon size={20} />
+              {/* Overall analytics */}
+              <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                {/* Overall business trend */}
+                <div className="rounded-2xl border border-[#e4eee6] bg-white p-5 shadow-sm lg:col-span-2">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <h2 className="text-base font-semibold text-[#183c27]">Overall Business Trend</h2>
+                      <p className="text-xs text-[#8a9a8e]">Bookings and revenue across all modules</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[#e4eee6] bg-[#f6faf6] px-3 py-1 text-xs font-medium text-[#183c27]">
+                        <span className="h-2 w-2 rounded-full bg-[#164722]" /> Bookings
                       </span>
-                      <div>
-                        <h2 className="text-base font-semibold text-[#183c27]">{mod.label} Analytics</h2>
-                        <p className="text-xs text-[#8a9a8e]">
-                          Booking counts and revenue for {mod.label.toLowerCase()}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setModalModule(mod)}
-                      className="btn-green inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-95 cursor-pointer"
-                    >
-                      <FileText size={16} /> Generate Report
-                    </button>
-                  </div>
-
-                  {/* Section body */}
-                  <div className="grid grid-cols-1 gap-5 p-5 lg:grid-cols-5">
-                    {/* Module graph */}
-                    <div className="lg:col-span-3">
-                      <div className="mb-2 flex items-center justify-between">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-[#8a9a8e]">
-                          This week · Bookings
-                        </p>
-                        <p className="text-xs text-[#8a9a8e]">
-                          {formatCount(mod.total)} total · {formatCompactINR(mod.revenue)} revenue
-                        </p>
-                      </div>
-                      <div className="h-[270px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={mod.weekly} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
-                            <defs>
-                              <linearGradient id={`bar-${mod.key}`} x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#216432" />
-                                <stop offset="100%" stopColor="#4b9a6b" />
-                              </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#eef2ef" vertical={false} />
-                            <XAxis
-                              dataKey="name"
-                              tick={{ fill: "#8a9a8e", fontSize: 11 }}
-                              axisLine={false}
-                              tickLine={false}
-                              dy={6}
-                            />
-                            <YAxis
-                              tick={{ fill: "#8a9a8e", fontSize: 11 }}
-                              axisLine={false}
-                              tickLine={false}
-                              width={46}
-                            />
-                            <Tooltip
-                              cursor={{ fill: "#f6faf6" }}
-                              formatter={(value) => [formatCount(value), "Bookings"]}
-                              contentStyle={{ borderRadius: 12, border: "1px solid #e4eee6", fontSize: 12 }}
-                            />
-                            <Bar dataKey="value" fill={`url(#bar-${mod.key})`} radius={[6, 6, 0, 0]} maxBarSize={38} />
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </div>
-
-                    {/* Module pie */}
-                    <div className="lg:col-span-2">
-                      <div className="mb-2">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-[#8a9a8e]">
-                          Status distribution
-                        </p>
-                      </div>
-                      <ModuleStatusDonut data={moduleStatusData} />
-                      <div className="mt-3">
-                        <StatusLegend data={moduleStatusData} />
-                      </div>
-                      <p className="mt-3 border-t border-[#eef2ef] pt-3 text-xs text-[#8a9a8e]">
-                        {formatCount(totalValue)} bookings recorded for {mod.label.toLowerCase()}
-                      </p>
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[#e4eee6] bg-[#f6faf6] px-3 py-1 text-xs font-medium text-[#183c27]">
+                        <span className="h-2 w-2 rounded-full bg-[#318454]" /> Revenue
+                      </span>
                     </div>
                   </div>
-                </section>
-              );
-            })}
+
+                  <div className="mt-4 h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={trendData} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
+                        <defs>
+                          <linearGradient id="fillBookings" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#164722" stopOpacity={0.18} />
+                            <stop offset="100%" stopColor="#164722" stopOpacity={0} />
+                          </linearGradient>
+                          <linearGradient id="fillRevenue" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#318454" stopOpacity={0.14} />
+                            <stop offset="100%" stopColor="#318454" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#eef2ef" vertical={false} />
+                        <XAxis
+                          dataKey="name"
+                          tick={{ fill: "#8a9a8e", fontSize: 11 }}
+                          axisLine={false}
+                          tickLine={false}
+                          dy={6}
+                        />
+                        <YAxis
+                          yAxisId="bookings"
+                          tick={{ fill: "#8a9a8e", fontSize: 11 }}
+                          axisLine={false}
+                          tickLine={false}
+                          tickFormatter={(v) => formatCount(v)}
+                          width={46}
+                        />
+                        <YAxis
+                          yAxisId="revenue"
+                          orientation="right"
+                          tick={{ fill: "#8a9a8e", fontSize: 11 }}
+                          axisLine={false}
+                          tickLine={false}
+                          tickFormatter={(v) => `${(v / 100000).toFixed(1)}L`}
+                          width={42}
+                        />
+                        <Tooltip
+                          formatter={(value, name) =>
+                            name === "revenue" ? [formatINR(value), "Revenue"] : [formatCount(value), "Bookings"]
+                          }
+                          contentStyle={{ borderRadius: 12, border: "1px solid #e4eee6", fontSize: 12 }}
+                        />
+                        <Area
+                          yAxisId="bookings"
+                          type="monotone"
+                          dataKey="bookings"
+                          stroke="#164722"
+                          strokeWidth={2.5}
+                          fill="url(#fillBookings)"
+                          dot={false}
+                          activeDot={{ r: 5 }}
+                        />
+                        <Area
+                          yAxisId="revenue"
+                          type="monotone"
+                          dataKey="revenue"
+                          stroke="#318454"
+                          strokeWidth={2.5}
+                          fill="url(#fillRevenue)"
+                          dot={false}
+                          activeDot={{ r: 5 }}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Global status donut */}
+                <div className="rounded-2xl border border-[#e4eee6] bg-white p-5 shadow-sm">
+                  <h2 className="text-base font-semibold text-[#183c27]">Global Status</h2>
+                  <p className="text-xs text-[#8a9a8e]">Overall status across all modules</p>
+                  <div className="relative mt-2 h-[200px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={globalStatusData}
+                          dataKey="value"
+                          nameKey="label"
+                          innerRadius="64%"
+                          outerRadius="90%"
+                          paddingAngle={3}
+                          startAngle={90}
+                          endAngle={-270}
+                        >
+                          {globalStatusData.map((entry) => (
+                            <Cell key={entry.label} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip formatter={(value) => formatCount(value)} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <DonutCenter
+                      total={formatCount(globalStatusData.reduce((s, d) => s + d.value, 0))}
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <StatusLegend data={globalStatusData} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Module analytics sections */}
+              {modules.map((mod) => {
+                const Icon = mod.icon;
+                const moduleStatusData = [
+                  { label: "Completed", value: mod.status.completed, color: STATUS_COLORS.Completed },
+                  { label: "Pending", value: mod.status.pending, color: STATUS_COLORS.Pending },
+                  { label: "Cancelled", value: mod.status.cancelled, color: STATUS_COLORS.Cancelled },
+                ];
+                const totalValue = sum(moduleStatusData.map((d) => d.value));
+                return (
+                  <section
+                    key={mod.key}
+                    className="mt-6 overflow-hidden rounded-2xl border border-[#e4eee6] border-t-4 border-t-[#216432] bg-white shadow-sm"
+                  >
+                    {/* Section header */}
+                    <div className="flex flex-col gap-3 border-b border-[#eef2ef] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ddf9e4] text-[#216432]">
+                          <Icon size={20} />
+                        </span>
+                        <div>
+                          <h2 className="text-base font-semibold text-[#183c27]">{mod.label} Analytics</h2>
+                          <p className="text-xs text-[#8a9a8e]">
+                            Booking counts and revenue for {mod.label.toLowerCase()}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setModalModule(mod)}
+                        className="btn-green inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-95 cursor-pointer"
+                      >
+                        <FileText size={16} /> Generate Report
+                      </button>
+                    </div>
+
+                    {/* Section body */}
+                    <div className="grid grid-cols-1 gap-5 p-5 lg:grid-cols-5">
+                      {/* Module graph */}
+                      <div className="lg:col-span-3">
+                        <div className="mb-2 flex items-center justify-between">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-[#8a9a8e]">
+                            This week · Bookings
+                          </p>
+                          <p className="text-xs text-[#8a9a8e]">
+                            {formatCount(mod.total)} total · {formatCompactINR(mod.revenue)} revenue
+                          </p>
+                        </div>
+                        <div className="h-[270px]">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={mod.weekly} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
+                              <defs>
+                                <linearGradient id={`bar-${mod.key}`} x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#216432" />
+                                  <stop offset="100%" stopColor="#4b9a6b" />
+                                </linearGradient>
+                              </defs>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#eef2ef" vertical={false} />
+                              <XAxis
+                                dataKey="name"
+                                tick={{ fill: "#8a9a8e", fontSize: 11 }}
+                                axisLine={false}
+                                tickLine={false}
+                                dy={6}
+                              />
+                              <YAxis
+                                tick={{ fill: "#8a9a8e", fontSize: 11 }}
+                                axisLine={false}
+                                tickLine={false}
+                                width={46}
+                              />
+                              <Tooltip
+                                cursor={{ fill: "#f6faf6" }}
+                                formatter={(value) => [formatCount(value), "Bookings"]}
+                                contentStyle={{ borderRadius: 12, border: "1px solid #e4eee6", fontSize: 12 }}
+                              />
+                              <Bar dataKey="value" fill={`url(#bar-${mod.key})`} radius={[6, 6, 0, 0]} maxBarSize={38} />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+
+                      {/* Module pie */}
+                      <div className="lg:col-span-2">
+                        <div className="mb-2">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-[#8a9a8e]">
+                            Status distribution
+                          </p>
+                        </div>
+                        <ModuleStatusDonut data={moduleStatusData} />
+                        <div className="mt-3">
+                          <StatusLegend data={moduleStatusData} />
+                        </div>
+                        <p className="mt-3 border-t border-[#eef2ef] pt-3 text-xs text-[#8a9a8e]">
+                          {formatCount(totalValue)} bookings recorded for {mod.label.toLowerCase()}
+                        </p>
+                      </div>
+                    </div>
+                  </section>
+                );
+              })}
+            </div>}
+
+            {selectedTab == "table-view" && <ReportsTable />}
+
           </div>
         </main>
       </section>
